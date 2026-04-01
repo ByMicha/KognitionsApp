@@ -22,7 +22,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
     hvlt: { icon: '📖', time: '8 min' },
     zsTest: { icon: '🔢', time: '5 min' },
     tmt: { icon: '✏️', time: '10 min' },
-    bells: { icon: '🔔', time: '3 min' },
+    bells: { icon: '🔔', time: '5 min' },
     qlqC30: { icon: '📝', time: '15 min' },
   };
 
@@ -43,8 +43,8 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
             results.map((res, index) => (
               <View key={index} style={[styles.testCard, { backgroundColor: theme.card, borderColor: theme.border, width: '100%' }]}>
                 <Text style={{ color: theme.text, fontWeight: 'bold' }}>Test: {res.testId}</Text>
-                <Text style={{ color: theme.text }}>Datum: {new Date(res.timestamp).toLocaleString()}</Text>
-                <Text style={{ color: theme.primary }}>Ergebnis: {res.score}s</Text>
+                <Text style={{ color: theme.text }}> Datum: {new Date(res.timestamp).toLocaleString()}</Text>
+                <Text style={{ color: theme.primary }}> Ergebnis: {res.score}</Text>
               </View>
             ))
           )}
@@ -83,10 +83,10 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
         </View>
 
         <TouchableOpacity 
-          style={[styles.smallButton, { backgroundColor: theme.primary, alignSelf: 'center', marginTop: 20, width: '75%' }]}
-          onPress={() => setShowResultsList(true)}
+          style={[styles.smallButton, { backgroundColor: "transparent", borderColor: theme.accent, borderWidth: 3, alignSelf: 'center', marginTop: 20, width: '75%', maxWidth: 400 }]}
+          onPress={() => onStartTest('results')} // Ruft jetzt den neuen Screen über App.js auf
         >
-          <Text style={styles.buttonText}>Debug: Resultate anzeigen</Text>
+          <Text style={{ color: theme.accent, fontSize: 18, fontWeight: '600' }}>Ergebnisse & Datenbank</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 

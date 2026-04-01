@@ -39,8 +39,8 @@ export default function TMTScreen({ t, theme, onBack }) {
   const [completedLines, setCompletedLines] = useState([]);
   const [currentLine, setCurrentLine] = useState(null);
   
-  // Zeitmessung States
-  const [startTime, setStartTime] = useState(null);
+  // Zeitmessung Ref statt State (verhindert Stale Closures im PanResponder)
+  const startTimeRef = useRef(null);
   const [finalTime, setFinalTime] = useState(null);
 
   const nextNumberRef = useRef(2);
@@ -66,7 +66,7 @@ export default function TMTScreen({ t, theme, onBack }) {
     setNextNumber(2);
     setCompletedLines([]);
     setCurrentLine(null);
-    setStartTime(null);
+    startTimeRef.current = null; // Ref zurücksetzen
     setFinalTime(null);
     nextNumberRef.current = 2;
     dragStartRef.current = null;
@@ -87,8 +87,8 @@ export default function TMTScreen({ t, theme, onBack }) {
         
         if (startCircle && startCircle.px !== undefined) {
            // Startzeit setzen beim allerersten Berühren von Kreis 1
-           if (currentTarget === 2 && startTime === null) {
-             setStartTime(Date.now());
+           if (currentTarget === 2 && startTimeRef.current === null) {
+             startTimeRef.current = Date.now();
            }
 
            dragStartRef.current = { x: startCircle.px, y: startCircle.py };
@@ -120,16 +120,21 @@ export default function TMTScreen({ t, theme, onBack }) {
             const now = Date.now();
             if (now - lastHitTimeRef.current < 250) return; 
 
-            setCompletedLines(prev => [
-              ...prev,
-              { startX: startX, startY: startY, endX: targetCircle.px, endY: targetCircle.py }
-            ]);
+            const newLine = { startX: startX, startY: startY, endX: targetCircle.px, endY: targetCircle.py };
+            
+            // Wir berechnen den Pfad lokal, damit addResult den aktuellsten Stand hat
+            let updatedLines;
+            setCompletedLines(prev => {
+              updatedLines = [...prev, newLine];
+              return updatedLines;
+            });
             
             lastHitTimeRef.current = now;
 
             if (targetNum === 25) {
                 const endTime = Date.now();
-                const totalSeconds = ((endTime - startTime) / 1000).toFixed(2);
+                // Berechnung über den Ref verhindert "1970er-Zeitstempel"
+                const totalSeconds = ((endTime - startTimeRef.current) / 1000).toFixed(2);
                 
                 nextNumberRef.current = 26; 
                 setNextNumber(26);
@@ -140,7 +145,7 @@ export default function TMTScreen({ t, theme, onBack }) {
                 // Ergebnis im ResultContext speichern
                 addResult('tmt_a', { 
                   totalTimeSeconds: totalSeconds,
-                  path: completedLines 
+                  path: updatedLines || completedLines // Nutzt lokalen Stand falls verfügbar
                 }, totalSeconds);
 
                 setTimeout(() => {
