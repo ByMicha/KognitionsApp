@@ -3,62 +3,78 @@ import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import translations from './src/constants/translations';
 import { lightTheme, darkTheme } from './src/constants/theme';
 import MainMenu from './src/screens/MainMenu';
+import TMTScreen from './src/screens/TMTScreen';
+import BellsScreen from './src/screens/BellsScreen';
+import { ResultProvider } from './src/context/ResultContext';
 
 export default function App() {
   const { width } = useWindowDimensions();
   const [language, setLanguage] = useState('de');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState('menu');
 
-  // Sicherheit: Falls translations nicht geladen wurde
-  if (!translations) {
-    return (
-      <View style={styles.centered}>
-        <Text>Fehler: Sprachdatei konnte nicht geladen werden.</Text>
-      </View>
-    );
-  }
-
+  if (!translations) return null;
   const t = translations[language];
   const theme = isDarkMode ? darkTheme : lightTheme;
 
-  // Prüfung auf 10 Zoll (ca. 1024px Breite)
   const isLargeEnough = width >= 1024 || width === 0;
 
-  if (!isLargeEnough) {
-    return (
-      <View style={[styles.centered, { backgroundColor: theme.background }]}> 
-        <Text style={[styles.errorText, { color: theme.text }]}>
-          {t.deviceTooSmall}
-          {"\n\n"}
-          (Erkannte Breite: {width}px)
-        </Text>
-      </View>
-    );
-  }
-
   return (
-    <MainMenu 
-      t={t} 
-      theme={theme} 
-      language={language} 
-      setLanguage={setLanguage} 
-      isDarkMode={isDarkMode} 
-      setIsDarkMode={setIsDarkMode} 
-    />
+    <ResultProvider>
+      <View style={{ flex: 1 }}>
+        {!isLargeEnough ? (
+          <View style={[styles.centered, { backgroundColor: theme.background }]}> 
+            <Text style={[styles.errorText, { color: theme.text }]}>
+              {t.deviceTooSmall}
+            </Text>
+          </View>
+        ) : (
+          <>
+            {currentScreen === 'tmt' ? (
+              <TMTScreen 
+                t={t} 
+                theme={theme} 
+                onBack={() => setCurrentScreen('menu')} 
+              />
+            ) : currentScreen === 'bells' ? (
+              <BellsScreen 
+                t={t} 
+                theme={theme} 
+                onBack={() => setCurrentScreen('menu')} 
+              />
+            ) : (
+              <MainMenu 
+                t={t} 
+                theme={theme} 
+                language={language} 
+                setLanguage={setLanguage} 
+                isDarkMode={isDarkMode} 
+                setIsDarkMode={setIsDarkMode} 
+                onStartTest={(testKey) => {
+                  if (testKey === 'tmt') {
+                    setCurrentScreen('tmt');
+                  } else if (testKey === 'bells') {
+                    setCurrentScreen('bells');
+                  }
+                }}
+              />
+            )}
+          </>
+        )}
+      </View>
+    </ResultProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff'
+  centered: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 20 
   },
-  errorText: {
-    fontSize: 18,
-    textAlign: 'center',
-    lineHeight: 26,
+  errorText: { 
+    fontSize: 18, 
+    textAlign: 'center' 
   }
 });
