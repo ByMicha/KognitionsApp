@@ -26,6 +26,13 @@ const translations = {
       instruction: "Bitte markieren Sie alle Glocken, die Sie auf dem Blatt finden.",
       done: "Test beenden"
     },
+    zsTest: {
+      title: "Zahlen-Symbol-Test",
+      instruction: "Ordnen Sie den Zahlen so schnell wie möglich die passenden Symbole aus der Legende zu.",
+      start: "Test starten",
+      done: "Test beenden",
+      timeUp: "Zeit abgelaufen"
+    },
     qlq: {
       title: "EORTC QLQ-C30",
       intro: "Bitte beantworten Sie die folgenden Fragen, indem Sie die Zahl wählen, die am besten auf Sie zutrifft. Es gibt keine richtigen oder falschen Antworten.",
@@ -99,6 +106,13 @@ const translations = {
       title: "Bells Test",
       instruction: "Please mark all the bells you find on the sheet.",
       done: "Finish Test"
+    },
+    zsTest: {
+      title: "Number-Symbol Test",
+      instruction: "Match the numbers with the corresponding symbols from the legend as quickly as possible.",
+      start: "Start Test",
+      done: "End Test",
+      timeUp: "Time's up"
     },
     qlq: {
       title: "EORTC QLQ-C30",

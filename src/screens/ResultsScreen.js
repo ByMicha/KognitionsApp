@@ -65,6 +65,20 @@ export default function ResultsScreen({ t, theme, onBack }) {
             )}
           </View>
         );
+      case 'zs_test':
+        return (
+          <View style={styles.detailBox}>
+            <Text style={[styles.detailText, { color: theme.text }]}>
+              Korrekte Zuordnungen: {res.score}
+            </Text>
+            <Text style={[styles.detailText, { color: theme.text }]}>
+              Bearbeitete Felder: {res.data.totalAttempted}
+            </Text>
+            <Text style={[styles.detailText, { color: theme.text }]}>
+              Zeit: {res.data.timeTaken}s
+            </Text>
+          </View>
+        );
       case 'qlq_c30':
         const r = res.data.responses || {};
         return (

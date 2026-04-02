@@ -6,7 +6,8 @@ import MainMenu from './src/screens/MainMenu';
 import TMTScreen from './src/screens/TMTScreen';
 import BellsScreen from './src/screens/BellsScreen';
 import QLQC30Screen from './src/screens/QLQC30Screen';
-import ResultsScreen from './src/screens/ResultsScreen'; // Neu
+import ZSTestScreen from './src/screens/ZSTestScreen';
+import ResultsScreen from './src/screens/ResultsScreen';
 import { ResultProvider } from './src/context/ResultContext';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
           </View>
         ) : (
           <>
+            {currentScreen === 'zsTest' && <ZSTestScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'tmt' && <TMTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'bells' && <BellsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'qlqC30' && <QLQC30Screen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
