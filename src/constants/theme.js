@@ -1,17 +1,29 @@
 export const lightTheme = {
-  background: '#FFFFFF',
-  text: '#000000',
-  primary: '#0055A5', 
-  accent: '#E30613',
-  card: '#F5F5F5',
-  border: '#CCCCCC'
+  background: '#F9FAFC', // Sehr helles Grau-Blau
+  text: '#1e4653',
+  primary: '#2b5876', // Ein modernes Blau
+  accent: '#aeebff', // Ein modernes Rot-Orange
+  card: '#FFFFFF',
+  border: '#E0E0E0',
+  // Neue Header-Verlaufsfarben
+  headerGradientStart: '#4e4376',
+  headerGradientEnd: '#2b5876',
+
+  pageGradientStart: '#E0EAFC',
+  pageGradientEnd: '#CFDEF3',
 };
 
 export const darkTheme = {
-  background: '#121212',
+  background: '#1d6982', // Tiefes Blau-Schwarz
   text: '#FFFFFF',
-  primary: '#1E88E5',
-  accent: '#FF5252',
-  card: '#1E1E1E',
-  border: '#333333'
+  primary: '#cdf3ff',
+  accent: '#1d6982',
+  card: '#2c3e50',
+  border: '#333333',
+
+  headerGradientStart: '#65C7F7',
+  headerGradientEnd: '#9CECFB',
+
+  pageGradientStart: '#2c3e50',
+  pageGradientEnd: '#2980b9',
 };

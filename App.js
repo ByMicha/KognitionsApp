@@ -12,6 +12,13 @@ import { ResultProvider } from './src/context/ResultContext';
 import HVLTScreen from './src/screens/HVLTScreen.js';
 import COWATScreen from './src/screens/COWATScreen.js';
 
+let LinearGradient;
+try {
+  LinearGradient = require('expo-linear-gradient').LinearGradient;
+} catch (e) {
+  LinearGradient = View;
+}
+
 export default function App() {
   const { width } = useWindowDimensions();
   const [language, setLanguage] = useState('de');
@@ -26,33 +33,42 @@ export default function App() {
 
   return (
     <ResultProvider>
-      <View style={{ flex: 1 }}>
-        {!isLargeEnough ? (
-          <View style={[styles.centered, { backgroundColor: theme.background }]}> 
-            <Text style={[styles.errorText, { color: theme.text }]}>{t.deviceTooSmall}</Text>
-          </View>
-        ) : (
-          <>
-            {currentScreen === 'zsTest' && <ZSTestScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'tmt' && <TMTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'bells' && <BellsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'hvlt' && <HVLTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'cowat' && <COWATScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'qlqC30' && <QLQC30Screen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            {currentScreen === 'results' && <ResultsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
-            
-            {currentScreen === 'menu' && (
-              <MainMenu 
-                t={t} theme={theme} language={language} setLanguage={setLanguage} 
-                isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} 
-                onStartTest={(testKey) => {
-                  if (testKey === 'results') setCurrentScreen('results');
-                  else setCurrentScreen(testKey);
-                }}
-              />
-            )}
-          </>
-        )}
+      <View style={{flex: 1}}>
+        <LinearGradient
+              colors={[theme.pageGradientStart, theme.pageGradientEnd]}
+              style={styles.container}
+            >
+          {!isLargeEnough ? (
+            <View style={[styles.centered, { backgroundColor: theme.background }]}> 
+              <Text style={[styles.errorText, { color: theme.text }]}>{t.deviceTooSmall}</Text>
+            </View>
+          ) : (
+
+            <View style={{ width: '100%', maxWidth: 1500, flex: 1 }}>
+
+              {currentScreen === 'zsTest' && <ZSTestScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'tmt' && <TMTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'bells' && <BellsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'hvlt' && <HVLTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'cowat' && <COWATScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'qlqC30' && <QLQC30Screen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              {currentScreen === 'results' && <ResultsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+              
+              {currentScreen === 'menu' && (
+                <MainMenu 
+                  t={t} theme={theme} language={language} setLanguage={setLanguage} 
+                  isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} 
+                  onStartTest={(testKey) => {
+                    if (testKey === 'results') setCurrentScreen('results');
+                    else setCurrentScreen(testKey);
+                  }}
+                />
+              )}
+
+            </View>
+
+          )}
+        </LinearGradient>
       </View>
     </ResultProvider>
   );
@@ -60,5 +76,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  errorText: { fontSize: 18, textAlign: 'center' }
+  errorText: { fontSize: 18, textAlign: 'center' },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

@@ -61,7 +61,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
 
   if (showSettings) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.container, { backgroundColor: "transparent" }]}>
         <Text style={[styles.titleLabel, { color: theme.text, marginTop: 40 }]}>{t.settings}</Text>
         <View style={styles.settingRow}>
           <Text style={[styles.settingLabel, { color: theme.text }]}>{t.language}:</Text>
@@ -83,10 +83,10 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
         </View>
 
         <TouchableOpacity 
-          style={[styles.smallButton, { backgroundColor: "transparent", borderColor: theme.accent, borderWidth: 3, alignSelf: 'center', marginTop: 20, width: '75%', maxWidth: 400 }]}
+          style={[styles.smallButton, { backgroundColor: "transparent", borderColor: theme.primary, borderWidth: 3, alignSelf: 'center', marginTop: 20, width: '75%', maxWidth: 400 }]}
           onPress={() => onStartTest('results')} // Ruft jetzt den neuen Screen über App.js auf
         >
-          <Text style={{ color: theme.accent, fontSize: 18, fontWeight: '600' }}>Ergebnisse & Datenbank</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: '600' }}>Ergebnisse & Datenbank</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -102,22 +102,24 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+
+      <View style={styles.container}>
+      
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <LinearGradient
-          colors={isDarkMode ? [theme.background, theme.card] : [theme.headerGradientStart, theme.headerGradientEnd]}
+          colors={[theme.headerGradientStart, theme.headerGradientEnd]}
           style={styles.header}
         >
-          <Text style={[styles.welcome, { color: theme.text }]}>Willkommen im Dashboard</Text>
-          <Text style={[styles.date, { color: theme.text }]}>Uni-Klinikum Heidelberg</Text>
+          <Text style={[styles.welcome, { color: theme.background }]}>Willkommen im Dashboard</Text>
+          <Text style={[styles.date, { color: theme.background }]}>Uni-Klinikum Heidelberg</Text>
           <View style={styles.appTitleContainer}>
-            <Text style={[styles.appTitle, { color: theme.text }]}>{t.appTitle}</Text>
+            <Text style={[styles.appTitle, { color: theme.background }]}>{t.appTitle}</Text>
           </View>
           <TouchableOpacity 
             style={[styles.batteryButton, { backgroundColor: theme.accent }]}
             onPress={() => console.log('Batterie gestartet')}
           >
-            <Text style={styles.batteryButtonText}>{t.startBattery}</Text>
+            <Text style={{...styles.batteryButtonText, color: theme.text}}>{t.startBattery}</Text>
           </TouchableOpacity>
         </LinearGradient>
 
@@ -155,6 +157,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           <Text style={{ color: theme.primary, fontSize: 16 }}>{t.settings}</Text>
         </TouchableOpacity>
       </ScrollView>
+
     </View>
   );
 }
@@ -162,16 +165,16 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContainer: { minHeight: '100%', paddingBottom: 50 },
-  header: { padding: 30, paddingTop: 50, paddingBottom: 40, borderBottomLeftRadius: 40, borderBottomRightRadius: 40, alignItems: 'center' },
+  header: { padding: 30, paddingTop: 50, paddingBottom: 40, borderBottomLeftRadius: 40, borderBottomRightRadius: 40, alignItems: 'center', marginHorizontal: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 13 }, shadowOpacity: 0.4, shadowRadius: 20, },
   welcome: { fontSize: 22, fontWeight: '500', marginBottom: 5, opacity: 0.9 },
   date: { fontSize: 14, marginBottom: 30, opacity: 0.6 },
   appTitleContainer: { marginBottom: 35, paddingHorizontal: 20 },
   appTitle: { fontSize: 34, fontWeight: '900', textAlign: 'center', letterSpacing: -0.5 },
   batteryButton: { width: '75%', padding: 22, borderRadius: 18, alignItems: 'center' },
   batteryButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
-  testsListSection: { padding: 20, alignItems: 'center' },
+  testsListSection: { padding: 20, alignItems: 'center', paddingTop: 50 },
   sectionTitle: { fontSize: 18, fontWeight: '600', marginBottom: 20, alignSelf: 'center', width: '75%' },
-  testCard: { width: '75%', padding: 16, borderRadius: 20, marginBottom: 14, borderWidth: 1, flexDirection: 'row', alignItems: 'center' },
+  testCard: { width: '75%', padding: 16, borderRadius: 20, marginBottom: 14, borderWidth: 1, flexDirection: 'row', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.15, shadowRadius: 12 },
   testInfo: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   testIconContainer: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginRight: 15 },
   testIconText: { fontSize: 22 },
