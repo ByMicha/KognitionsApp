@@ -18,8 +18,8 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
 
   const testDetails = {
     moca: { icon: '🧠', time: '10 min' },
-    cowat: { icon: '🗣️', time: '5 min' },
-    hvlt: { icon: '📖', time: '8 min' },
+    cowat: { icon: '🗣️', time: '3 min' },
+    hvlt: { icon: '📖', time: '5 min' },
     zsTest: { icon: '🔢', time: '5 min' },
     tmt: { icon: '✏️', time: '10 min' },
     bells: { icon: '🔔', time: '5 min' },

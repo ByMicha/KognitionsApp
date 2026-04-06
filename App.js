@@ -11,6 +11,7 @@ import ResultsScreen from './src/screens/ResultsScreen';
 import { ResultProvider } from './src/context/ResultContext';
 import HVLTScreen from './src/screens/HVLTScreen.js';
 import COWATScreen from './src/screens/COWATScreen.js';
+import MoCAScreen from './src/screens/MoCAScreen.js';
 
 let LinearGradient;
 try {
@@ -46,6 +47,7 @@ export default function App() {
 
             <View style={{ width: '100%', maxWidth: 1500, flex: 1 }}>
 
+              {currentScreen === 'moca' && <MoCAScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
               {currentScreen === 'zsTest' && <ZSTestScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
               {currentScreen === 'tmt' && <TMTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
               {currentScreen === 'bells' && <BellsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
