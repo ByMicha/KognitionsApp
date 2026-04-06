@@ -33,6 +33,27 @@ const translations = {
       done: "Test beenden",
       timeUp: "Zeit abgelaufen"
     },
+    hvlt: {
+      title: "Hopkins Verbal Learning Test (HVLT-R)",
+      instruction: "Sie werden gleich 12 Wörter hören. Bitte hören Sie aufmerksam zu. Danach sollen Sie so viele Wörter wie möglich nennen.",
+      startTrial: "Durchgang starten",
+      listening: "Bitte zuhören...",
+      speakNow: "Bitte nennen Sie jetzt die Wörter",
+      nextTrial: "Nächster Durchgang",
+      finishTrials: "Lernphase beenden",
+      trials: "Durchgang",
+      wordsFound: "Wörter erkannt"
+    },
+    cowat: {
+      title: "Wortflüssigkeitstest (COWAT)",
+      instruction: "Sie sehen gleich einen Buchstaben. Nennen Sie bitte so viele Wörter wie möglich, die mit diesem Buchstaben beginnen. Sie haben 60 Sekunden Zeit. Keine Eigennamen oder Zahlen bitte.",
+      startTest: "Test starten",
+      speakNow: "Nennen Sie Wörter mit:",
+      timeUp: "Zeit abgelaufen",
+      correctWords: "Korrekte Wörter",
+      incorrectWords: "Fehler / Falsche Buchstaben",
+      finish: "Ergebnis speichern"
+    },
     qlq: {
       title: "EORTC QLQ-C30",
       intro: "Bitte beantworten Sie die folgenden Fragen, indem Sie die Zahl wählen, die am besten auf Sie zutrifft. Es gibt keine richtigen oder falschen Antworten.",
@@ -113,6 +134,27 @@ const translations = {
       start: "Start Test",
       done: "End Test",
       timeUp: "Time's up"
+    },
+    hvlt: {
+      title: "Hopkins Verbal Learning Test (HVLT-R)",
+      instruction: "You are about to hear 12 words. Please listen carefully. Afterward, please say as many words as you can.",
+      startTrial: "Start trial",
+      listening: "Please listen...",
+      speakNow: "Please say the words now",
+      nextTrial: "Next trial",
+      finishTrials: "End learning phase",
+      trials: "Trial",
+      wordsFound: "Words recognized"
+    },
+    cowat: {
+      title: "Wortflüssigkeitstest (COWAT)",
+      instruction: "You will soon see a letter. Please say as many words as possible that begin with this letter. You have 60 seconds. Please do not use proper nouns or numbers.",
+      startTest: "Start Test",
+      speakNow: "Say words starting with:",
+      timeUp: "Time's up",
+      correctWords: "Correct Words",
+      incorrectWords: "Errors / Incorrect Letters",
+      finish: "Save Results"
     },
     qlq: {
       title: "EORTC QLQ-C30",

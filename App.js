@@ -6,9 +6,11 @@ import MainMenu from './src/screens/MainMenu';
 import TMTScreen from './src/screens/TMTScreen';
 import BellsScreen from './src/screens/BellsScreen';
 import QLQC30Screen from './src/screens/QLQC30Screen';
-import ZSTestScreen from './src/screens/ZSTestScreen';
+import ZSTestScreen from './src/screens/ZSTestScreen.js';
 import ResultsScreen from './src/screens/ResultsScreen';
 import { ResultProvider } from './src/context/ResultContext';
+import HVLTScreen from './src/screens/HVLTScreen.js';
+import COWATScreen from './src/screens/COWATScreen.js';
 
 export default function App() {
   const { width } = useWindowDimensions();
@@ -34,6 +36,8 @@ export default function App() {
             {currentScreen === 'zsTest' && <ZSTestScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'tmt' && <TMTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'bells' && <BellsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+            {currentScreen === 'hvlt' && <HVLTScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
+            {currentScreen === 'cowat' && <COWATScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'qlqC30' && <QLQC30Screen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             {currentScreen === 'results' && <ResultsScreen t={t} theme={theme} onBack={() => setCurrentScreen('menu')} />}
             
