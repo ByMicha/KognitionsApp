@@ -20,6 +20,7 @@ export default function COWATScreen({ t, theme, onBack }) {
 
   const timerRef = useRef(null);
   const recognitionRef = useRef(null);
+  const transcriptRef = useRef("");
 
   const startTest = () => {
     const randomLetter = COWAT_LETTERS[Math.floor(Math.random() * COWAT_LETTERS.length)];
@@ -60,6 +61,7 @@ export default function COWATScreen({ t, theme, onBack }) {
         .map(result => result[0].transcript)
         .join(' ');
       setFullTranscript(transcript);
+      transcriptRef.current = transcript;
     };
 
     recognition.start();
@@ -71,7 +73,7 @@ export default function COWATScreen({ t, theme, onBack }) {
     if (timerRef.current) clearInterval(timerRef.current);
     
     // Robuste Auswertungslogik
-    const cleanedText = fullTranscript.toLowerCase().replace(/[,.!?]/g, " ");
+    const cleanedText = transcriptRef.current.toLowerCase().replace(/[,.!?]/g, " ");
     const allWords = cleanedText.split(/\s+/).filter(w => w.length > 1);
     const uniqueWords = [...new Set(allWords)];
     

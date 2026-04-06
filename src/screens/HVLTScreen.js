@@ -121,8 +121,26 @@ export default function HVLTScreen({ t, theme, onBack }) {
   const handleNextStep = async () => {
     stopRecognition();
 
-    const hits = recognizedWords.length;
-    // Berechnung der Erinnerungsrate in Prozent (korrekt / 12 * 100)
+    // 1. Text säubern und in Wörter zerlegen
+    const cleanedText = currentTranscript.toLowerCase().replace(/[,.!?]/g, " ");
+    const words = cleanedText.split(/\s+/).filter(w => w.length > 1);
+    
+    // 2. Duplikate entfernen – jedes Wort zählt nur einmal
+    const uniqueSpokenWords = [...new Set(words)];
+
+    // 3. Abgleich mit der Wortliste nach Abschluss der Aufnahme
+    const found = [];
+    const falseWords = [];
+
+    uniqueSpokenWords.forEach(word => {
+      if (WORD_LIST.some(w => w.toLowerCase() === word)) {
+        found.push(word);
+      } else if (word.length > 3) {
+        falseWords.push(word);
+      }
+    });
+
+    const hits = found.length;
     const recallRate = parseFloat(((hits / 12) * 100).toFixed(1));
 
     const currentTrialData = {
@@ -142,6 +160,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
       setCurrentTrial(prev => prev + 1);
       setRecognizedWords([]);
       setIntrusions([]);
+      setCurrentTranscript("");
       setPhase('intro');
     } else {
       // Finale Speicherung nach dem 3. Durchgang
