@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MocaTrails from './moca/MocaTrails';
-import MocaClock from './moca/MocaClock'; // Neu importiert
+import MocaClock from './moca/MocaClock';
+import MocaNaming from './moca/MocaNaming';
+import MocaMemory from './moca/MocaMemory';
+import MocaDigits from './moca/MocaDigits';
 
 const Placeholder = ({ name }) => (
   <View style={styles.placeholderContainer}>
@@ -14,7 +17,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [mocaResults, setMocaResults] = useState({});
 
-  const totalPhases = 8;
+  const totalPhases = 10;
   const progress = ((currentPhase + 1) / totalPhases) * 100;
 
   const handleNext = () => {
@@ -48,13 +51,45 @@ export default function MoCAScreen({ t, theme, onBack }) {
             }} 
           />
         );
-      // ... restliche Cases
+      case 2:
+        return (
+          <MocaNaming 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, naming: res }));
+              setIsNextDisabled(false);
+            }} 
+          />
+        );
+      case 3:
+        return (
+          <MocaMemory 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, immediateMemory: res }));
+              setIsNextDisabled(false); // Button wird nach dem Aufsagen freigegeben
+            }} 
+          />
+        );
+      case 4:
+        return (
+          <MocaDigits 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, digits: res }));
+              setIsNextDisabled(false); 
+            }} 
+          />
+        );
+      case 5: return <Placeholder name="Buchstabenliste (A)" />;
+      case 6: return <Placeholder name="70er Schritte rückwärts" />;
+      case 7: return <Placeholder name="Sätze wiederholen / Recall" />;
       default: return null;
     }
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
       {/* Header bleibt gleich */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
@@ -91,11 +126,11 @@ export default function MoCAScreen({ t, theme, onBack }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 20, paddingTop: 50, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fff' },
+  header: { padding: 20, paddingTop: 50, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0, borderBottomColor: '#eee' },
   backBtn: { marginRight: 20 },
   progressWrapper: { flex: 1 },
   progressText: { fontSize: 12, color: '#888', marginBottom: 4 },
-  progressBarBg: { height: 8, backgroundColor: '#eee', borderRadius: 4, overflow: 'hidden' },
+  progressBarBg: { height: 8, backgroundColor: 'white', borderRadius: 4, overflow: 'hidden' },
   progressBarFill: { height: '100%', borderRadius: 4 },
   scrollContent: { padding: 20, alignItems: 'center', justifyContent: 'center', flexGrow: 1 },
   sheet: { width: '100%', maxWidth: 850, minHeight: 800, aspectRatio: 0.75, borderRadius: 15, borderWidth: 1, padding: 30, elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 10, justifyContent: 'space-between' },
