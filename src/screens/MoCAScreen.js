@@ -7,6 +7,8 @@ import MocaMemory from './moca/MocaMemory';
 import MocaDigits from './moca/MocaDigits';
 import MocaVigilance from './moca/MocaVigilance';
 import MocaCalculation from './moca/MocaCalculation';
+import MocaLanguage from './moca/MocaLanguage';
+import MocaWordFluency from './moca/MocaWordFluency';
 
 const Placeholder = ({ name }) => (
   <View style={styles.placeholderContainer}>
@@ -25,7 +27,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const handleNext = () => {
     if (currentPhase < totalPhases - 1) {
       setCurrentPhase(prev => prev + 1);
-      setIsNextDisabled(true); // Sperrt den Button für das nächste Szenario wieder
+      setIsNextDisabled(true);
     } else {
       onBack();
     }
@@ -49,7 +51,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             theme={theme} 
             onComplete={(res) => {
               setMocaResults(prev => ({ ...prev, clock: res }));
-              setIsNextDisabled(false); // Button wird hier entsperrt
+              setIsNextDisabled(false);
             }} 
           />
         );
@@ -69,7 +71,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             theme={theme} 
             onComplete={(res) => {
               setMocaResults(prev => ({ ...prev, immediateMemory: res }));
-              setIsNextDisabled(false); // Button wird nach dem Aufsagen freigegeben
+              setIsNextDisabled(false);
             }} 
           />
         );
@@ -103,7 +105,27 @@ export default function MoCAScreen({ t, theme, onBack }) {
             }} 
           />
         );
-      case 7: return <Placeholder name="Sätze wiederholen / Recall" />;
+      case 7:
+        return (
+          <MocaLanguage 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, language: res }));
+              setIsNextDisabled(false); 
+            }} 
+          />
+        );
+      case 8:
+        return (
+          <MocaWordFluency 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, wordFluency: res }));
+              setIsNextDisabled(false); 
+            }} 
+          />
+        );
+      case 9: return <Placeholder name="Szenario 10" />;
       default: return null;
     }
   };
