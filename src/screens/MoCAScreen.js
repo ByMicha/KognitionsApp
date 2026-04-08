@@ -5,6 +5,8 @@ import MocaClock from './moca/MocaClock';
 import MocaNaming from './moca/MocaNaming';
 import MocaMemory from './moca/MocaMemory';
 import MocaDigits from './moca/MocaDigits';
+import MocaVigilance from './moca/MocaVigilance';
+import MocaCalculation from './moca/MocaCalculation';
 
 const Placeholder = ({ name }) => (
   <View style={styles.placeholderContainer}>
@@ -81,8 +83,26 @@ export default function MoCAScreen({ t, theme, onBack }) {
             }} 
           />
         );
-      case 5: return <Placeholder name="Buchstabenliste (A)" />;
-      case 6: return <Placeholder name="70er Schritte rückwärts" />;
+      case 5:
+        return (
+          <MocaVigilance 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, vigilance: res }));
+              setIsNextDisabled(false); 
+            }} 
+          />
+        );
+      case 6:
+        return (
+          <MocaCalculation 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, calculation: res }));
+              setIsNextDisabled(false); 
+            }} 
+          />
+        );
       case 7: return <Placeholder name="Sätze wiederholen / Recall" />;
       default: return null;
     }
