@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useResults } from '../context/ResultContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ExplanationModal from '../components/ExplanationModal';
 
 export default function QLQC30Screen({ t, theme, onBack }) {
   const { addResult } = useResults();
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState({});
+
+  const [showExplanation, setShowExplanation] = useState(true);
+  const [testStarted, setTestStarted] = useState(false);
 
   // Definition der Fragengruppen basierend auf deinem Wunsch
   const groups = [
@@ -149,12 +154,29 @@ export default function QLQC30Screen({ t, theme, onBack }) {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => {
+          setShowExplanation(false);
+          setTestStarted(true);
+        }} 
+        testKey="qlq"
+        theme={theme}
+        isRunning={testStarted}
+      />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontWeight: 'bold' }}>← {Platform.OS === 'web' ? 'Abbrechen' : ''}</Text>
+          <Text style={{ color: theme.primary, fontWeight: 'bold' }}>← Zurück</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>{t.qlq.title}</Text>
+
+        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
+
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>

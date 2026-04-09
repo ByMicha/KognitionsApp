@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
+import ExplanationModal from '../components/ExplanationModal';
 
 // Exakte Zahlenreihen aus dem PDF
 const PRACTICE_TASKS = [6, 8, 3, 9, 5, 4, 1, 7, 2];
@@ -45,6 +46,8 @@ export default function ZSTestScreen({ t, theme, onBack }) {
   const [userAnswers, setUserAnswers] = useState(Array(TOTAL_FIELDS).fill(null));
   const [timeLeft, setTimeLeft] = useState(TEST_DURATION);
   const timerRef = useRef(null);
+
+  const [showExplanation, setShowExplanation] = useState(true);
 
   useEffect(() => {
     // Timer startet nur, wenn der Test läuft und die Übungsphase beendet ist
@@ -124,26 +127,23 @@ export default function ZSTestScreen({ t, theme, onBack }) {
     }, 100);
   };
 
-  if (!testStarted) {
-    return (
-      <View style={[styles.container, styles.centered, { backgroundColor: theme.background }]}>
-        <Text style={[styles.title, { color: theme.text }]}>{t.zsTest.title}</Text>
-        <Text style={[styles.instruction, { color: theme.text }]}>{t.zsTest.instruction}</Text>
-        <TouchableOpacity 
-          style={[styles.primaryButton, { backgroundColor: theme.primary }]} 
-          onPress={() => setTestStarted(true)}
-        >
-          <Text style={styles.buttonText}>{t.zsTest.start}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => {
+          setShowExplanation(false);
+          setTestStarted(true);
+        }} 
+        testKey="zs_test"
+        theme={theme}
+        isRunning={testStarted}
+      />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18 }}>←</Text>
+          <Text style={{ color: theme.primary, fontSize: 18 }}>← Zurück</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text, flex: 1 }]}>{t.zsTest.title}</Text>
         <View style={[styles.timer, { backgroundColor: (timeLeft < 15 && !isPracticePhase) ? '#ff4444' : theme.card }]}>
@@ -151,6 +151,11 @@ export default function ZSTestScreen({ t, theme, onBack }) {
             {isPracticePhase ? TEST_DURATION : timeLeft}s
           </Text>
         </View>
+
+        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
+
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -222,7 +227,7 @@ const styles = StyleSheet.create({
   backBtn: { marginRight: 20 },
   title: { fontSize: 24 },
   instruction: { textAlign: 'center', marginBottom: 40, fontSize: 16 },
-  timer: { padding: 10, borderRadius: 8, minWidth: 60, alignItems: 'center' },
+  timer: { padding: 10, borderRadius: 8, minWidth: 60, alignItems: 'center', marginRight: 20 },
   scrollContent: { padding: 15, alignItems: 'center' },
   sheet: { 
     width: '100%', 

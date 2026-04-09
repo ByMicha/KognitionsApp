@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert }
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import { useResults } from '../context/ResultContext';
+import ExplanationModal from '../components/ExplanationModal';
 
 // Die offizielle Wortliste A (HVLT-R)
 const WORD_LIST = [
@@ -12,6 +13,9 @@ const WORD_LIST = [
 
 export default function HVLTScreen({ t, theme, onBack }) {
   const { addResult } = useResults();
+
+  const [showExplanation, setShowExplanation] = useState(true);
+  const [testStarted, setTestStarted] = useState(false);
   
   const [phase, setPhase] = useState('intro');
   const [currentTrial, setCurrentTrial] = useState(1);
@@ -189,12 +193,28 @@ export default function HVLTScreen({ t, theme, onBack }) {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => {
+          setShowExplanation(false);
+          setTestStarted(true);
+        }} 
+        testKey="hvlt"
+        theme={theme}
+        isRunning={testStarted}
+      />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => { Speech.stop(); stopRecognition(); onBack(); }} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Abbrechen</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>{t.hvlt.title}</Text>
+
+        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>

@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
+import ExplanationModal from '../components/ExplanationModal';
 
 // --- KONSTANTEN ---
 const TOTAL_BELLS = 35;
@@ -82,6 +83,8 @@ const generateBellsData = () => {
 
 export default function BellsScreen({ t, theme, onBack }) {
   const { addResult } = useResults();
+
+  const [showExplanation, setShowExplanation] = useState(true);
   
   const [testStarted, setTestStarted] = useState(false);
   const [testFinished, setTestFinished] = useState(false);
@@ -145,29 +148,31 @@ export default function BellsScreen({ t, theme, onBack }) {
     }
   };
 
-  if (!testStarted) {
-    return (
-      <View style={[styles.container, styles.centered, { backgroundColor: theme.background }]}>
-        <MaterialCommunityIcons name={'bell'} size={34} color={"black"} />
-        <Text style={[styles.title, { color: theme.text, marginBottom: 20 }]}>{t.bells.title}</Text>
-        <Text style={{ color: theme.text, textAlign: 'center', marginBottom: 40, paddingHorizontal: 30 }}>
-            Suchen und markieren Sie alle Glocken. Sie haben 5 Minuten Zeit.
-        </Text>
-        <TouchableOpacity style={[styles.doneButton, { backgroundColor: theme.primary }]} onPress={() => setTestStarted(true)}>
-          <Text style={styles.doneButtonText}>Test Starten</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => {
+          setShowExplanation(false);
+          setTestStarted(true);
+        }} 
+        testKey="bells"
+        theme={theme}
+        isRunning={testStarted}
+      />
+
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}><Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={onBack} style={styles.backBtn}><Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← Zurück</Text></TouchableOpacity>
         <Text style={[styles.title, { color: theme.text, flex: 1 }]}>{t.bells.title}</Text>
         <View style={[styles.timerContainer, { backgroundColor: timeLeft < 30 ? '#ff4444' : theme.card }]}>
           <Text style={{ color: timeLeft < 30 ? 'white' : theme.text, fontWeight: 'bold' }}>{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</Text>
         </View>
+
+        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
+
       </View>
 
       <View style={styles.boardContainer}>
@@ -215,7 +220,7 @@ const styles = StyleSheet.create({
   header: { padding: 20, paddingTop: 50, flexDirection: 'row', alignItems: 'center' },
   backBtn: { marginRight: 20 },
   title: { fontSize: 24, fontWeight: 'bold' },
-  timerContainer: { padding: 10, borderRadius: 8 },
+  timerContainer: { padding: 10, borderRadius: 8, marginRight: 20 },
   boardContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 },
   board: {
     width: '100%', maxWidth: 800, aspectRatio: 0.75,

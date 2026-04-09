@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, PanResponder, Alert, Platform } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { useResults } from '../context/ResultContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ExplanationModal from '../components/ExplanationModal';
 
 const circlesData = [
   { id: 1, label: '1', x: 45, y: 60, topLabel: 'Anfang' },
@@ -33,6 +35,9 @@ const circlesData = [
 
 export default function TMTScreen({ t, theme, onBack }) {
   const { addResult } = useResults(); // Speicher-Funktion laden
+
+  const [showExplanation, setShowExplanation] = useState(true);
+  const [testStarted, setTestStarted] = useState(false);
   
   const [boardLayout, setBoardLayout] = useState({ width: 0, height: 0 });
   const [nextNumber, setNextNumber] = useState(2);
@@ -179,12 +184,29 @@ export default function TMTScreen({ t, theme, onBack }) {
   ).current;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => {
+          setShowExplanation(false);
+          setTestStarted(true);
+        }} 
+        testKey="tmt"
+        theme={theme}
+        isRunning={testStarted}
+      />
+      
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← {t.backToMenu}</Text>
+          <Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← Zurück</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>{t.tmt.title}</Text>
+
+        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
+
       </View>
 
       <View style={styles.boardContainer}>

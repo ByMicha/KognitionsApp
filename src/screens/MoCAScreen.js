@@ -11,10 +11,13 @@ import MocaLanguage from './moca/MocaLanguage';
 import MocaWordFluency from './moca/MocaWordFluency';
 import MocaRecall from './moca/MocaRecall';
 import { saveTestResult } from '../utils/resultStorage';
+import ExplanationModal from '../components/ExplanationModal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function MoCAScreen({ t, theme, onBack }) {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [showExplanation, setShowExplanation] = useState(true);
 
   // Das zentrale Speicherobjekt für deine Masterarbeit
   const [mocaData, setMocaData] = useState({
@@ -55,6 +58,8 @@ export default function MoCAScreen({ t, theme, onBack }) {
       onBack();
     }
   };
+
+  const toggleHelp = () => setShowExplanation(!showExplanation);
 
   const renderPhase = () => {
     switch (currentPhase) {
@@ -138,9 +143,18 @@ export default function MoCAScreen({ t, theme, onBack }) {
 
   return (
     <View style={[styles.container, { backgroundColor: "transparent" }]}>
+
+      <ExplanationModal 
+        visible={showExplanation} 
+        onClose={() => setShowExplanation(false)} 
+        testKey="moca" 
+        theme={theme}
+        isRunning={currentPhase > 0 || !isNextDisabled} // Zeigt "Zurück" statt "Starten"
+      />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Abbruch</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
         </TouchableOpacity>
         <View style={styles.progressWrapper}>
           <Text style={styles.progressText}>MoCA Fortschritt: {currentPhase + 1} / {totalPhases}</Text>
@@ -148,6 +162,11 @@ export default function MoCAScreen({ t, theme, onBack }) {
             <View style={[styles.progressBarFill, { width: progress + '%', backgroundColor: theme.primary }]} />
           </View>
         </View>
+
+        <TouchableOpacity onPress={toggleHelp} style={{marginLeft: 15}}>
+          <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
+        </TouchableOpacity>
+
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
