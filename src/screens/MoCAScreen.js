@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MocaTrails from './moca/MocaTrails';
 import MocaClock from './moca/MocaClock';
@@ -9,6 +9,7 @@ import MocaVigilance from './moca/MocaVigilance';
 import MocaCalculation from './moca/MocaCalculation';
 import MocaLanguage from './moca/MocaLanguage';
 import MocaWordFluency from './moca/MocaWordFluency';
+import MocaRecall from './moca/MocaRecall';
 
 const Placeholder = ({ name }) => (
   <View style={styles.placeholderContainer}>
@@ -21,14 +22,34 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [mocaResults, setMocaResults] = useState({});
 
+  const [mocaData, setMocaData] = useState({
+    metadata: {
+      startTime: new Date().toISOString(),
+      userId: "ID_PLACEHOLDER" // Hier könnte später die echte ID rein
+    },
+    scenarios: {}
+  });
+
   const totalPhases = 10;
   const progress = ((currentPhase + 1) / totalPhases) * 100;
+
+  const updateScenarioData = (key, data) => {
+    setMocaData(prev => ({
+      ...prev,
+      scenarios: {
+        ...prev.scenarios,
+        [key]: data
+      }
+    }));
+    setIsNextDisabled(false);
+  };
 
   const handleNext = () => {
     if (currentPhase < totalPhases - 1) {
       setCurrentPhase(prev => prev + 1);
       setIsNextDisabled(true);
     } else {
+      console.log("FINALES MOCA JSON:", JSON.stringify(mocaData, null, 2));
       onBack();
     }
   };
@@ -125,7 +146,16 @@ export default function MoCAScreen({ t, theme, onBack }) {
             }} 
           />
         );
-      case 9: return <Placeholder name="Szenario 10" />;
+      case 9:
+        return (
+          <MocaRecall 
+            theme={theme} 
+            onComplete={(res) => {
+              setMocaResults(prev => ({ ...prev, delayedRecall: res }));
+              setIsNextDisabled(false); // Aktiviert den finalen "Test beenden" Button
+            }} 
+          />
+        );
       default: return null;
     }
   };

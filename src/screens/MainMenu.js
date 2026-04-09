@@ -17,7 +17,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
   const testKeys = ['moca', 'cowat', 'hvlt', 'zsTest', 'tmt', 'bells', 'qlqC30'];
 
   const testDetails = {
-    moca: { icon: '🧠', time: '10 min' },
+    moca: { icon: '🧠', time: '20 min' },
     cowat: { icon: '🗣️', time: '3 min' },
     hvlt: { icon: '📖', time: '5 min' },
     zsTest: { icon: '🔢', time: '5 min' },
