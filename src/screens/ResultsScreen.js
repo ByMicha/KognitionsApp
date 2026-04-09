@@ -49,7 +49,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
 
   // --- HILFSFUNKTIONEN FÜR MOCA DETAILS ---
   const renderMocaSection = (title, icon, content) => (
-    <View style={styles.mocaSection}>
+    <View style={{...styles.mocaSection, backgroundColor: theme.darkContrast, borderLeftColor: theme.pageGradientEnd}}>
       <View style={styles.mocaSectionHeader}>
         <MaterialCommunityIcons name={icon} size={18} color={theme.primary} />
         <Text style={[styles.mocaSectionTitle, { color: theme.primary }]}>{title}</Text>
@@ -70,11 +70,11 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {/* 1. Visuokonstruktiv */}
             {renderMocaSection("Visuokonstruktiv / Exekutiv", "pencil-ruler", (
               <View>
-                <Text style={styles.detailText}>Trails: {s['01_trails']?.duration_active_sec}s Bearbeitungszeit</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Trails: {s['01_trails']?.duration_active_sec}s Bearbeitungszeit</Text>
                 <Text style={styles.mocaTranscript}>Pfad: {s['01_trails']?.path_raw?.join(' - ')}</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={styles.detailText}>Uhrzeit: {s['02_clock']?.target_time} Uhr gefordert</Text>
-                <Text style={styles.detailText}>Effizienz: {s['02_clock']?.total_clicks} Klicks ({s['02_clock']?.unnecessary_clicks} Korrekturen)</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Uhrzeit: {s['02_clock']?.target_time} Uhr gefordert</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Effizienz: {s['02_clock']?.total_clicks} Klicks ({s['02_clock']?.unnecessary_clicks} Korrekturen)</Text>
                 <Text style={styles.mocaItemSub}>Winkel: Stunde {s['02_clock']?.final_angles?.hour}°, Minute {s['02_clock']?.final_angles?.minute}°</Text>
               </View>
             ))}
@@ -82,7 +82,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {/* 2. Benennen */}
             {renderMocaSection("Benennen", "elephant", (
               <View>
-                <Text style={styles.detailText}>Ergebnis: {s['03_naming']?.score}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Ergebnis: {s['03_naming']?.score}</Text>
                 <View style={styles.namingGrid}>
                   {['lion', 'rhino', 'camel'].map(animal => (
                     <View key={animal} style={styles.namingRow}>
@@ -101,8 +101,8 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {/* 3. Gedächtnis (Sofort) */}
             {renderMocaSection("Gedächtnis (Lernphase)", "brain", (
               <View>
-                <Text style={styles.detailText}>Erfolg: {s['04_memory_immediate']?.correct_count} / 5 Wörter</Text>
-                <Text style={styles.detailText}>Dauer: {s['04_memory_immediate']?.duration_recall_sec}s</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Erfolg: {s['04_memory_immediate']?.correct_count} / 5 Wörter</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Dauer: {s['04_memory_immediate']?.duration_recall_sec}s</Text>
                 <Text style={styles.mocaTranscript}>Transkript: "{s['04_memory_immediate']?.full_transcript}"</Text>
               </View>
             ))}
@@ -110,24 +110,24 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {/* 4. Aufmerksamkeit */}
             {renderMocaSection("Aufmerksamkeit", "alert-circle-outline", (
               <View>
-                <Text style={styles.detailText}>Zahlen Vorwärts: {s['05_digits']?.forward?.hits} / {s['05_digits']?.forward?.seq_length} korr.</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Zahlen Vorwärts: {s['05_digits']?.forward?.hits} / {s['05_digits']?.forward?.seq_length} korr.</Text>
                 <Text style={styles.mocaTranscript}>"{s['05_digits']?.forward?.transcript}"</Text>
-                <Text style={styles.detailText}>Zahlen Rückwärts: {s['05_digits']?.backward?.hits} / {s['05_digits']?.backward?.seq_length} korr.</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Zahlen Rückwärts: {s['05_digits']?.backward?.hits} / {s['05_digits']?.backward?.seq_length} korr.</Text>
                 <Text style={styles.mocaTranscript}>"{s['05_digits']?.backward?.transcript}"</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={styles.detailText}>Vigilanz (Buchstabe A):</Text>
-                <Text style={styles.detailText}>Treffer: {s['06_vigilance']?.hits} | Auslassung: {s['06_vigilance']?.omissions} | Fehlalarm: {s['06_vigilance']?.false_alarms}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Vigilanz (Buchstabe A):</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Treffer: {s['06_vigilance']?.hits} | Auslassung: {s['06_vigilance']?.omissions} | Fehlalarm: {s['06_vigilance']?.false_alarms}</Text>
               </View>
             ))}
 
             {/* 5. Rechnen */}
             {renderMocaSection("Rechnen (Serielle 7)", "calculator", (
               <View>
-                <Text style={styles.detailText}>Sequenz: {s['07_calculation']?.final_sequence?.join(' - ')}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Sequenz: {s['07_calculation']?.final_sequence?.join(' - ')}</Text>
                 <View style={styles.calcTable}>
                    {s['07_calculation']?.steps?.map((step, i) => (
                      <View key={i} style={styles.calcRow}>
-                       <Text style={styles.calcCell}>Schritt {i+1}:</Text>
+                       <Text style={[styles.calcCell, { color: theme.text }]}>Schritt {i+1}:</Text>
                        <Text style={[styles.calcCell, { color: step.is_correct ? '#2ecc71' : '#ff4444' }]}>
                          {step.chosen} (Soll: {step.expected})
                        </Text>
@@ -141,11 +141,11 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {/* 6. Sprache */}
             {renderMocaSection("Sprache", "microphone", (
               <View>
-                <Text style={styles.detailText}>Nachsprechen: {s['08_language']?.is_correct ? "Korrekt" : "Falsch"}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Nachsprechen: {s['08_language']?.is_correct ? "Korrekt" : "Falsch"}</Text>
                 <Text style={styles.mocaItemSub}>Soll: {s['08_language']?.target_sentence}</Text>
                 <Text style={styles.mocaTranscript}>Ist: "{s['08_language']?.full_transcript}"</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={styles.detailText}>Wortfluss (F): {s['09_word_fluency']?.valid_wiki_count} Wörter</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Wortfluss (F): {s['09_word_fluency']?.valid_wiki_count} Wörter</Text>
                 <Text style={styles.mocaTranscript}>{s['09_word_fluency']?.raw_word_list?.join(', ')}</Text>
               </View>
             ))}
@@ -154,7 +154,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
             {renderMocaSection("Verzögerter Abruf (Recall)", "history", (
               <View>
                 <Text style={[styles.detailText, { fontWeight: 'bold' }]}>Erfolg: {s['10_delayed_recall']?.correct_count} / 5 Wörter</Text>
-                <Text style={styles.detailText}>Erinnert: {s['10_delayed_recall']?.remembered_words?.join(', ') || "Keine"}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>Erinnert: {s['10_delayed_recall']?.remembered_words?.join(', ') || "Keine"}</Text>
                 <Text style={[styles.detailText, { color: '#ff4444' }]}>Vergessen: {s['10_delayed_recall']?.forgotten_words?.join(', ') || "Keine"}</Text>
               </View>
             ))}
@@ -208,7 +208,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
             <Text style={[styles.detailText, { color: theme.text, fontWeight: 'bold' }]}>
               Lernleistung Gesamt: {res.score} Wörter
             </Text>
-            <View style={styles.statsContainer}>
+            <View style={{...styles.statsContainer, backgroundColor: theme.darkContrast}}>
               {res.data.trials?.map((trial, i) => (
                 <View key={i} style={styles.statsRow}>
                   <Text style={[styles.statsLabel, { color: theme.text }]}>Trial {trial.trial}:</Text>

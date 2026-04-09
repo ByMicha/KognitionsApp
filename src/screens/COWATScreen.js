@@ -157,19 +157,19 @@ export default function COWATScreen({ t, theme, onBack }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={[styles.sheet, { backgroundColor: '#fff', borderColor: theme.border }]}>
+        <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
 
           {phase === 'test' && (
             <View style={styles.innerContent}>
               <View style={[styles.timerCircle, { borderColor: timeLeft < 10 ? '#ff4444' : theme.primary }]}>
                 <Text style={[styles.timerText, { color: timeLeft < 10 ? '#ff4444' : theme.text }]}>{timeLeft}</Text>
-                <Text style={styles.timerSubText}>Sekunden</Text>
+                <Text style={{...styles.timerSubText, color: theme.text}}>Sekunden</Text>
               </View>
-              <Text style={styles.targetLabel}>Sagen Sie Wörter mit:</Text>
+              <Text style={{...styles.targetLabel, color: theme.text}}>Sagen Sie Wörter mit:</Text>
               <Text style={[styles.bigLetter, { color: theme.primary }]}>{targetLetter}</Text>
-              <View style={styles.transcriptContainer}>
-                <Text style={styles.transcriptLabel}>Aufzeichnung läuft...</Text>
-                <Text style={styles.transcriptText}>{fullTranscript || "System bereit..."}</Text>
+              <View style={{...styles.transcriptContainer, backgroundColor: theme.card}}>
+                <Text style={{...styles.transcriptLabel, color: theme.text}}>Aufzeichnung läuft...</Text>
+                <Text style={{...styles.transcriptText, color: theme.text}}>{fullTranscript || "System bereit..."}</Text>
               </View>
               <TouchableOpacity style={styles.finishEarlyBtn} onPress={handleFinishAction}>
                 <Text style={{color: '#ff4444', fontWeight: 'bold'}}>Test jetzt beenden</Text>
@@ -179,20 +179,20 @@ export default function COWATScreen({ t, theme, onBack }) {
 
           {phase === 'evaluating' && (
             <View style={styles.innerContent}>
-              <ActivityIndicator size="large" color={theme.primary} style={{ marginTop: 100 }} />
-              <Text style={styles.evalText}>Wörter werden gegen Wiktionary geprüft...</Text>
+              <ActivityIndicator size="large" color={theme.text} style={{ marginTop: 100 }} />
+              <Text style={{...styles.evalText, color: theme.text}}>Wörter werden gegen Wiktionary geprüft...</Text>
             </View>
           )}
 
           {phase === 'summary' && (
             <View style={styles.innerContent}>
-              <Text style={styles.summaryTitle}>Ergebnis: Buchstabe {targetLetter}</Text>
+              <Text style={{...styles.summaryTitle, color: theme.text}}>Ergebnis: Buchstabe {targetLetter}</Text>
               <View style={styles.scoreBanner}>
-                <Text style={styles.scoreText}>{finalScore}</Text>
-                <Text style={styles.scoreSub}>gültige Wörter gefunden</Text>
+                <Text style={{...styles.scoreText, color: theme.primary}}>{finalScore}</Text>
+                <Text style={{...styles.scoreSub, color: theme.text}}>gültige Wörter gefunden</Text>
               </View>
 
-              <Text style={styles.listHeader}>Detaillierte Wortliste:</Text>
+              <Text style={{...styles.listHeader, color: theme.text}}>Detaillierte Wortliste:</Text>
               <View style={styles.wordListContainer}>
                 {evaluatedWords.map((word, index) => (
                   <View key={index} style={[styles.wordTag, { backgroundColor: word.isCorrect ? '#e6fffa' : '#fff5f5', borderColor: word.isCorrect ? '#38b2ac' : '#f56565' }]}>
@@ -203,7 +203,7 @@ export default function COWATScreen({ t, theme, onBack }) {
                 ))}
               </View>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: theme.primary, marginTop: 40 }]} onPress={onBack}>
-                <Text style={styles.btnText}>Test abschließen</Text>
+                <Text style={{...styles.btnText, color: theme.darkContrast}}>Test abschließen</Text>
               </TouchableOpacity>
             </View>
           )}

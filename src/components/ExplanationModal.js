@@ -164,26 +164,26 @@ export default function ExplanationModal({ visible, onClose, testKey, theme, isR
   return (
     <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={[styles.modalContent, { backgroundColor: '#fff', shadowColor: '#000' }]}>
+        <View style={[styles.modalContent, { backgroundColor: theme.card, shadowColor: '#000' }]}>
           <View style={[styles.indicator, { backgroundColor: theme.border }]} />
           
           <ScrollView contentContainerStyle={styles.scrollArea}>
             <View style={styles.header}>
               <MaterialCommunityIcons name={current.icon} size={36} color={theme.primary} />
-              <Text style={styles.title}>{current.title}</Text>
+              <Text style={{...styles.title, color: theme.primary}}>{current.title}</Text>
             </View>
 
-            <Text style={styles.description}>{current.desc}</Text>
+            <Text style={{...styles.description, color: theme.text}}>{current.desc}</Text>
 
             <View style={styles.divider} />
 
-            <Text style={styles.subTitle}>Drei zentrale Schritte:</Text>
+            <Text style={{...styles.subTitle, color: theme.text}}>Drei zentrale Schritte:</Text>
             {current.steps.map((step, i) => (
               <View key={i} style={styles.stepRow}>
                 <Text style={[styles.stepNum, { color: theme.primary }]}>{i + 1}</Text>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.stepTitle}>{step.title}</Text>
-                  <Text style={styles.stepText}>{step.text}</Text>
+                  <Text style={{...styles.stepTitle, color: theme.text}}>{step.title}</Text>
+                  <Text style={{...styles.stepText, color: theme.text}}>{step.text}</Text>
                 </View>
               </View>
             ))}
@@ -202,7 +202,7 @@ export default function ExplanationModal({ visible, onClose, testKey, theme, isR
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={onClose}
           >
-            <Text style={styles.startBtnText}>
+            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>
               {isRunning ? "Zurück zum Test" : "Verstanden & Test starten"}
             </Text>
           </TouchableOpacity>

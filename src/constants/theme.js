@@ -5,6 +5,10 @@ export const lightTheme = {
   accent: '#aeebff', // Ein modernes Rot-Orange
   card: '#FFFFFF',
   border: '#E0E0E0',
+  darkContrast: "#e7e9ed", 
+  grayish: "#f0f0f0",
+  greenish: "#81D681",
+  redish: "red",
   // Neue Header-Verlaufsfarben
   headerGradientStart: '#4e4376',
   headerGradientEnd: '#2b5876',
@@ -20,6 +24,10 @@ export const darkTheme = {
   accent: '#1d6982',
   card: '#2c3e50',
   border: '#333333',
+  darkContrast: "#253443", 
+  grayish: "#9299a1",
+  greenish: "#64A664",
+  redish: "#FF6666",
 
   headerGradientStart: '#65C7F7',
   headerGradientEnd: '#9CECFB',

@@ -222,20 +222,20 @@ export default function HVLTScreen({ t, theme, onBack }) {
         <View style={styles.trialIndicatorRow}>
           {[1, 2, 3].map(num => (
             <View key={num} style={[styles.trialDot, { backgroundColor: num <= currentTrial ? theme.primary : theme.card, borderColor: theme.primary }]}>
-              <Text style={{ color: num <= currentTrial ? '#fff' : theme.text, fontWeight: 'bold' }}>{num}</Text>
+              <Text style={{ color: num <= currentTrial ? theme.darkContrast : theme.text, fontWeight: 'bold' }}>{num}</Text>
             </View>
           ))}
           <Text style={[styles.trialLabel, { color: theme.text }]}>Lernphase: Durchgang {currentTrial} von 3</Text>
         </View>
 
-        <View style={[styles.sheet, { backgroundColor: '#fff', borderColor: theme.border }]}>
+        <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
           
           {phase === 'intro' && (
             <View style={styles.innerContent}>
               <MaterialCommunityIcons name="bullhorn-outline" size={80} color={theme.primary} />
-              <Text style={styles.instructionText}>{t.hvlt.instruction}</Text>
+              <Text style={{...styles.instructionText, color: theme.text}}>{t.hvlt.instruction}</Text>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: theme.primary }]} onPress={startListeningPhase}>
-                <Text style={styles.btnText}>Durchgang {currentTrial} starten</Text>
+                <Text style={{...styles.btnText, color: theme.darkContrast}}>Durchgang {currentTrial} starten</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -243,9 +243,9 @@ export default function HVLTScreen({ t, theme, onBack }) {
           {phase === 'listening' && (
             <View style={styles.innerContent}>
               <MaterialCommunityIcons name="volume-high" size={100} color={theme.primary} />
-              <Text style={styles.statusText}>{currentWordIndex >= 0 ? `Wort ${currentWordIndex + 1} / 12` : "Bereit..."}</Text>
+              <Text style={{...styles.statusText, color: theme.text}}>{currentWordIndex >= 0 ? `Wort ${currentWordIndex + 1} / 12` : "Bereit..."}</Text>
               <View style={styles.progressBarBackground}>
-                <View style={[styles.progressBarFill, { backgroundColor: theme.primary, width: `${((currentWordIndex + 1) / 12) * 100}%` }]} />
+                <View style={[styles.progressBarFill, { backgroundColor: theme.headerGradientStart, width: `${((currentWordIndex + 1) / 12) * 100}%` }]} />
               </View>
             </View>
           )}
@@ -256,13 +256,13 @@ export default function HVLTScreen({ t, theme, onBack }) {
                 <MaterialCommunityIcons name="microphone" size={70} color={isListening ? "#ff4444" : "#ccc"} />
               </View>
               
-              <Text style={styles.statusText}>Bitte aufzählen...</Text>
+              <Text style={{...styles.statusText, color: theme.text}}>Bitte aufzählen...</Text>
 
               <View style={styles.wordGrid}>
                 {WORD_LIST.map((word, idx) => {
                   const isFound = recognizedWords.includes(word);
                   return (
-                    <View key={idx} style={[styles.wordBadge, { backgroundColor: isFound ? '#90EE90' : '#f8f8f8', borderColor: isFound ? '#2ecc71' : '#ddd' }]}>
+                    <View key={idx} style={[styles.wordBadge, { backgroundColor: isFound ? '#90EE90' : theme.pageGradientStart, borderColor: isFound ? '#2ecc71' : '#ddd' }]}>
                       <Text style={{ color: isFound ? '#000' : '#ccc', fontSize: 13, fontWeight: isFound ? 'bold' : 'normal' }}>
                         {isFound ? word : "?"}
                       </Text>
@@ -271,16 +271,16 @@ export default function HVLTScreen({ t, theme, onBack }) {
                 })}
               </View>
 
-              <View style={styles.transcriptBox}>
-                <Text style={styles.transcriptLabel}>Live-Erkennung:</Text>
-                <Text style={styles.transcriptText} numberOfLines={1}>"{currentTranscript || "Warten auf Sprache..."}"</Text>
+              <View style={{...styles.transcriptBox, backgroundColor: theme.pageGradientStart}}>
+                <Text style={{...styles.transcriptLabel, color: theme.text}}>Live-Erkennung:</Text>
+                <Text style={{...styles.transcriptText, color: theme.text}} numberOfLines={1}>"{currentTranscript || "Warten auf Sprache..."}"</Text>
               </View>
 
               <TouchableOpacity 
                 style={[styles.actionBtn, { backgroundColor: theme.primary, marginTop: 20 }]} 
                 onPress={handleNextStep}
               >
-                <Text style={styles.btnText}>
+                <Text style={{...styles.btnText, color: theme.darkContrast}}>
                   {currentTrial < 3 ? "Nächster Durchgang" : "Test abschließen"}
                 </Text>
               </TouchableOpacity>

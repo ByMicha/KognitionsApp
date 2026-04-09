@@ -176,14 +176,14 @@ export default function BellsScreen({ t, theme, onBack }) {
       </View>
 
       <View style={styles.boardContainer}>
-        <View style={styles.board}>
+        <View style={{...styles.board, backgroundColor: theme.darkContrast}}>
           {symbols.map((symbol) => {
-            let iconColor = "#000";
+            let iconColor = theme.text;
             let markerColor = "red";
             if (testFinished) {
-              if (symbol.isTarget && symbol.selected) { markerColor = "#2ecc71"; iconColor = "#2ecc71"; }
-              else if (!symbol.isTarget && symbol.selected) { markerColor = theme.accent; iconColor = theme.accent; }
-              else if (symbol.isTarget && !symbol.selected) { markerColor = theme.primary; iconColor = theme.primary; }
+              if (symbol.isTarget && symbol.selected) { markerColor = theme.greenish; iconColor = theme.greenish; }
+              else if (!symbol.isTarget && symbol.selected) { markerColor = theme.redish; iconColor = theme.redish; }
+              else if (symbol.isTarget && !symbol.selected) { markerColor = theme.headerGradientEnd; iconColor = theme.headerGradientEnd; }
             }
 
             return (
@@ -207,7 +207,7 @@ export default function BellsScreen({ t, theme, onBack }) {
           style={[styles.doneButton, { backgroundColor: theme.primary }]}
           onPress={testFinished ? onBack : handleFinish}
         >
-          <Text style={styles.doneButtonText}>{testFinished ? "Speichern & Menü" : t.bells.done}</Text>
+          <Text style={{...styles.doneButtonText, color: theme.darkContrast}}>{testFinished ? "Speichern & Menü" : t.bells.done}</Text>
         </TouchableOpacity>
       </View>
     </View>

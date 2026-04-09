@@ -83,7 +83,7 @@ export default function QLQC30Screen({ t, theme, onBack }) {
                 ]}
                 onPress={() => handleSelect(qKey, val)}
               >
-                <Text style={[styles.numButtonLabel, { color: isSelected ? '#fff' : theme.text }]}>
+                <Text style={[styles.numButtonLabel, { color: isSelected ? theme.darkContrast : theme.text }]}>
                   {val}
                 </Text>
               </TouchableOpacity>
@@ -118,7 +118,7 @@ export default function QLQC30Screen({ t, theme, onBack }) {
                 ]}
                 onPress={() => handleSelect(qKey, val)}
               >
-                <Text style={[styles.scaleLabel, { color: isSelected ? '#fff' : theme.text }]}>
+                <Text style={[styles.scaleLabel, { color: isSelected ? theme.darkContrast : theme.text }]}>
                   {val}
                 </Text>
                 {(index === 0 || index === 6) && (
@@ -195,11 +195,11 @@ export default function QLQC30Screen({ t, theme, onBack }) {
             disabled={!isStepComplete()}
             style={[
               styles.nextButton,
-              { backgroundColor: isStepComplete() ? theme.primary : '#ccc' }
+              { backgroundColor: isStepComplete() ? theme.primary : theme.grayish }
             ]}
             onPress={handleNext}
           >
-            <Text style={styles.nextText}>
+            <Text style={{...styles.nextText, color: isStepComplete() ? theme.darkContrast : theme.text}}>
               {step === 4 ? t.qlq.finish : t.qlq.next}
             </Text>
           </TouchableOpacity>

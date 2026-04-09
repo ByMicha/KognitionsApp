@@ -69,7 +69,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
             style={[styles.smallButton, { backgroundColor: theme.primary }]}
             onPress={() => setLanguage(language === 'de' ? 'en' : 'de')}
           >
-            <Text style={styles.buttonText}>{language === 'de' ? 'Deutsch' : 'English'}</Text>
+            <Text style={{...styles.buttonText, color: theme.darkContrast}}>{language === 'de' ? 'Deutsch' : 'English'}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.settingRow}>
@@ -78,7 +78,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
             style={[styles.smallButton, { backgroundColor: theme.primary }]}
             onPress={() => setIsDarkMode(!isDarkMode)}
           >
-            <Text style={styles.buttonText}>{isDarkMode ? t.dark : t.light}</Text>
+            <Text style={{...styles.buttonText, color: theme.darkContrast}}>{isDarkMode ? t.dark : t.light}</Text>
           </TouchableOpacity>
         </View>
 

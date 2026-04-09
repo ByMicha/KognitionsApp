@@ -159,23 +159,23 @@ export default function ZSTestScreen({ t, theme, onBack }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.sheet}>
+        <View style={{...styles.sheet, backgroundColor: theme.darkContrast}}>
           {/* Legende */}
           <View style={styles.legendContainer}>
             {legendData.map((item) => (
               <View key={item.num} style={styles.legendItem}>
-                <Text style={styles.legendNum}>{item.num}</Text>
-                <View style={styles.legendIconBox}>
-                  <MaterialCommunityIcons name={item.icon} size={24} color="#000" />
+                <Text style={{...styles.legendNum, color: theme.text}}>{item.num}</Text>
+                <View style={{...styles.legendIconBox, borderColor: theme.text}}>
+                  <MaterialCommunityIcons name={item.icon} size={24} color={theme.text} />
                 </View>
               </View>
             ))}
           </View>
 
-          <View style={styles.divider} />
+          <View style={{...styles.divider, backgroundColor: theme.grayish}} />
 
           {/* Arbeitsbereich */}
-          <Text style={styles.sectionLabel}>Beispiel / Übung</Text>
+          <Text style={{...styles.sectionLabel, color: theme.text}}>Beispiel / Übung</Text>
           <View style={styles.grid}>
             {taskNumbers.map((num, index) => {
               const isPractice = index < PRACTICE_TASKS.length;
@@ -183,15 +183,15 @@ export default function ZSTestScreen({ t, theme, onBack }) {
                 <View 
                   key={index} 
                   style={[
-                    styles.taskBox, 
-                    isPractice && styles.practiceBox,
-                    activeIndex === index && !testFinished && styles.activeTaskBox
+                    {...styles.taskBox, borderColor: theme.text}, 
+                    isPractice && {...styles.practiceBox, backgroundColor: theme.grayish},
+                    activeIndex === index && !testFinished && {...styles.activeTaskBox, backgroundColor: "transparent"},
                   ]}
                 >
-                  <Text style={styles.taskNum}>{num}</Text>
+                  <Text style={{...styles.taskNum, color: theme.text, borderColor: theme.text}}>{num}</Text>
                   <View style={styles.answerBox}>
                     {userAnswers[index] && (
-                      <MaterialCommunityIcons name={userAnswers[index]} size={20} color="#000" />
+                      <MaterialCommunityIcons name={userAnswers[index]} size={20} color={theme.text} />
                     )}
                   </View>
                 </View>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   activeTaskBox: { backgroundColor: '#e3f2fd', borderColor: '#2196f3', borderWidth: 2 },
   taskNum: { fontSize: 16, borderBottomWidth: 1, width: '100%', textAlign: 'center', paddingVertical: 2 },
   answerBox: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  keypad: { padding: 20, borderTopWidth: 1, borderTopColor: '#eee', alignItems: "center" },
+  keypad: { padding: 20, alignItems: "center", borderTopRightRadius: 20, borderTopLeftRadius: 20 },
   keypadRow: { flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', width: "70%", minWidth: 1000 },
   keyButton: { width: 55, height: 55, borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center', margin: 5 },
   primaryButton: { paddingVertical: 15, paddingHorizontal: 40, borderRadius: 12 },

@@ -276,7 +276,7 @@ export default function TMTScreen({ t, theme, onBack }) {
                     style={[
                       styles.circle,
                       { left: `${circle.x}%`, top: `${circle.y}%`, borderColor: theme.text },
-                      circle.id < nextNumber ? { backgroundColor: '#90EE90' } : { backgroundColor: theme.card }
+                      circle.id < nextNumber ? { backgroundColor: theme.greenish } : { backgroundColor: theme.card }
                     ]}
                 >
                     {circle.topLabel && <Text style={[styles.labelAbove, { color: theme.text }]}>{circle.topLabel}</Text>}
@@ -308,6 +308,6 @@ const styles = StyleSheet.create({
   circle: { position: 'absolute', width: 40, height: 40, borderRadius: 20, borderWidth: 2, justifyContent: 'center', alignItems: 'center', transform: [{ translateX: -20 }, { translateY: -20 }], zIndex: 2, pointerEvents: 'none' },
   text: { fontSize: 16, fontWeight: 'bold' },
   labelAbove: { position: 'absolute', top: -25, fontSize: 12, width: 80, textAlign: 'center' },
-  infoBar: { padding: 25, borderTopWidth: 1, alignItems: 'center' },
+  infoBar: { padding: 25, borderTopWidth: 1, alignItems: 'center', borderTopRightRadius: 20, borderTopLeftRadius: 20 },
   infoText: { fontSize: 22, fontWeight: 'bold' }
 });
