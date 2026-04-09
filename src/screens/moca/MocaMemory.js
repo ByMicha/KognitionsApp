@@ -11,6 +11,9 @@ export default function MocaMemory({ theme, onComplete }) {
   const [foundWords, setFoundWords] = useState([]);
   const [transcript, setTranscript] = useState('');
   const recognitionRef = useRef(null);
+  
+  // NEU: Ref für die Zeitmessung der Recall-Phase
+  const recallStartTimeRef = useRef(null);
 
   // --- AUDIO LOGIK ---
   const playWords = () => {
@@ -41,11 +44,17 @@ export default function MocaMemory({ theme, onComplete }) {
       
       setTranscript(current);
 
-      // Prüfen, welche Wörter im Transkript vorkommen
-      MEMORY_WORDS.forEach(word => {
-        if (current.includes(word.toLowerCase()) && !foundWords.includes(word)) {
-          setFoundWords(prev => [...prev, word]);
-        }
+      // FUNKTIONALE AKTUALISIERUNG: Verhindert Duplikate und Überzählung
+      setFoundWords(prev => {
+        const next = [...prev];
+        MEMORY_WORDS.forEach(word => {
+          const lowerWord = word.toLowerCase();
+          // Wir prüfen im aktuellsten Zustand (next), ob das Wort schon existiert
+          if (current.includes(lowerWord) && !next.includes(word)) {
+            next.push(word);
+          }
+        });
+        return next;
       });
     };
 
@@ -59,6 +68,8 @@ export default function MocaMemory({ theme, onComplete }) {
 
   useEffect(() => {
     if (subPhase === 'recall') {
+      // Zeitmessung startet, sobald die Recall-Phase beginnt
+      recallStartTimeRef.current = Date.now();
       startListening();
     }
     return () => stopListening();
@@ -66,7 +77,21 @@ export default function MocaMemory({ theme, onComplete }) {
 
   const handleFinishRecall = () => {
     stopListening();
-    onComplete(foundWords);
+    
+    // Zeitberechnung für die Masterarbeit
+    const endTime = Date.now();
+    const durationSec = recallStartTimeRef.current 
+      ? (endTime - recallStartTimeRef.current) / 1000 
+      : 0;
+
+    // ERWEITERT: Strukturierte Datenübergabe an MoCAScreen
+    onComplete({
+      duration_recall_sec: durationSec.toFixed(2),
+      correct_count: foundWords.length,
+      found_words: foundWords,
+      full_transcript: transcript,
+      timestamp_finished: new Date().toISOString()
+    });
   };
 
   return (

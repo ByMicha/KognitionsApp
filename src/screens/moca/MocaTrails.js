@@ -28,6 +28,9 @@ export default function MocaTrails({ theme, onComplete }) {
   const offsetRef = useRef({ x: 0, y: 0 });
   const lastHitTimeRef = useRef(0);
 
+  // NEU: Ref für die Zeitmessung für die Masterarbeit
+  const startTimeRef = useRef(null);
+
   // Exakte Synchronisation wie in TMTScreen
   useEffect(() => { nextNumberRef.current = nextNumber; }, [nextNumber]);
 
@@ -50,7 +53,7 @@ export default function MocaTrails({ theme, onComplete }) {
       onPanResponderGrant: (evt, gestureState) => {
         offsetRef.current = { x: 0, y: 0 };
         const currentTarget = nextNumberRef.current;
-        if (currentTarget > 10) return; // Geändert auf 10 für MoCA
+        if (currentTarget > 10) return; 
 
         const startCircle = circlesRef.current.find(c => c.id === (currentTarget - 1));
         
@@ -84,17 +87,31 @@ export default function MocaTrails({ theme, onComplete }) {
             const now = Date.now();
             if (now - lastHitTimeRef.current < 250) return; 
 
+            // NEU: Zeitmessung beim ersten erfolgreichen Hit (Verbindung von 1 zu A) starten
+            if (!startTimeRef.current) {
+                startTimeRef.current = now;
+            }
+
             const newLine = { startX: startX, startY: startY, endX: targetCircle.px, endY: targetCircle.py };
             
             setCompletedLines(prev => [...prev, newLine]);
             lastHitTimeRef.current = now;
 
-            if (targetNum === 10) { // Geändert auf 10 für MoCA
+            if (targetNum === 10) { 
+                const endTime = Date.now();
+                const duration = (endTime - startTimeRef.current) / 1000;
+
                 nextNumberRef.current = 11; 
                 setNextNumber(11);
                 setCurrentLine(null);
                 dragStartRef.current = null;
-                onComplete(true); // Signal für den Nächsten Test Button
+
+                // ERWEITERT: Datenobjekt für Masterarbeit
+                onComplete({
+                    duration_active_sec: duration.toFixed(2),
+                    completed: true,
+                    path_raw: mocaCirclesData.map(c => c.label)
+                });
                 return;
             }
 
@@ -189,7 +206,6 @@ const styles = StyleSheet.create({
     borderRadius: 15, 
     position: 'relative', 
     overflow: 'hidden',
-    // Verhindert Textmarkierung im Web
     ...Platform.select({
       web: { userSelect: 'none', cursor: 'crosshair' }
     })

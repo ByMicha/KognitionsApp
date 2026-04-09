@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -7,14 +7,16 @@ const TARGET_SEQUENCE = [63, 56, 49, 42, 35];
 export default function MocaCalculation({ theme, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [results, setResults] = useState([]); // Speichert { value, isCorrect }
+  const [results, setResults] = useState([]); // Speichert { value, isCorrect, reaction_time_ms, expected }
   const [options, setOptions] = useState([]);
+
+  // NEU: Ref für die Zeitmessung pro Rechenschritt
+  const lastStepTimeRef = useRef(null);
 
   // Generiert 4 Antwortmöglichkeiten (1 korrekte, 3 falsche)
   const generateOptions = (correctValue) => {
     let choices = [correctValue];
     while (choices.length < 4) {
-      // Generiert plausible falsche Antworten (nahe am Ergebnis oder Rechenfehler)
       const offset = [1, -1, 10, -10, 2, -2][Math.floor(Math.random() * 6)];
       const distractor = correctValue + offset;
       if (!choices.includes(distractor) && distractor > 0) {
@@ -27,19 +29,44 @@ export default function MocaCalculation({ theme, onComplete }) {
   useEffect(() => {
     if (isStarted && currentIndex < TARGET_SEQUENCE.length) {
       setOptions(generateOptions(TARGET_SEQUENCE[currentIndex]));
+      // Zeitmessung für den aktuellen Schritt starten
+      lastStepTimeRef.current = Date.now();
     }
   }, [isStarted, currentIndex]);
 
   const handleSelection = (selected) => {
-    const isCorrect = selected === TARGET_SEQUENCE[currentIndex];
-    const newResults = [...results, { value: selected, isCorrect }];
+    const now = Date.now();
+    const reactionTime = lastStepTimeRef.current ? now - lastStepTimeRef.current : 0;
+    
+    const expected = TARGET_SEQUENCE[currentIndex];
+    const isCorrect = selected === expected;
+
+    const stepResult = { 
+      value: selected, // Für UI (res.value)
+      chosen: selected, // Für JSON
+      expected: expected,
+      isCorrect: isCorrect, // Für UI (res.isCorrect)
+      is_correct: isCorrect, // Für JSON
+      reaction_time_ms: reactionTime 
+    };
+
+    const newResults = [...results, stepResult];
     setResults(newResults);
 
     if (currentIndex < TARGET_SEQUENCE.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      // Aufgabe beendet
-      onComplete(newResults);
+      // Aufgabe beendet -> Strukturiertes Datenobjekt senden
+      onComplete({
+        steps: newResults.map(r => ({
+          expected: r.expected,
+          chosen: r.chosen,
+          is_correct: r.is_correct,
+          reaction_time_ms: r.reaction_time_ms
+        })),
+        final_sequence: newResults.map(r => r.chosen),
+        timestamp_finished: new Date().toISOString()
+      });
     }
   };
 

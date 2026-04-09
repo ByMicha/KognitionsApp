@@ -13,24 +13,23 @@ export default function MocaWordFluency({ theme, onComplete }) {
   const recognitionRef = useRef(null);
 
   const isRealGermanWord = async (word) => {
-  try {
-    // 1. Wort für die Suche vorbereiten: Erster Buchstabe groß (wichtig für Nomen!)
-    const formattedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    
-    // 2. API-Abfrage mit 'redirects=1' (löst ss/ß Probleme und Synonym-Links)
-    const response = await fetch(
-      `https://de.wiktionary.org/w/api.php?action=query&format=json&origin=*&titles=${encodeURIComponent(formattedWord)}&redirects=1`
-    );
-    const data = await response.json();
-    const pages = data.query.pages;
-    
-    // Wenn die Page-ID nicht "-1" ist, existiert das Wort
-    return !pages["-1"];
-  } catch (error) {
-    console.error("Wiki-Fehler:", error);
-    return false; 
-  }
-};
+    try {
+      // 1. Wort für die Suche vorbereiten: Erster Buchstabe groß
+      const formattedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      
+      // 2. API-Abfrage mit 'redirects=1'
+      const response = await fetch(
+        `https://de.wiktionary.org/w/api.php?action=query&format=json&origin=*&titles=${encodeURIComponent(formattedWord)}&redirects=1`
+      );
+      const data = await response.json();
+      const pages = data.query.pages;
+      
+      return !pages["-1"];
+    } catch (error) {
+      console.error("Wiki-Fehler:", error);
+      return false; 
+    }
+  };
 
   const evaluateWords = async (fullText) => {
     setPhase('evaluating');
@@ -65,7 +64,16 @@ export default function MocaWordFluency({ theme, onComplete }) {
 
     setResults(finalResults);
     setPhase('finished');
-    onComplete(finalResults);
+
+    // ERWEITERT: Strukturierte Datenübergabe für die Masterarbeit
+    onComplete({
+      target_letter: targetLetter,
+      total_word_count: finalResults.totalInput,
+      valid_wiki_count: finalResults.validCount,
+      raw_word_list: uniqueWords,
+      details: evaluationDetails,
+      timestamp_finished: new Date().toISOString()
+    });
   };
 
   useEffect(() => {
@@ -131,7 +139,7 @@ export default function MocaWordFluency({ theme, onComplete }) {
         <View style={styles.content}>
           <MaterialCommunityIcons name="format-letter-case" size={80} color={theme.primary} />
           <Text style={styles.instruction}>
-            Nennen Sie in einer Minute so viele Wörter wie möglich mit dem Buchstaben **{targetLetter}**.
+            Nennen Sie in einer Minute so viele Wörter wie möglich mit dem gleich erscheinenden Buchstaben.
           </Text>
           <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={() => setPhase('countdown')}>
             <Text style={styles.btnText}>Starten</Text>

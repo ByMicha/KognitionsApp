@@ -64,7 +64,14 @@ export default function MocaLanguage({ theme, onComplete }) {
     const correct = cleanTarget === cleanInput;
     setIsCorrect(correct);
     setPhase('result');
-    onComplete({ transcript, correct });
+
+    // ERWEITERT: Datenübergabe für die Masterarbeit
+    onComplete({
+      target_sentence: TARGET_SENTENCE,
+      is_correct: correct,
+      full_transcript: transcript,
+      timestamp_finished: new Date().toISOString()
+    });
   };
 
   return (

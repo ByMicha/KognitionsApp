@@ -11,14 +11,16 @@ export default function MocaDigits({ theme, onComplete }) {
   // Phasen: 'f_listen', 'f_recall', 'b_listen', 'b_recall'
   const [step, setStep] = useState('f_listen');
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0); // Trackt, wie viele Zahlen in Folge korrekt waren
+  const [correctCount, setCorrectCount] = useState(0); 
   const [transcript, setTranscript] = useState('');
   const recognitionRef = useRef(null);
+
+  // NEU: Zwischenspeicher für die Ergebnisse der beiden Teilaufgaben
+  const [sessionResults, setSessionResults] = useState({ forward: null });
 
   // --- AUDIO LOGIK ---
   const playDigits = (sequence, instruction) => {
     setIsSpeaking(true);
-    // Laut Anweisung: 1 Zahl pro Sekunde vorlesen
     const text = `${instruction}: ${sequence.join(", ")}`;
     
     Speech.speak(text, {
@@ -40,23 +42,30 @@ export default function MocaDigits({ theme, onComplete }) {
     recognition.interimResults = true;
 
     recognition.onresult = (event) => {
-      const current = Array.from(event.results)
+      const currentRaw = Array.from(event.results)
         .map(result => result[0].transcript)
-        .join(' ');
-      setTranscript(current);
-
-      // Extrahiere alle Ziffern aus dem aktuellen Transkript
-      const spokenDigits = current.match(/\d/g) || [];
+        .join(' ').toLowerCase();
       
-      // Prüfe die Sequenz von vorne
+      setTranscript(currentRaw);
+
+      // --- NEU: Normalisierung von Text-Zahlen zu Ziffern ---
+      const numberMap = {
+        'null': '0', 'eins': '1', 'zwei': '2', 'drei': '3', 'vier': '4',
+        'fünf': '5', 'sechs': '6', 'sieben': '7', 'acht': '8', 'neun': '9'
+      };
+      
+      let processedText = currentRaw;
+      Object.keys(numberMap).forEach(key => {
+        processedText = processedText.replace(new RegExp(key, 'g'), numberMap[key]);
+      });
+
+      // Extrahiere nun die Ziffern (egal ob sie als "2" oder "zwei" gesprochen wurden)
+      const spokenDigits = processedText.match(/\d/g) || [];
+      
       let matches = 0;
       for (let i = 0; i < spokenDigits.length; i++) {
         if (matches < targetSeq.length && spokenDigits[i] === targetSeq[matches]) {
           matches++;
-        } else if (matches < targetSeq.length && spokenDigits[i] !== targetSeq[matches]) {
-          // Sobald eine falsche Zahl in der Kette auftaucht, bricht die Wertung für diese Kette ab
-          // (Optional: Man könnte hier auch strenger sein, aber für die Erkennung 
-          // zählen wir die längste korrekte Kette von Beginn an)
         }
       }
       setCorrectCount(matches);
@@ -78,18 +87,38 @@ export default function MocaDigits({ theme, onComplete }) {
     return () => stopListening();
   }, [step]);
 
-  // --- NAVIGATION ---
+  // --- NAVIGATION & SPEICHERUNG ---
   const handleNextStep = () => {
     if (step === 'f_listen') {
       setStep('f_recall');
     } else if (step === 'f_recall') {
+      // Ergebnisse des Vorwärts-Teils für die Masterarbeit sichern
+      setSessionResults({
+        forward: {
+          seq_length: FORWARD_SEQ.length,
+          hits: correctCount,
+          transcript: transcript
+        }
+      });
       stopListening();
       setStep('b_listen');
     } else if (step === 'b_listen') {
       setStep('b_recall');
     } else if (step === 'b_recall') {
+      // Rückwärts-Ergebnisse erfassen und Gesamtergebnis an MoCAScreen senden
+      const backwardData = {
+        seq_length: BACKWARD_SEQ.length,
+        hits: correctCount,
+        transcript: transcript
+      };
+
+      onComplete({
+        forward: sessionResults.forward,
+        backward: backwardData,
+        timestamp_finished: new Date().toISOString()
+      });
+
       stopListening();
-      onComplete(true);
     }
   };
 
@@ -113,10 +142,10 @@ export default function MocaDigits({ theme, onComplete }) {
       <View style={styles.textContainer}>
         <Text style={styles.title}>5. Aufmerksamkeit (Zahlenreihen)</Text>
         <Text style={styles.desc}>
-          {step === 'f_listen' && "Hören Sie die Zahlenreihe: 2 - 1 - 8 - 5 - 4"}
+          {step === 'f_listen' && "Hören Sie die Zahlenreihe."}
           {step === 'f_recall' && "Wiederholen Sie die Zahlen in der GLEICHEN Reihenfolge."}
-          {step === 'b_listen' && "Hören Sie die Zahlenreihe: 2 - 4 - 7"}
-          {step === 'b_recall' && "Wiederholen Sie die Zahlen nun RÜCKWÄRTS (7 - 4 - 2)."}
+          {step === 'b_listen' && "Hören Sie die Zahlenreihe."}
+          {step === 'b_recall' && "Wiederholen Sie die Zahlen nun RÜCKWÄRTS."}
         </Text>
       </View>
 

@@ -28,11 +28,17 @@ export default function MocaRecall({ theme, onComplete }) {
       
       setTranscript(current);
 
-      // Prüfung auf Übereinstimmung
-      RECALL_WORDS.forEach(word => {
-        if (current.includes(word.toLowerCase()) && !foundWords.includes(word)) {
-          setFoundWords(prev => [...prev, word]);
-        }
+      // FUNKTIONALE AKTUALISIERUNG: Verhindert die Mehrfachzählung identischer Wörter
+      setFoundWords(prev => {
+        const next = [...prev];
+        RECALL_WORDS.forEach(word => {
+          const lowerWord = word.toLowerCase();
+          // Wir prüfen im aktuellsten lokalen Array (next), ob das Wort schon existiert
+          if (current.includes(lowerWord) && !next.includes(word)) {
+            next.push(word);
+          }
+        });
+        return next;
       });
     };
 
@@ -52,7 +58,17 @@ export default function MocaRecall({ theme, onComplete }) {
   const handleFinish = () => {
     stopListening();
     setIsFinished(true);
-    onComplete(foundWords);
+
+    // NEU: Ermittlung der vergessenen Wörter für die Masterarbeit
+    const forgottenWords = RECALL_WORDS.filter(word => !foundWords.includes(word));
+
+    // ERWEITERT: Strukturiertes Datenobjekt für MoCAScreen
+    onComplete({
+      correct_count: foundWords.length,
+      remembered_words: foundWords,
+      forgotten_words: forgottenWords,
+      timestamp_finished: new Date().toISOString()
+    });
   };
 
   return (

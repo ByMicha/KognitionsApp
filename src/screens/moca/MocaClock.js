@@ -7,21 +7,39 @@ export default function MocaClock({ theme, onComplete }) {
   const [hourAngle, setHourAngle] = useState(270); 
   const [minuteAngle, setMinuteAngle] = useState(270);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  
+  // NEU: Zähler für die Klicks (Masterarbeit-Daten)
+  const [totalClicks, setTotalClicks] = useState(0);
+  const OPTIMAL_CLICKS = 3;
 
-  const clockSize = 360; // Etwas kompakter für die Steuerung
+  const clockSize = 360; 
   const center = clockSize / 2;
 
   const moveHour = (direction) => {
+    setTotalClicks(prev => prev + 1); // Klick registrieren
     setHourAngle(prev => (direction === 'next' ? (prev + 30) % 360 : (prev - 30 + 360) % 360));
   };
 
   const moveMinute = (direction) => {
+    setTotalClicks(prev => prev + 1); // Klick registrieren
     setMinuteAngle(prev => (direction === 'next' ? (prev + 30) % 360 : (prev - 30 + 360) % 360));
   };
 
   const handleConfirm = () => {
     setIsConfirmed(true);
-    onComplete({ hourAngle, minuteAngle });
+    
+    // Berechnung der unnötigen Klicks
+    const unnecessaryClicks = Math.max(0, totalClicks - OPTIMAL_CLICKS);
+
+    // ERWEITERT: Detaillierte Datenübergabe an MoCAScreen
+    onComplete({
+      target_time: "11:10",
+      final_angles: { hour: hourAngle, minute: minuteAngle },
+      total_clicks: totalClicks,
+      optimal_clicks: OPTIMAL_CLICKS,
+      unnecessary_clicks: unnecessaryClicks,
+      timestamp_confirmed: new Date().toISOString()
+    });
   };
 
   const renderNumbers = () => {
@@ -49,13 +67,10 @@ export default function MocaClock({ theme, onComplete }) {
         </Text>
       </View>
 
-      {/* Uhr mit Rahmen und Schatten */}
       <View style={[styles.clockFrame, isConfirmed && { opacity: 0.7 }]}>
         <View style={styles.clockShadow}>
           <Svg height={clockSize} width={clockSize}>
-            {/* Äußerer dekorativer Ring */}
             <Circle cx={center} cy={center} r={center - 2} stroke="#ddd" strokeWidth="4" fill="#fcfcfc" />
-            {/* Zifferblatt-Rand */}
             <Circle cx={center} cy={center} r={center - 8} stroke="#333" strokeWidth="2" fill="#fff" />
             
             {renderNumbers()}

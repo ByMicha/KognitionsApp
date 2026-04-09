@@ -2,15 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const NAMING_ANIMALS = [
-  { label: 'löwe', emoji: '🦁' },
-  { label: 'nashorn', uuid: 'rhino', labelAlt: 'rhinozeros', emoji: '🦏' },
-  { label: 'kamel', emoji: '🐪' }
+  { id: 'lion', label: 'löwe', emoji: '🦁' },
+  { id: 'rhino', label: 'nashorn', uuid: 'rhino', labelAlt: 'rhinozeros', emoji: '🦏' },
+  { id: 'camel', label: 'kamel', emoji: '🐪' }
 ];
 
 export default function MocaNaming({ theme, onComplete }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [transcript, setTranscript] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
+  
+  // NEU: Speicher für die Ergebnisse der einzelnen Tiere für die Masterarbeit
+  const [namingResults, setNamingResults] = useState({
+    lion: { success: false, transcript: '' },
+    rhino: { success: false, transcript: '' },
+    camel: { success: false, transcript: '' }
+  });
+
   const recognitionRef = useRef(null);
 
   const startListening = () => {
@@ -28,12 +36,24 @@ export default function MocaNaming({ theme, onComplete }) {
       const current = Array.from(event.results)
         .map(result => result[0].transcript)
         .join(' ').toLowerCase();
+      
       setTranscript(current);
 
       const target = NAMING_ANIMALS[currentIndex];
-      if (current.includes(target.label) || (target.labelAlt && current.includes(target.labelAlt))) {
+      const matchFound = current.includes(target.label) || (target.labelAlt && current.includes(target.labelAlt));
+      
+      if (matchFound) {
         setIsCorrect(true);
       }
+
+      // Aktuelles Ergebnis im State zwischenspeichern
+      setNamingResults(prev => ({
+        ...prev,
+        [target.id]: {
+          success: matchFound || prev[target.id].success, // Einmal wahr, immer wahr für dieses Tier
+          transcript: current
+        }
+      }));
     };
 
     recognition.start();
@@ -53,8 +73,14 @@ export default function MocaNaming({ theme, onComplete }) {
       setTranscript('');
       setIsCorrect(false);
     } else {
-      // Alle 3 Tiere durchlaufen
-      onComplete(true);
+      // Alle 3 Tiere durchlaufen -> Auswertung für Masterarbeit erstellen
+      const scoreCount = Object.values(namingResults).filter(r => r.success).length;
+      
+      onComplete({
+        ...namingResults,
+        score: `${scoreCount}/3`,
+        timestamp_finished: new Date().toISOString()
+      });
     }
   };
 

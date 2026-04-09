@@ -10,22 +10,17 @@ import MocaCalculation from './moca/MocaCalculation';
 import MocaLanguage from './moca/MocaLanguage';
 import MocaWordFluency from './moca/MocaWordFluency';
 import MocaRecall from './moca/MocaRecall';
-
-const Placeholder = ({ name }) => (
-  <View style={styles.placeholderContainer}>
-    <Text style={styles.placeholderText}>Szenario: {name}</Text>
-  </View>
-);
+import { saveTestResult } from '../utils/resultStorage';
 
 export default function MoCAScreen({ t, theme, onBack }) {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
-  const [mocaResults, setMocaResults] = useState({});
 
+  // Das zentrale Speicherobjekt für deine Masterarbeit
   const [mocaData, setMocaData] = useState({
     metadata: {
       startTime: new Date().toISOString(),
-      userId: "ID_PLACEHOLDER" // Hier könnte später die echte ID rein
+      userId: "ID_PLACEHOLDER" 
     },
     scenarios: {}
   });
@@ -33,6 +28,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const totalPhases = 10;
   const progress = ((currentPhase + 1) / totalPhases) * 100;
 
+  // Diese Funktion nimmt die Daten der Szenarien entgegen und speichert sie zentral
   const updateScenarioData = (key, data) => {
     setMocaData(prev => ({
       ...prev,
@@ -41,15 +37,21 @@ export default function MoCAScreen({ t, theme, onBack }) {
         [key]: data
       }
     }));
-    setIsNextDisabled(false);
+    setIsNextDisabled(false); // Schaltet den "Nächster Test" Button frei
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentPhase < totalPhases - 1) {
       setCurrentPhase(prev => prev + 1);
       setIsNextDisabled(true);
     } else {
-      console.log("FINALES MOCA JSON:", JSON.stringify(mocaData, null, 2));
+      // Speichern in der Datenbank
+      await saveTestResult({
+        testId: 'moca_test',
+        score: "-",
+        data: mocaData
+      });
+
       onBack();
     }
   };
@@ -60,100 +62,74 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaTrails 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, trails: res }));
-              setIsNextDisabled(false);
-            }} 
+            onComplete={(data) => updateScenarioData('01_trails', data)} 
           />
         );
       case 1:
         return (
           <MocaClock 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, clock: res }));
-              setIsNextDisabled(false);
-            }} 
+            onComplete={(data) => updateScenarioData('02_clock', data)} 
           />
         );
       case 2:
         return (
           <MocaNaming 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, naming: res }));
-              setIsNextDisabled(false);
-            }} 
+            onComplete={(data) => updateScenarioData('03_naming', data)} 
           />
         );
       case 3:
         return (
           <MocaMemory 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, immediateMemory: res }));
-              setIsNextDisabled(false);
-            }} 
+            onComplete={(data) => updateScenarioData('04_memory_immediate', data)} 
           />
         );
       case 4:
         return (
           <MocaDigits 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, digits: res }));
-              setIsNextDisabled(false); 
-            }} 
+            onComplete={(data) => updateScenarioData('05_digits', data)} 
           />
         );
       case 5:
         return (
           <MocaVigilance 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, vigilance: res }));
-              setIsNextDisabled(false); 
-            }} 
+            onComplete={(data) => updateScenarioData('06_vigilance', data)} 
           />
         );
       case 6:
         return (
           <MocaCalculation 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, calculation: res }));
-              setIsNextDisabled(false); 
-            }} 
+            onComplete={(data) => updateScenarioData('07_calculation', data)} 
           />
         );
       case 7:
         return (
           <MocaLanguage 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, language: res }));
-              setIsNextDisabled(false); 
-            }} 
+            onComplete={(data) => updateScenarioData('08_language', data)} 
           />
         );
       case 8:
         return (
           <MocaWordFluency 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, wordFluency: res }));
-              setIsNextDisabled(false); 
-            }} 
+            onComplete={(data) => updateScenarioData('09_word_fluency', data)} 
           />
         );
       case 9:
         return (
           <MocaRecall 
             theme={theme} 
-            onComplete={(res) => {
-              setMocaResults(prev => ({ ...prev, delayedRecall: res }));
-              setIsNextDisabled(false); // Aktiviert den finalen "Test beenden" Button
-            }} 
+            // Hier übergeben wir zusätzlich die Referenzdaten aus Aufgabe 4 für den Vergleich im JSON
+            onComplete={(data) => updateScenarioData('10_delayed_recall', {
+              ...data,
+              reference_task_04: mocaData.scenarios['04_memory_immediate']?.found_words || []
+            })} 
           />
         );
       default: return null;
@@ -162,7 +138,6 @@ export default function MoCAScreen({ t, theme, onBack }) {
 
   return (
     <View style={[styles.container, { backgroundColor: "transparent" }]}>
-      {/* Header bleibt gleich */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
           <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Abbruch</Text>
@@ -209,7 +184,5 @@ const styles = StyleSheet.create({
   contentArea: { flex: 1, width: '100%' },
   footer: { marginTop: 20, alignItems: 'center' },
   nextBtn: { paddingVertical: 15, paddingHorizontal: 60, borderRadius: 12 },
-  nextBtnText: { fontWeight: 'bold', fontSize: 18 },
-  placeholderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  placeholderText: { fontSize: 22, fontWeight: 'bold', color: '#ccc' }
+  nextBtnText: { fontWeight: 'bold', fontSize: 18 }
 });

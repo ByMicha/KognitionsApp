@@ -3,42 +3,67 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Test-Sequenz: 5 Buchstaben, davon 2x 'A'
 const TEST_SEQUENCE = ["F", "A", "B", "A", "K"];
 
 export default function MocaVigilance({ theme, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [activeLetter, setActiveLetter] = useState(null);
-  const [hits, setHits] = useState(0);
+
+  const hitIndicesRef = useRef(new Set());
+  const falseAlarmsRef = useRef(0);
+  const currentIdxRef = useRef(-1);
+  const activeLetterRef = useRef(null);
 
   const startTask = async () => {
     setIsStarted(true);
-
+    
     for (let i = 0; i < TEST_SEQUENCE.length; i++) {
       const letter = TEST_SEQUENCE[i];
-      setActiveLetter(letter);
+      const index = i;
 
-      // Buchstabe vorlesen (Intervall ca. 1 Sekunde)
-      Speech.speak(letter, {
-        language: 'de-DE',
-        rate: 0.8,
+      // Wir warten darauf, dass der Buchstabe tatsächlich gesprochen wird
+      await new Promise((resolve) => {
+        Speech.speak(letter, {
+          language: 'de-DE',
+          rate: 0.8,
+          onStart: () => {
+            // Das Treffer-Fenster öffnet sich erst hier (beim Ton-Start)
+            currentIdxRef.current = index;
+            activeLetterRef.current = letter;
+            setActiveLetter(letter);
+
+            // Fenster für 1,2 Sekunden offen halten NACHDEM der Ton startete
+            setTimeout(() => {
+              activeLetterRef.current = null;
+              setActiveLetter(null);
+              resolve();
+            }, 1200);
+          },
+          onError: () => resolve() // Fallback bei Fehlern
+        });
       });
-
-      // Wartezeit zwischen den Buchstaben
-      await new Promise(resolve => setTimeout(resolve, 1200));
     }
 
-    // AUTOMATISCHE ÜBERMITTLUNG
-    setActiveLetter(null);
+    const totalTargets = TEST_SEQUENCE.filter(l => l === "A").length;
+    const finalHits = hitIndicesRef.current.size;
+
     setIsFinished(true);
-    onComplete({ hits }); // Aktiviert sofort den "Nächster Test" Button im MoCAScreen
+
+    onComplete({
+      hits: finalHits,
+      omissions: totalTargets - finalHits,
+      false_alarms: falseAlarmsRef.current,
+      timestamp_finished: new Date().toISOString()
+    });
   };
 
   const handleTap = () => {
-    // Registriere Treffer nur während ein 'A' aktiv ist
-    if (activeLetter === "A") {
-      setHits(prev => prev + 1);
+    // Taps werden nun präzise gegen den aktuell hörbaren Buchstaben geprüft
+    if (activeLetterRef.current === "A") {
+      hitIndicesRef.current.add(currentIdxRef.current);
+    } else if (activeLetterRef.current !== null) {
+      falseAlarmsRef.current += 1;
     }
   };
 
@@ -51,8 +76,7 @@ export default function MocaVigilance({ theme, onComplete }) {
       {!isStarted ? (
         <View style={styles.explanationArea}>
           <Text style={styles.desc}>
-            Ich werde Ihnen nun eine Reihe von Buchstaben vorlesen.{"\n\n"}
-            Tippen Sie auf den großen Button, wenn Sie den Buchstaben <Text style={{fontWeight: 'bold'}}>A</Text> hören.
+            Tippen Sie auf den Button, wenn Sie den Buchstaben <Text style={{fontWeight: 'bold'}}>A</Text> hören.
           </Text>
           <TouchableOpacity 
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
@@ -81,7 +105,6 @@ export default function MocaVigilance({ theme, onComplete }) {
             <View style={styles.finishArea}>
               <MaterialCommunityIcons name="check-circle" size={80} color="#2ecc71" />
               <Text style={styles.finishText}>Abgeschlossen ✓</Text>
-              <Text style={styles.subText}>Klicken Sie nun unten auf "Nächster Test".</Text>
             </View>
           )}
         </View>
@@ -105,6 +128,5 @@ const styles = StyleSheet.create({
   tapButton: { width: 240, height: 240, borderRadius: 120, justifyContent: 'center', alignItems: 'center', elevation: 5 },
   tapButtonText: { color: '#fff', fontSize: 14, fontWeight: 'bold', marginTop: 15 },
   finishArea: { alignItems: 'center' },
-  finishText: { fontSize: 20, fontWeight: 'bold', color: '#444', marginTop: 20 },
-  subText: { fontSize: 14, color: '#888', marginTop: 10 }
+  finishText: { fontSize: 20, fontWeight: 'bold', color: '#444', marginTop: 20 }
 });
