@@ -111,21 +111,14 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           style={styles.header}
         >
           <Text style={[styles.welcome, { color: theme.background }]}>Willkommen im Dashboard</Text>
-          <Text style={[styles.date, { color: theme.background }]}>Uni-Klinikum Heidelberg</Text>
           <View style={styles.appTitleContainer}>
-            <Text style={[styles.appTitle, { color: theme.background }]}>{t.appTitle}</Text>
+            <Text style={[styles.appTitle, { color: theme.accent }]}>{t.appTitle}</Text>
           </View>
-          <TouchableOpacity 
-            style={[styles.batteryButton, { backgroundColor: theme.accent }]}
-            onPress={() => console.log('Batterie gestartet')}
-          >
-            <Text style={{...styles.batteryButtonText, color: theme.text}}>{t.startBattery}</Text>
-          </TouchableOpacity>
         </LinearGradient>
 
         <View style={styles.testsListSection}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            {language === 'de' ? 'Einzelne Tests' : 'Individual Tests'}
+            {language === 'de' ? 'Testbatterie' : 'Test battery'}
           </Text>
           {testKeys.map((key) => (
             <TouchableOpacity 
@@ -165,11 +158,25 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContainer: { minHeight: '100%', paddingBottom: 50 },
-  header: { padding: 30, paddingTop: 50, paddingBottom: 40, borderBottomLeftRadius: 40, borderBottomRightRadius: 40, alignItems: 'center', marginHorizontal: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 13 }, shadowOpacity: 0.4, shadowRadius: 20, },
-  welcome: { fontSize: 22, fontWeight: '500', marginBottom: 5, opacity: 0.9 },
+  header: {
+    padding: 30,
+    paddingTop: 50,
+    paddingBottom: 40,
+    minHeight: 250,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 13 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+  },
+  welcome: { fontSize: 24, fontWeight: '500', marginBottom: 10, opacity: 0.9 },
   date: { fontSize: 14, marginBottom: 30, opacity: 0.6 },
   appTitleContainer: { marginBottom: 35, paddingHorizontal: 20 },
-  appTitle: { fontSize: 34, fontWeight: '900', textAlign: 'center', letterSpacing: -0.5 },
+  appTitle: { fontSize: 50, fontWeight: '900', textAlign: 'center', letterSpacing: -0.5 },
   batteryButton: { width: '75%', padding: 22, borderRadius: 18, alignItems: 'center' },
   batteryButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
   testsListSection: { padding: 20, alignItems: 'center', paddingTop: 50 },
