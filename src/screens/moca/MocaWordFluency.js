@@ -127,9 +127,9 @@ export default function MocaWordFluency({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <Text style={styles.title}>9. Wortflüssigkeit</Text>
+        <Text style={{...styles.title, color: theme.primary}}>9. Wortflüssigkeit</Text>
         {phase === 'active' && (
-          <View style={[styles.timerBadge, { backgroundColor: timer < 10 ? '#ff4444' : '#eee' }]}>
+          <View style={[styles.timerBadge, { backgroundColor: timer < 10 ? theme.redish : '#eee' }]}>
             <Text style={[styles.timerText, { color: timer < 10 ? '#fff' : '#333' }]}>{timer}s</Text>
           </View>
         )}
@@ -138,11 +138,11 @@ export default function MocaWordFluency({ theme, onComplete }) {
       {phase === 'intro' && (
         <View style={styles.content}>
           <MaterialCommunityIcons name="format-letter-case" size={80} color={theme.primary} />
-          <Text style={styles.instruction}>
+          <Text style={{...styles.instruction, color: theme.text}}>
             Nennen Sie in einer Minute so viele Wörter wie möglich mit dem gleich erscheinenden Buchstaben.
           </Text>
           <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={() => setPhase('countdown')}>
-            <Text style={styles.btnText}>Starten</Text>
+            <Text style={{...styles.btnText, color: theme.darkContrast}}>Starten</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -155,14 +155,14 @@ export default function MocaWordFluency({ theme, onComplete }) {
 
       {phase === 'active' && (
         <View style={styles.content}>
-          <Text style={styles.letterLabel}>Wörter mit:</Text>
-          <Text style={styles.bigLetter}>{targetLetter}</Text>
+          <Text style={{...styles.letterLabel, color: theme.text}}>Wörter mit:</Text>
+          <Text style={{...styles.bigLetter, color: theme.primary}}>{targetLetter}</Text>
           <View style={styles.micAnim}>
-            <MaterialCommunityIcons name="microphone" size={50} color="#ff4444" />
-            <Text style={styles.listeningText}>Aufnahme läuft...</Text>
+            <MaterialCommunityIcons name="microphone" size={50} color={theme.redish} />
+            <Text style={{...styles.listeningText, color: theme.redish}}>Aufnahme läuft...</Text>
           </View>
           <TouchableOpacity style={styles.stopLink} onPress={stopTest}>
-            <Text style={styles.stopLinkText}>Ich weiß nicht mehr weiter</Text>
+            <Text style={{...styles.stopLinkText, color: theme.text}}>Ich weiß nicht mehr weiter</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -170,29 +170,29 @@ export default function MocaWordFluency({ theme, onComplete }) {
       {phase === 'evaluating' && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={theme.primary} />
-          <Text style={styles.evalText}>Prüfe Wörter gegen Wiktionary...</Text>
+          <Text style={{...styles.evalText, color: theme.text}}>Prüfe Wörter gegen Wiktionary...</Text>
         </View>
       )}
 
       {phase === 'finished' && (
         <View style={styles.content}>
           <MaterialCommunityIcons name="check-circle" size={60} color="#2ecc71" />
-          <Text style={styles.finishTitle}>Auswertung</Text>
+          <Text style={{...styles.finishTitle, color: theme.text}}>Auswertung</Text>
           
           <View style={styles.resultSummary}>
-            <Text style={styles.resultMainText}>Gültige Wörter: {results?.validCount}</Text>
+            <Text style={{...styles.resultMainText, color: theme.text}}>Gültige Wörter: {results?.validCount}</Text>
           </View>
 
-          <Text style={styles.listHeader}>Erkannte Wörter im Detail:</Text>
-          <ScrollView style={styles.wordListContainer} contentContainerStyle={styles.wordListContent}>
+          <Text style={{...styles.listHeader, color: theme.text}}>Erkannte Wörter im Detail:</Text>
+          <ScrollView style={{...styles.wordListContainer, backgroundColor: theme.accent}} contentContainerStyle={styles.wordListContent}>
             {results?.details.map((item, index) => (
-              <View key={index} style={styles.wordRow}>
+              <View key={index} style={{...styles.wordRow}}>
                 <MaterialCommunityIcons 
                   name={item.valid ? "check-bold" : "close-thick"} 
                   size={20} 
-                  color={item.valid ? "#2ecc71" : "#ff4444"} 
+                  color={item.valid ? theme.greenish : theme.redish} 
                 />
-                <Text style={[styles.wordListItem, { color: item.valid ? "#2ecc71" : "#ff4444" }]}>
+                <Text style={[styles.wordListItem, { color: item.valid ? theme.greenish : theme.redish }]}>
                   {item.word}
                 </Text>
               </View>

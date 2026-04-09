@@ -74,11 +74,11 @@ export default function MocaCalculation({ theme, onComplete }) {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>7. Aufmerksamkeit (Rechnen)</Text>
+          <Text style={{...styles.title, color: theme.primary}}>7. Aufmerksamkeit (Rechnen)</Text>
         </View>
         <View style={styles.explanationArea}>
           <MaterialCommunityIcons name="calculator-variant" size={80} color={theme.primary} />
-          <Text style={styles.desc}>
+          <Text style={{...styles.desc, color: theme.text}}>
             Dies ist eine Rechenaufgabe.{"\n\n"}
             Beginnen Sie im Kopf bei der Zahl <Text style={{fontWeight: 'bold'}}>70</Text> und ziehen Sie fortlaufend jeweils <Text style={{fontWeight: 'bold'}}>7</Text> ab.{"\n\n"}
             Wählen Sie für jeden Schritt das richtige Ergebnis aus den vier Möglichkeiten aus.
@@ -87,7 +87,7 @@ export default function MocaCalculation({ theme, onComplete }) {
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={() => setIsStarted(true)}
           >
-            <Text style={styles.startBtnText}>Verstanden & Starten</Text>
+            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>Verstanden & Starten</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,8 +97,8 @@ export default function MocaCalculation({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>7. Aufmerksamkeit (Rechnen)</Text>
-        <Text style={styles.desc}>Rechnen Sie: {currentIndex === 0 ? "70" : TARGET_SEQUENCE[currentIndex - 1]} minus 7</Text>
+        <Text style={{...styles.title, color: theme.primary}}>7. Aufmerksamkeit (Rechnen)</Text>
+        <Text style={{...styles.desc, color: theme.text}}>Rechnen Sie: {currentIndex === 0 ? "70" : TARGET_SEQUENCE[currentIndex - 1]} minus 7</Text>
       </View>
 
       <View style={styles.centerArea}>
@@ -128,12 +128,13 @@ export default function MocaCalculation({ theme, onComplete }) {
         </View>
 
         {/* Das Quiz-Feld */}
+        {results.length < 5 && (
         <View style={styles.quizArea}>
           <View style={styles.optionsRow}>
             {options.map((opt, idx) => (
               <TouchableOpacity 
                 key={idx} 
-                style={[styles.optionBtn, { borderColor: theme.primary }]} 
+                style={[styles.optionBtn, {backgroundColor: theme.accent ,borderColor: theme.primary }]} 
                 onPress={() => handleSelection(opt)}
               >
                 <Text style={[styles.optionText, { color: theme.primary }]}>{opt}</Text>
@@ -141,6 +142,7 @@ export default function MocaCalculation({ theme, onComplete }) {
             ))}
           </View>
         </View>
+        )}         
 
         {results.length === 5 && (
           <View style={styles.successArea}>

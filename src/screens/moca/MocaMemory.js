@@ -97,8 +97,8 @@ export default function MocaMemory({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>4. Gedächtnis (Sofortiger Abruf)</Text>
-        <Text style={styles.desc}>
+        <Text style={{...styles.title, color: theme.primary}}>4. Gedächtnis (Sofortiger Abruf)</Text>
+        <Text style={{...styles.desc, color: theme.text}}>
           {subPhase === 'listen' 
             ? "Klicken Sie auf den Button, um die Wörter zu hören und prägen Sie sich diese ein." 
             : "Sagen Sie nun alle Wörter laut auf, an die Sie sich noch erinnern können."}
@@ -108,16 +108,16 @@ export default function MocaMemory({ theme, onComplete }) {
       {subPhase === 'listen' ? (
         <View style={styles.centerArea}>
           <TouchableOpacity 
-            style={[styles.audioBtn, { backgroundColor: isSpeaking ? '#eee' : theme.primary }]} 
+            style={[styles.audioBtn, { backgroundColor: isSpeaking ? theme.text : theme.primary }]} 
             onPress={playWords}
             disabled={isSpeaking}
           >
             <MaterialCommunityIcons 
               name={isSpeaking ? "volume-high" : "play-circle"} 
               size={60} 
-              color={isSpeaking ? theme.primary : "#fff"} 
+              color={isSpeaking ? theme.pageGradientStart : theme.darkContrast} 
             />
-            <Text style={[styles.audioBtnText, { color: isSpeaking ? theme.primary : "#fff" }]}>
+            <Text style={[styles.audioBtnText, { color: isSpeaking ? theme.pageGradientStart : theme.darkContrast }]}>
               {isSpeaking ? "Wörter werden vorgelesen..." : "Wörter jetzt anhören"}
             </Text>
           </TouchableOpacity>
@@ -137,7 +137,7 @@ export default function MocaMemory({ theme, onComplete }) {
               const isFound = foundWords.includes(word);
               return (
                 <View key={index} style={[styles.wordBox, isFound && { borderColor: '#2ecc71', backgroundColor: '#f0fff4' }]}>
-                  <Text style={[styles.wordText, !isFound && { color: '#ccc' }]}>
+                  <Text style={[styles.wordText, !isFound && { color: theme.text }]}>
                     {isFound ? word : "?"}
                   </Text>
                   {isFound && (
@@ -148,7 +148,7 @@ export default function MocaMemory({ theme, onComplete }) {
             })}
           </View>
 
-          <View style={styles.transcriptBox}>
+          <View style={{...styles.transcriptBox, backgroundColor: theme.primary}}>
             <Text style={styles.transcriptLabel}>Erkennung läuft:</Text>
             <Text style={styles.transcriptText}>{transcript || "Sprechen Sie jetzt..."}</Text>
           </View>
@@ -157,7 +157,7 @@ export default function MocaMemory({ theme, onComplete }) {
             style={[styles.finishBtn, { backgroundColor: theme.primary }]} 
             onPress={handleFinishRecall}
           >
-            <Text style={styles.finishBtnText}>Aufsagen beenden</Text>
+            <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>Aufsagen beenden</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   nextSubBtn: { marginTop: 40, padding: 10 },
   nextSubBtnText: { fontSize: 16, fontWeight: 'bold' },
   wordGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15, marginBottom: 40 },
-  wordBox: { width: 120, height: 60, borderWidth: 2, borderColor: '#eee', borderRadius: 12, justifyContent: 'center', alignItems: 'center', position: 'relative' },
+  wordBox: { width: 120, height: 60, borderWidth: 2, borderColor: "gray", borderRadius: 12, justifyContent: 'center', alignItems: 'center', position: 'relative' },
   wordText: { fontSize: 18, fontWeight: 'bold' },
   checkIcon: { position: 'absolute', top: 5, right: 5 },
   transcriptBox: { width: '100%', padding: 20, backgroundColor: '#f9f9f9', borderRadius: 12, marginBottom: 30, borderWidth: 1, borderColor: '#eee' },

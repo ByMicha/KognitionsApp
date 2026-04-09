@@ -61,8 +61,8 @@ export default function MocaClock({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>2. Visuospatial / Exekutiv (Uhr)</Text>
-        <Text style={styles.desc}>
+        <Text style={{...styles.title, color: theme.primary}}>2. Visuospatial / Exekutiv (Uhr)</Text>
+        <Text style={{...styles.desc, color: theme.text}}>
           Stellen Sie die Uhrzeit auf: <Text style={{fontWeight: 'bold'}}>11:10 Uhr</Text>
         </Text>
       </View>
@@ -76,7 +76,7 @@ export default function MocaClock({ theme, onComplete }) {
             {renderNumbers()}
             
             <G rotation={hourAngle} origin={`${center}, ${center}`}>
-              <Line x1={center} y1={center} x2={center + 65} y2={center} stroke={theme.primary} strokeWidth="10" strokeLinecap="round" />
+              <Line x1={center} y1={center} x2={center + 65} y2={center} stroke={theme.redish} strokeWidth="10" strokeLinecap="round" />
             </G>
 
             <G rotation={minuteAngle} origin={`${center}, ${center}`}>
@@ -91,31 +91,31 @@ export default function MocaClock({ theme, onComplete }) {
       {!isConfirmed && (
         <View style={styles.controlsContainer}>
           <View style={styles.controlRow}>
-            <Text style={styles.controlLabel}>Stunden</Text>
+            <Text style={{...styles.controlLabel, color: theme.text}}>Stunden</Text>
             <View style={styles.buttonGroup}>
-              <TouchableOpacity style={styles.arrowBtn} onPress={() => moveHour('prev')}>
-                <MaterialCommunityIcons name="minus" size={24} color={theme.primary} />
+              <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveHour('prev')}>
+                <MaterialCommunityIcons name="minus" size={24} color={theme.darkContrast} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.arrowBtn} onPress={() => moveHour('next')}>
-                <MaterialCommunityIcons name="plus" size={24} color={theme.primary} />
+              <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveHour('next')}>
+                <MaterialCommunityIcons name="plus" size={24} color={theme.darkContrast} />
               </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.controlRow}>
-            <Text style={styles.controlLabel}>Minuten</Text>
+            <Text style={{...styles.controlLabel, color: theme.text}}>Minuten</Text>
             <View style={styles.buttonGroup}>
-              <TouchableOpacity style={styles.arrowBtn} onPress={() => moveMinute('prev')}>
-                <MaterialCommunityIcons name="minus" size={24} color={theme.primary} />
+              <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveMinute('prev')}>
+                <MaterialCommunityIcons name="minus" size={24} color={theme.darkContrast} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.arrowBtn} onPress={() => moveMinute('next')}>
-                <MaterialCommunityIcons name="plus" size={24} color={theme.primary} />
+              <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveMinute('next')}>
+                <MaterialCommunityIcons name="plus" size={24} color={theme.darkContrast} />
               </TouchableOpacity>
             </View>
           </View>
 
           <TouchableOpacity style={[styles.confirmBtn, { backgroundColor: theme.primary }]} onPress={handleConfirm}>
-            <Text style={styles.confirmBtnText}>Uhrzeit einloggen</Text>
+            <Text style={{...styles.confirmBtnText, color: theme.darkContrast}}>Uhrzeit einloggen</Text>
           </TouchableOpacity>
         </View>
       )}

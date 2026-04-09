@@ -70,19 +70,19 @@ export default function MocaVigilance({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>6. Aufmerksamkeit (Vigilanz)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>6. Aufmerksamkeit (Vigilanz)</Text>
       </View>
 
       {!isStarted ? (
         <View style={styles.explanationArea}>
-          <Text style={styles.desc}>
+          <Text style={{...styles.desc, color: theme.text}}>
             Tippen Sie auf den Button, wenn Sie den Buchstaben <Text style={{fontWeight: 'bold'}}>A</Text> hören.
           </Text>
           <TouchableOpacity 
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={startTask}
           >
-            <Text style={styles.startBtnText}>Aufgabe starten</Text>
+            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>Aufgabe starten</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -97,14 +97,14 @@ export default function MocaVigilance({ theme, onComplete }) {
                 onPress={handleTap}
                 activeOpacity={0.7}
               >
-                <MaterialCommunityIcons name="gesture-tap" size={80} color="#fff" />
-                <Text style={styles.tapButtonText}>BEI "A" TIPPEN</Text>
+                <MaterialCommunityIcons name="gesture-tap" size={80} color={theme.darkContrast} />
+                <Text style={{...styles.tapButtonText, color: theme.darkContrast}}>BEI "A" TIPPEN</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.finishArea}>
-              <MaterialCommunityIcons name="check-circle" size={80} color="#2ecc71" />
-              <Text style={styles.finishText}>Abgeschlossen ✓</Text>
+              <MaterialCommunityIcons name="check-circle" size={80} color={theme.greenish} />
+              <Text style={{...styles.finishText, color: theme.greenish}}>Abgeschlossen ✓</Text>
             </View>
           )}
         </View>

@@ -74,13 +74,13 @@ export default function MocaRecall({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>10. Verzögerter Abruf</Text>
+        <Text style={{...styles.title, color: theme.primary}}>10. Verzögerter Abruf</Text>
       </View>
 
       {!isStarted ? (
         <View style={styles.centerArea}>
           <MaterialCommunityIcons name="brain" size={80} color={theme.primary} />
-          <Text style={styles.instruction}>
+          <Text style={{...styles.instruction, color: theme.text}}>
             Erinnern Sie sich an die 5 Wörter, die ich Ihnen vorhin vorgelesen habe? {"\n\n"}
             Bitte sagen Sie mir so viele wie möglich davon noch einmal auf.
           </Text>
@@ -88,7 +88,7 @@ export default function MocaRecall({ theme, onComplete }) {
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={handleStart}
           >
-            <Text style={styles.btnText}>Ich bin bereit</Text>
+            <Text style={{...styles.btnText, color: theme.darkContrast}}>Ich bin bereit</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -102,14 +102,14 @@ export default function MocaRecall({ theme, onComplete }) {
                   key={index} 
                   style={[
                     styles.wordBox, 
-                    isFound && { borderColor: '#2ecc71', backgroundColor: '#f0fff4' }
+                    isFound && { borderColor: theme.greenish, backgroundColor: '#f0fff4' }
                   ]}
                 >
                   <Text style={[styles.wordText, !isFound && { color: '#ccc' }]}>
                     {isFound ? word : "?"}
                   </Text>
                   {isFound && (
-                    <MaterialCommunityIcons name="check-circle" size={16} color="#2ecc71" style={styles.checkIcon} />
+                    <MaterialCommunityIcons name="check-circle" size={16} color={theme.greenish} style={styles.checkIcon} />
                   )}
                 </View>
               );
@@ -118,21 +118,21 @@ export default function MocaRecall({ theme, onComplete }) {
 
           {!isFinished ? (
             <>
-              <View style={styles.transcriptBox}>
-                <Text style={styles.transcriptText}>{transcript || "Ich höre zu..."}</Text>
+              <View style={{...styles.transcriptBox, backgroundColor: theme.accent}}>
+                <Text style={{...styles.transcriptText, color: theme.text}}>{transcript || "Ich höre zu..."}</Text>
               </View>
 
               <TouchableOpacity 
                 style={[styles.finishBtn, { backgroundColor: theme.primary }]} 
                 onPress={handleFinish}
               >
-                <Text style={styles.finishBtnText}>Aufsagen beenden</Text>
+                <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>Aufsagen beenden</Text>
               </TouchableOpacity>
             </>
           ) : (
             <View style={styles.successArea}>
-              <MaterialCommunityIcons name="check-circle" size={60} color="#2ecc71" />
-              <Text style={styles.successText}>Ergebnisse wurden gespeichert ✓</Text>
+              <MaterialCommunityIcons name="check-circle" size={60} color={theme.greenish} />
+              <Text style={{...styles.successText, color: theme.greenish}}>Ergebnisse wurden gespeichert ✓</Text>
             </View>
           )}
         </View>

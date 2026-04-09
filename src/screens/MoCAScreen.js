@@ -157,9 +157,9 @@ export default function MoCAScreen({ t, theme, onBack }) {
           <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
         </TouchableOpacity>
         <View style={styles.progressWrapper}>
-          <Text style={styles.progressText}>MoCA Fortschritt: {currentPhase + 1} / {totalPhases}</Text>
+          <Text style={{...styles.progressText, color: theme.text}}>MoCA Fortschritt: {currentPhase + 1} / {totalPhases}</Text>
           <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: progress + '%', backgroundColor: theme.primary }]} />
+            <View style={[styles.progressBarFill, {backgroundColor: theme.headerGradientStart, width: progress + '%' }]} />
           </View>
         </View>
 
@@ -170,16 +170,16 @@ export default function MoCAScreen({ t, theme, onBack }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={[styles.sheet, { backgroundColor: '#fff', borderColor: theme.border }]}>
+        <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
           <View style={styles.contentArea}>{renderPhase()}</View>
           
           <View style={styles.footer}>
             <TouchableOpacity 
-              style={[styles.nextBtn, { backgroundColor: isNextDisabled ? '#eee' : theme.primary }]} 
+              style={[styles.nextBtn, { backgroundColor: isNextDisabled ? theme.grayish : theme.primary }]} 
               onPress={handleNext}
               disabled={isNextDisabled}
             >
-              <Text style={[styles.nextBtnText, { color: isNextDisabled ? '#aaa' : '#fff' }]}>
+              <Text style={[styles.nextBtnText, { color: isNextDisabled ? theme.text : theme.darkContrast }]}>
                 {currentPhase === totalPhases - 1 ? "Test beenden" : "Nächster Test"}
               </Text>
             </TouchableOpacity>

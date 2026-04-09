@@ -140,8 +140,8 @@ export default function MocaDigits({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>5. Aufmerksamkeit (Zahlenreihen)</Text>
-        <Text style={styles.desc}>
+        <Text style={{...styles.title, color: theme.primary}}>5. Aufmerksamkeit (Zahlenreihen)</Text>
+        <Text style={{...styles.desc, color: theme.text}}>
           {step === 'f_listen' && "Hören Sie die Zahlenreihe."}
           {step === 'f_recall' && "Wiederholen Sie die Zahlen in der GLEICHEN Reihenfolge."}
           {step === 'b_listen' && "Hören Sie die Zahlenreihe."}
@@ -156,8 +156,8 @@ export default function MocaDigits({ theme, onComplete }) {
             onPress={() => playDigits(step === 'f_listen' ? FORWARD_SEQ : ["2", "4", "7"], step === 'f_listen' ? "Zahlen vorwärts" : "Zahlen für rückwärts")}
             disabled={isSpeaking}
           >
-            <MaterialCommunityIcons name="volume-high" size={50} color={isSpeaking ? theme.primary : "#fff"} />
-            <Text style={[styles.btnText, { color: isSpeaking ? theme.primary : "#fff" }]}>
+            <MaterialCommunityIcons name="volume-high" size={50} color={isSpeaking ? theme.primary : theme.darkContrast} />
+            <Text style={[styles.btnText, { color: isSpeaking ? theme.primary : theme.darkContrast }]}>
               {isSpeaking ? "Zahlen werden vorgelesen..." : "Zahlen jetzt anhören"}
             </Text>
           </TouchableOpacity>
@@ -177,7 +177,7 @@ export default function MocaDigits({ theme, onComplete }) {
           onPress={handleNextStep}
           disabled={isSpeaking}
         >
-          <Text style={styles.nextBtnText}>
+          <Text style={{...styles.nextBtnText, color: theme.darkContrast}}>
             {step === 'b_recall' ? "Aufgabe beenden" : "Nächster Schritt"}
           </Text>
         </TouchableOpacity>

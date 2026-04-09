@@ -138,8 +138,8 @@ export default function MocaTrails({ theme, onComplete }) {
   return (
     <View style={styles.full}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>1. Visuospatial / Exekutiv</Text>
-        <Text style={styles.desc}>Verbinden Sie die Kreise: 1 - A - 2 - B - 3 - C - 4 - D - 5 - E</Text>
+        <Text style={{...styles.title, color: theme.primary}}>1. Visuospatial / Exekutiv</Text>
+        <Text style={{...styles.desc, color: theme.text}}>Verbinden Sie die Kreise: 1 - A - 2 - B - 3 - C - 4 - D - 5 - E</Text>
       </View>
 
       <View 

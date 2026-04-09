@@ -77,13 +77,13 @@ export default function MocaLanguage({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>8. Sprache (Nachsprechen)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>8. Sprache (Nachsprechen)</Text>
       </View>
 
       {phase === 'intro' && (
         <View style={styles.centerArea}>
           <MaterialCommunityIcons name="account-voice" size={80} color={theme.primary} />
-          <Text style={styles.desc}>
+          <Text style={{...styles.desc, color: theme.text}}>
             Ich werde Ihnen nun einen Satz vorlesen. {"\n\n"}
             Hören Sie aufmerksam zu und wiederholen Sie den Satz danach <Text style={{fontWeight: 'bold'}}>exakt</Text> so, wie ich ihn gesagt habe.
           </Text>
@@ -94,7 +94,7 @@ export default function MocaLanguage({ theme, onComplete }) {
                 playSentence();
             }}
           >
-            <Text style={styles.btnText}>Satz jetzt hören</Text>
+            <Text style={{...styles.btnText, color: theme.darkContrast}}>Satz jetzt hören</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -104,16 +104,16 @@ export default function MocaLanguage({ theme, onComplete }) {
           <MaterialCommunityIcons 
             name={phase === 'listening' ? "volume-high" : "microphone"} 
             size={80} 
-            color={phase === 'listening' ? theme.primary : "#ff4444"} 
+            color={phase === 'listening' ? theme.primary : theme.redish} 
           />
-          <Text style={styles.statusText}>
+          <Text style={{...styles.statusText, color: theme.text}}>
             {phase === 'listening' ? "Bitte zuhören..." : "Sagen Sie den Satz jetzt nach:"}
           </Text>
 
           {phase === 'recording' && (
-            <View style={styles.transcriptContainer}>
+            <View style={{...styles.transcriptContainer, backgroundColor: theme.accent}}>
               <Text style={styles.transcriptLabel}>Ihre Antwort:</Text>
-              <Text style={styles.transcriptContent}>
+              <Text style={{...styles.transcriptContent, color: theme.text}}>
                 {transcript || "Ich höre zu..."}
               </Text>
             </View>
@@ -124,7 +124,7 @@ export default function MocaLanguage({ theme, onComplete }) {
               style={[styles.validateBtn, { backgroundColor: theme.primary }]} 
               onPress={handleValidation}
             >
-              <Text style={styles.btnText}>Lösung abgeben</Text>
+              <Text style={{...styles.btnText, color: theme.darkContrast}}>Lösung abgeben</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -135,20 +135,20 @@ export default function MocaLanguage({ theme, onComplete }) {
           <MaterialCommunityIcons 
             name={isCorrect ? "check-circle" : "alert-circle"} 
             size={80} 
-            color={isCorrect ? "#2ecc71" : "#ff4444"} 
+            color={isCorrect ? theme.greenish : theme.redish} 
           />
-          <View style={[styles.resultBox, { borderColor: isCorrect ? "#2ecc71" : "#ff4444" }]}>
-            <Text style={styles.resultLabel}>Vorgegeben:</Text>
-            <Text style={styles.resultTarget}>{TARGET_SENTENCE}</Text>
+          <View style={[styles.resultBox, {backgroundColor: theme.accent, borderColor: isCorrect ? theme.greenish : theme.redish }]}>
+            <Text style={{...styles.resultLabel, color: theme.grayish}}>Vorgegeben:</Text>
+            <Text style={{...styles.resultTarget, color: theme.text}}>{TARGET_SENTENCE}</Text>
             
             <View style={styles.divider} />
             
-            <Text style={styles.resultLabel}>Ihre Eingabe:</Text>
-            <Text style={[styles.resultInput, { color: isCorrect ? "#2ecc71" : "#ff4444" }]}>
+            <Text style={{...styles.resultLabel, color: theme.grayish}}>Ihre Eingabe:</Text>
+            <Text style={[styles.resultInput, { color: isCorrect ? theme.greenish : theme.redish }]}>
               {transcript}
             </Text>
           </View>
-          <Text style={styles.finalHint}>Das Ergebnis wurde gespeichert.</Text>
+          <Text style={{...styles.finalHint, color: theme.grayish}}>Das Ergebnis wurde gespeichert.</Text>
         </View>
       )}
 

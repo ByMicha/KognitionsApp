@@ -87,8 +87,8 @@ export default function MocaNaming({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>3. Benennen</Text>
-        <Text style={styles.desc}>Bitte benennen Sie das abgebildete Tier laut.</Text>
+        <Text style={{...styles.title, color: theme.primary}}>3. Benennen</Text>
+        <Text style={{...styles.desc, color: theme.text}}>Bitte benennen Sie das abgebildete Tier laut.</Text>
       </View>
 
       <View style={styles.namingArea}>
@@ -106,7 +106,7 @@ export default function MocaNaming({ theme, onComplete }) {
           style={[styles.nextAnimalBtn, { backgroundColor: theme.primary }]} 
           onPress={handleNextAnimal}
         >
-          <Text style={styles.nextAnimalBtnText}>
+          <Text style={{...styles.nextAnimalBtnText, color: theme.darkContrast}}>
             {currentIndex < 2 ? 'Nächstes Tier' : 'Benennen abschließen'}
           </Text>
         </TouchableOpacity>
