@@ -9,6 +9,8 @@ export const lightTheme = {
   grayish: "#f0f0f0",
   greenish: "#81D681",
   redish: "red",
+
+  talkBox: "#c0c0c0",
   // Neue Header-Verlaufsfarben
   headerGradientStart: '#4e4376',
   headerGradientEnd: '#2b5876',
@@ -28,6 +30,8 @@ export const darkTheme = {
   grayish: "#9299a1",
   greenish: "#64A664",
   redish: "#FF6666",
+
+  talkBox: "#cdf3ff",
 
   headerGradientStart: '#65C7F7',
   headerGradientEnd: '#9CECFB',

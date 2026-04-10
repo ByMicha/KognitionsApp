@@ -148,7 +148,7 @@ export default function COWATScreen({ t, theme, onBack }) {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>Wortflüssigkeit</Text>
         <TouchableOpacity style={{position: 'absolute', right: 20}} onPress={() => setShowExplanation(true)}>
@@ -165,14 +165,14 @@ export default function COWATScreen({ t, theme, onBack }) {
                 <Text style={[styles.timerText, { color: timeLeft < 10 ? '#ff4444' : theme.text }]}>{timeLeft}</Text>
                 <Text style={{...styles.timerSubText, color: theme.text}}>Sekunden</Text>
               </View>
-              <Text style={{...styles.targetLabel, color: theme.text}}>Sagen Sie Wörter mit:</Text>
+              <Text style={{...styles.targetLabel, color: theme.text}}>{t.cowat.speakNow}</Text>
               <Text style={[styles.bigLetter, { color: theme.primary }]}>{targetLetter}</Text>
               <View style={{...styles.transcriptContainer, backgroundColor: theme.card}}>
-                <Text style={{...styles.transcriptLabel, color: theme.text}}>Aufzeichnung läuft...</Text>
-                <Text style={{...styles.transcriptText, color: theme.text}}>{fullTranscript || "System bereit..."}</Text>
+                <Text style={{...styles.transcriptLabel, color: theme.text}}>{t.cowat.recordingRunning}</Text>
+                <Text style={{...styles.transcriptText, color: theme.text}}>{fullTranscript || t.cowat.systemReady}</Text>
               </View>
               <TouchableOpacity style={styles.finishEarlyBtn} onPress={handleFinishAction}>
-                <Text style={{color: '#ff4444', fontWeight: 'bold'}}>Test jetzt beenden</Text>
+                <Text style={{color: '#ff4444', fontWeight: 'bold'}}>{t.cowat.endTestNow}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -180,19 +180,19 @@ export default function COWATScreen({ t, theme, onBack }) {
           {phase === 'evaluating' && (
             <View style={styles.innerContent}>
               <ActivityIndicator size="large" color={theme.text} style={{ marginTop: 100 }} />
-              <Text style={{...styles.evalText, color: theme.text}}>Wörter werden gegen Wiktionary geprüft...</Text>
+              <Text style={{...styles.evalText, color: theme.text}}>{t.cowat.wordCheckWiktionary}</Text>
             </View>
           )}
 
           {phase === 'summary' && (
             <View style={styles.innerContent}>
-              <Text style={{...styles.summaryTitle, color: theme.text}}>Ergebnis: Buchstabe {targetLetter}</Text>
+              <Text style={{...styles.summaryTitle, color: theme.text}}>{t.cowat.result}: {t.cowat.letter} {targetLetter}</Text>
               <View style={styles.scoreBanner}>
                 <Text style={{...styles.scoreText, color: theme.primary}}>{finalScore}</Text>
-                <Text style={{...styles.scoreSub, color: theme.text}}>gültige Wörter gefunden</Text>
+                <Text style={{...styles.scoreSub, color: theme.text}}>{t.cowat.correctWordsFound}</Text>
               </View>
 
-              <Text style={{...styles.listHeader, color: theme.text}}>Detaillierte Wortliste:</Text>
+              <Text style={{...styles.listHeader, color: theme.text}}>{t.cowat.deatiledListOfWords}:</Text>
               <View style={styles.wordListContainer}>
                 {evaluatedWords.map((word, index) => (
                   <View key={index} style={[styles.wordTag, { backgroundColor: word.isCorrect ? '#e6fffa' : '#fff5f5', borderColor: word.isCorrect ? '#38b2ac' : '#f56565' }]}>
@@ -203,7 +203,7 @@ export default function COWATScreen({ t, theme, onBack }) {
                 ))}
               </View>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: theme.primary, marginTop: 40 }]} onPress={onBack}>
-                <Text style={{...styles.btnText, color: theme.darkContrast}}>Test abschließen</Text>
+                <Text style={{...styles.btnText, color: theme.darkContrast}}>{t.cowat.completeTest}</Text>
               </TouchableOpacity>
             </View>
           )}

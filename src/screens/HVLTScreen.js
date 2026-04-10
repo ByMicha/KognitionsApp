@@ -225,7 +225,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
               <Text style={{ color: num <= currentTrial ? theme.darkContrast : theme.text, fontWeight: 'bold' }}>{num}</Text>
             </View>
           ))}
-          <Text style={[styles.trialLabel, { color: theme.text }]}>Lernphase: Durchgang {currentTrial} von 3</Text>
+          <Text style={[styles.trialLabel, { color: theme.text }]}>{t.hvlt.learningPhase}: {t.hvlt.round} {currentTrial} {t.hvlt.of} 3</Text>
         </View>
 
         <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
@@ -235,7 +235,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
               <MaterialCommunityIcons name="bullhorn-outline" size={80} color={theme.primary} />
               <Text style={{...styles.instructionText, color: theme.text}}>{t.hvlt.instruction}</Text>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: theme.primary }]} onPress={startListeningPhase}>
-                <Text style={{...styles.btnText, color: theme.darkContrast}}>Durchgang {currentTrial} starten</Text>
+                <Text style={{...styles.btnText, color: theme.darkContrast}}>{t.hvlt.round} {currentTrial} {t.hvlt.start}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -243,7 +243,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
           {phase === 'listening' && (
             <View style={styles.innerContent}>
               <MaterialCommunityIcons name="volume-high" size={100} color={theme.primary} />
-              <Text style={{...styles.statusText, color: theme.text}}>{currentWordIndex >= 0 ? `Wort ${currentWordIndex + 1} / 12` : "Bereit..."}</Text>
+              <Text style={{...styles.statusText, color: theme.text}}>{currentWordIndex >= 0 ? t.hvlt.word+` ${currentWordIndex + 1} / 12` : t.hvlt.ready}</Text>
               <View style={styles.progressBarBackground}>
                 <View style={[styles.progressBarFill, { backgroundColor: theme.headerGradientStart, width: `${((currentWordIndex + 1) / 12) * 100}%` }]} />
               </View>
@@ -256,7 +256,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
                 <MaterialCommunityIcons name="microphone" size={70} color={isListening ? "#ff4444" : "#ccc"} />
               </View>
               
-              <Text style={{...styles.statusText, color: theme.text}}>Bitte aufzählen...</Text>
+              <Text style={{...styles.statusText, color: theme.text}}>{t.hvlt.pleaseList}</Text>
 
               <View style={styles.wordGrid}>
                 {WORD_LIST.map((word, idx) => {
@@ -273,7 +273,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
 
               <View style={{...styles.transcriptBox, backgroundColor: theme.pageGradientStart}}>
                 <Text style={{...styles.transcriptLabel, color: theme.text}}>Live-Erkennung:</Text>
-                <Text style={{...styles.transcriptText, color: theme.text}} numberOfLines={1}>"{currentTranscript || "Warten auf Sprache..."}"</Text>
+                <Text style={{...styles.transcriptText, color: theme.text}} numberOfLines={1}>"{currentTranscript || t.hvlt.waitForSpeech}"</Text>
               </View>
 
               <TouchableOpacity 
@@ -281,7 +281,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
                 onPress={handleNextStep}
               >
                 <Text style={{...styles.btnText, color: theme.darkContrast}}>
-                  {currentTrial < 3 ? "Nächster Durchgang" : "Test abschließen"}
+                  {currentTrial < 3 ? t.hvlt.nextTrial : t.hvlt.endTest}
                 </Text>
               </TouchableOpacity>
             </View>

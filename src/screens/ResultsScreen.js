@@ -17,11 +17,11 @@ export default function ResultsScreen({ t, theme, onBack }) {
       await loadResults();
     };
     if (Platform.OS === 'web') {
-      if (window.confirm('Möchten Sie wirklich ALLE Ergebnisse unwiderruflich löschen?')) await performClear();
+      if (window.confirm(t.results.deleteAllRequest)) await performClear();
     } else {
-      Alert.alert("Alle Daten löschen", "Möchten Sie wirklich alle Ergebnisse unwiderruflich löschen?", [
-        { text: "Abbrechen", style: "cancel" },
-        { text: "Löschen", style: "destructive", onPress: performClear }
+      Alert.alert(t.results.deleteAllData, t.results.deleteAllRequest, [
+        { text: t.results.cancel, style: "cancel" },
+        { text: t.results.delete, style: "destructive", onPress: performClear }
       ]);
     }
   };
@@ -32,11 +32,11 @@ export default function ResultsScreen({ t, theme, onBack }) {
       await loadResults();
     };
     if (Platform.OS === 'web') {
-      if (window.confirm('Diesen Eintrag wirklich löschen?')) await performDelete();
+      if (window.confirm(t.results.deleteOneRequest)) await performDelete();
     } else {
-      Alert.alert("Eintrag löschen", "Möchten Sie diesen Testeintrag wirklich löschen?", [
-        { text: "Abbrechen", style: "cancel" },
-        { text: "Löschen", style: "destructive", onPress: performDelete }
+      Alert.alert(t.results.deleteEntry, t.results.deleteOneRequest, [
+        { text: t.results.cancel, style: "cancel" },
+        { text: t.results.delete, style: "destructive", onPress: performDelete }
       ]);
     }
   };
@@ -68,21 +68,21 @@ export default function ResultsScreen({ t, theme, onBack }) {
           <View style={styles.mocaContainer}>
 
             {/* 1. Visuokonstruktiv */}
-            {renderMocaSection("Visuokonstruktiv / Exekutiv", "pencil-ruler", (
+            {renderMocaSection(t.results.visualConstructiveExecutive, "pencil-ruler", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Trails: {s['01_trails']?.duration_active_sec}s Bearbeitungszeit</Text>
-                <Text style={styles.mocaTranscript}>Pfad: {s['01_trails']?.path_raw?.join(' - ')}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.trails}: {s['01_trails']?.duration_active_sec}s {t.results.processingTime}</Text>
+                <Text style={styles.mocaTranscript}>{t.results.path}: {s['01_trails']?.path_raw?.join(' - ')}</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={[styles.detailText, { color: theme.text }]}>Uhrzeit: {s['02_clock']?.target_time} Uhr gefordert</Text>
-                <Text style={[styles.detailText, { color: theme.text }]}>Effizienz: {s['02_clock']?.total_clicks} Klicks ({s['02_clock']?.unnecessary_clicks} Korrekturen)</Text>
-                <Text style={styles.mocaItemSub}>Winkel: Stunde {s['02_clock']?.final_angles?.hour}°, Minute {s['02_clock']?.final_angles?.minute}°</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.timeClock}: {s['02_clock']?.target_time} {t.results.clock} {t.results.required}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.efficency}: {s['02_clock']?.total_clicks} {t.results.clicks} ({s['02_clock']?.unnecessary_clicks} {t.results.corrections})</Text>
+                <Text style={styles.mocaItemSub}>{t.results.angle}: {t.results.hour} {s['02_clock']?.final_angles?.hour}°, {t.results.minute} {s['02_clock']?.final_angles?.minute}°</Text>
               </View>
             ))}
 
             {/* 2. Benennen */}
-            {renderMocaSection("Benennen", "elephant", (
+            {renderMocaSection(t.results.naming, "elephant", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Ergebnis: {s['03_naming']?.score}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.result}: {s['03_naming']?.score}</Text>
                 <View style={styles.namingGrid}>
                   {['lion', 'rhino', 'camel'].map(animal => (
                     <View key={animal} style={styles.namingRow}>
@@ -91,7 +91,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
                         size={14} 
                         color={s['03_naming']?.[animal]?.success ? "#2ecc71" : "#ff4444"} 
                       />
-                      <Text style={styles.mocaTranscript}>{animal}: "{s['03_naming']?.[animal]?.transcript || "keine Eingabe"}"</Text>
+                      <Text style={styles.mocaTranscript}>{animal}: "{s['03_naming']?.[animal]?.transcript || t.results.noEntry}"</Text>
                     </View>
                   ))}
                 </View>
@@ -99,37 +99,37 @@ export default function ResultsScreen({ t, theme, onBack }) {
             ))}
 
             {/* 3. Gedächtnis (Sofort) */}
-            {renderMocaSection("Gedächtnis (Lernphase)", "brain", (
+            {renderMocaSection(t.results.remember, "brain", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Erfolg: {s['04_memory_immediate']?.correct_count} / 5 Wörter</Text>
-                <Text style={[styles.detailText, { color: theme.text }]}>Dauer: {s['04_memory_immediate']?.duration_recall_sec}s</Text>
-                <Text style={styles.mocaTranscript}>Transkript: "{s['04_memory_immediate']?.full_transcript}"</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.success}: {s['04_memory_immediate']?.correct_count} / 5 {t.results.words}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.duration}: {s['04_memory_immediate']?.duration_recall_sec}s</Text>
+                <Text style={styles.mocaTranscript}>{t.results.transcript}: "{s['04_memory_immediate']?.full_transcript}"</Text>
               </View>
             ))}
 
             {/* 4. Aufmerksamkeit */}
-            {renderMocaSection("Aufmerksamkeit", "alert-circle-outline", (
+            {renderMocaSection(t.results.attention, "alert-circle-outline", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Zahlen Vorwärts: {s['05_digits']?.forward?.hits} / {s['05_digits']?.forward?.seq_length} korr.</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.countForward}: {s['05_digits']?.forward?.hits} / {s['05_digits']?.forward?.seq_length} {t.results.correct}</Text>
                 <Text style={styles.mocaTranscript}>"{s['05_digits']?.forward?.transcript}"</Text>
-                <Text style={[styles.detailText, { color: theme.text }]}>Zahlen Rückwärts: {s['05_digits']?.backward?.hits} / {s['05_digits']?.backward?.seq_length} korr.</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.countBackwards}: {s['05_digits']?.backward?.hits} / {s['05_digits']?.backward?.seq_length} {t.results.correct}</Text>
                 <Text style={styles.mocaTranscript}>"{s['05_digits']?.backward?.transcript}"</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={[styles.detailText, { color: theme.text }]}>Vigilanz (Buchstabe A):</Text>
-                <Text style={[styles.detailText, { color: theme.text }]}>Treffer: {s['06_vigilance']?.hits} | Auslassung: {s['06_vigilance']?.omissions} | Fehlalarm: {s['06_vigilance']?.false_alarms}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.vigilance} ({t.results.letter} A):</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.hits}: {s['06_vigilance']?.hits} | {t.results.miss}: {s['06_vigilance']?.omissions} | {t.results.falseAlarm}: {s['06_vigilance']?.false_alarms}</Text>
               </View>
             ))}
 
             {/* 5. Rechnen */}
-            {renderMocaSection("Rechnen (Serielle 7)", "calculator", (
+            {renderMocaSection(t.results.calculation, "calculator", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Sequenz: {s['07_calculation']?.final_sequence?.join(' - ')}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.sequence}: {s['07_calculation']?.final_sequence?.join(' - ')}</Text>
                 <View style={styles.calcTable}>
                    {s['07_calculation']?.steps?.map((step, i) => (
                      <View key={i} style={styles.calcRow}>
-                       <Text style={[styles.calcCell, { color: theme.text }]}>Schritt {i+1}:</Text>
+                       <Text style={[styles.calcCell, { color: theme.text }]}>{t.results.step} {i+1}:</Text>
                        <Text style={[styles.calcCell, { color: step.is_correct ? '#2ecc71' : '#ff4444' }]}>
-                         {step.chosen} (Soll: {step.expected})
+                         {step.chosen} ({t.results.should}: {step.expected})
                        </Text>
                        <Text style={styles.calcCellTime}>{step.reaction_time_ms}ms</Text>
                      </View>
@@ -139,23 +139,23 @@ export default function ResultsScreen({ t, theme, onBack }) {
             ))}
 
             {/* 6. Sprache */}
-            {renderMocaSection("Sprache", "microphone", (
+            {renderMocaSection(t.results.language, "microphone", (
               <View>
-                <Text style={[styles.detailText, { color: theme.text }]}>Nachsprechen: {s['08_language']?.is_correct ? "Korrekt" : "Falsch"}</Text>
-                <Text style={styles.mocaItemSub}>Soll: {s['08_language']?.target_sentence}</Text>
-                <Text style={styles.mocaTranscript}>Ist: "{s['08_language']?.full_transcript}"</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.repetition}: {s['08_language']?.is_correct ? t.results.correct : t.results.wrong}</Text>
+                <Text style={styles.mocaItemSub}>{t.results.should}: {s['08_language']?.target_sentence}</Text>
+                <Text style={styles.mocaTranscript}>{t.results.is}: "{s['08_language']?.full_transcript}"</Text>
                 <View style={styles.dividerSmall} />
-                <Text style={[styles.detailText, { color: theme.text }]}>Wortfluss (F): {s['09_word_fluency']?.valid_wiki_count} Wörter</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.fluency} (F): {s['09_word_fluency']?.valid_wiki_count} {t.results.words}</Text>
                 <Text style={styles.mocaTranscript}>{s['09_word_fluency']?.raw_word_list?.join(', ')}</Text>
               </View>
             ))}
 
             {/* 7. Gedächtnis (Delayed Recall) */}
-            {renderMocaSection("Verzögerter Abruf (Recall)", "history", (
+            {renderMocaSection(t.results.recall, "history", (
               <View>
-                <Text style={[styles.detailText, { fontWeight: 'bold' }]}>Erfolg: {s['10_delayed_recall']?.correct_count} / 5 Wörter</Text>
-                <Text style={[styles.detailText, { color: theme.text }]}>Erinnert: {s['10_delayed_recall']?.remembered_words?.join(', ') || "Keine"}</Text>
-                <Text style={[styles.detailText, { color: '#ff4444' }]}>Vergessen: {s['10_delayed_recall']?.forgotten_words?.join(', ') || "Keine"}</Text>
+                <Text style={[styles.detailText, { fontWeight: 'bold' }]}>{t.results.success}: {s['10_delayed_recall']?.correct_count} / 5 {t.results.words}</Text>
+                <Text style={[styles.detailText, { color: theme.text }]}>{t.results.remebered}: {s['10_delayed_recall']?.remembered_words?.join(', ') || t.results.none}</Text>
+                <Text style={[styles.detailText, { color: '#ff4444' }]}>{t.results.forgotten}: {s['10_delayed_recall']?.forgotten_words?.join(', ') || t.results.none}</Text>
               </View>
             ))}
           </View>
@@ -165,7 +165,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Dauer: {formatTMTScore(res.score)}
+              {t.results.duration}: {formatTMTScore(res.score)}
             </Text>
           </View>
         );
@@ -173,17 +173,17 @@ export default function ResultsScreen({ t, theme, onBack }) {
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Glocken gefunden: {res.score} / 35
+              {t.results.bellsFound}: {res.score} / 35
             </Text>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Auslassungen: Links {res.data.leftOmissions} | Rechts {res.data.rightOmissions}
+              {t.results.misses}: {t.results.left} {res.data.leftOmissions} | {t.results.right} {res.data.rightOmissions}
             </Text>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Zeit: {res.data.timeSeconds}s
+              {t.results.time}: {res.data.timeSeconds}s
             </Text>
             {res.data.hasUSN && (
               <Text style={styles.warningText}>
-                Hinweis auf USN (6+ Auslassungen auf einer Seite)
+                {t.results.usnAlertMsg}
               </Text>
             )}
           </View>
@@ -192,13 +192,13 @@ export default function ResultsScreen({ t, theme, onBack }) {
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Korrekte Zuordnungen: {res.score}
+              {t.results.correctAssignment}: {res.score}
             </Text>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Bearbeitete Felder: {res.data.totalAttempted}
+              {t.results.editedFields}: {res.data.totalAttempted}
             </Text>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Zeit: {res.data.timeTaken}s
+              {t.results.time}: {res.data.timeTaken}s
             </Text>
           </View>
         );
@@ -206,7 +206,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text, fontWeight: 'bold' }]}>
-              Lernleistung Gesamt: {res.score} Wörter
+              {t.results.overallPerformance}: {res.score} {t.results.words}
             </Text>
             <View style={{...styles.statsContainer, backgroundColor: theme.darkContrast}}>
               {res.data.trials?.map((trial, i) => (
@@ -223,10 +223,10 @@ export default function ResultsScreen({ t, theme, onBack }) {
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Buchstabe: <Text style={{fontWeight: 'bold', fontSize: 18}}>{res.data.letter}</Text>
+              {t.results.letter}: <Text style={{fontWeight: 'bold', fontSize: 18}}>{res.data.letter}</Text>
             </Text>
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Korrekte Wörter: {res.score}
+              {t.results.correctWords}: {res.score}
             </Text>
             <View style={styles.wordCloud}>
               {res.data.correctWords?.map((word, i) => (
@@ -246,7 +246,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
         const r = res.data.responses || {};
         return (
           <View style={styles.detailBox}>
-            <Text style={[styles.detailSubHeader, { color: theme.text }]}>Antworten (Q1-Q30):</Text>
+            <Text style={[styles.detailSubHeader, { color: theme.text }]}>{t.results.answers} (Q1-Q30):</Text>
             <View style={styles.qlqGrid}>
               {Object.keys(r).sort((a,b) => parseInt(a.slice(1)) - parseInt(b.slice(1))).map((key) => (
                 <View key={key} style={styles.qlqItem}>
@@ -257,7 +257,7 @@ export default function ResultsScreen({ t, theme, onBack }) {
           </View>
         );
       default:
-        return <Text style={{ color: theme.text }}>Ergebnis: {res.score}</Text>;
+        return <Text style={{ color: theme.text }}>{t.results.result}: {res.score}</Text>;
     }
   };
 
@@ -265,15 +265,15 @@ export default function ResultsScreen({ t, theme, onBack }) {
     <View style={[styles.container, { backgroundColor: "transparent" }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
-        <Text style={[styles.title, { color: theme.text }]}>Ergebnis-Datenbank</Text>
-        <TouchableOpacity onPress={handleClearAll}><Text style={{ color: '#ff4444', fontWeight: 'bold' }}>Alle löschen</Text></TouchableOpacity>
+        <Text style={[styles.title, { color: theme.text }]}>{t.resultsAndDatabase}</Text>
+        <TouchableOpacity onPress={handleClearAll}><Text style={{ color: '#ff4444', fontWeight: 'bold' }}>{t.results.deleteAllData}</Text></TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {results.length === 0 ? (
-          <View style={styles.emptyState}><Text style={{ color: theme.text, opacity: 0.5 }}>Keine Einträge gefunden.</Text></View>
+          <View style={styles.emptyState}><Text style={{ color: theme.text, opacity: 0.5 }}>{t.results.noEntriesFound}</Text></View>
         ) : (
           results.slice().reverse().map((res) => (
             <View key={res.id} style={[styles.resultCard, { backgroundColor: theme.card, borderColor: theme.border }]}>

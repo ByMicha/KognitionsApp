@@ -185,7 +185,7 @@ export default function MocaTrails({ theme, onComplete }) {
             {circle.topLabel && (
               <Text style={[styles.labelAbove, { color: theme.text }]}>{circle.topLabel}</Text>
             )}
-            <Text style={[styles.circleText, { color: theme.text }]}>{circle.label}</Text>
+            <Text style={[styles.circleText, circle.id < nextNumber ? { color: "#253443" } : { color: theme.text } ]}>{circle.label}</Text>
           </View>
         ))}
       </View>

@@ -35,10 +35,10 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
   if (showResultsList) {
     return (
       <View style={[styles.container, { backgroundColor: theme.background, alignItems: "center" }]}>
-        <Text style={[styles.titleLabel, { color: theme.text, marginTop: 40 }]}>Gespeicherte Resultate</Text>
+        <Text style={[styles.titleLabel, { color: theme.text, marginTop: 40 }]}>{t.savedResults}</Text>
         <ScrollView style={{ width: '75%', marginBottom: 20 }}>
           {results.length === 0 ? (
-            <Text style={{ color: theme.text, textAlign: 'center' }}>Noch keine Ergebnisse vorhanden.</Text>
+            <Text style={{ color: theme.text, textAlign: 'center' }}>{t.noEntriesYet}</Text>
           ) : (
             results.map((res, index) => (
               <View key={index} style={[styles.testCard, { backgroundColor: theme.card, borderColor: theme.border, width: '100%' }]}>
@@ -53,7 +53,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           style={styles.backButton}
           onPress={() => setShowResultsList(false)}
         >
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: '600' }}>Zurück</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: '600' }}>{t.backToMenu}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -86,7 +86,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           style={[styles.smallButton, { backgroundColor: "transparent", borderColor: theme.primary, borderWidth: 3, alignSelf: 'center', marginTop: 20, width: '75%', maxWidth: 400 }]}
           onPress={() => onStartTest('results')} // Ruft jetzt den neuen Screen über App.js auf
         >
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: '600' }}>Ergebnisse & Datenbank</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: '600' }}>{t.resultsAndDatabase}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -110,7 +110,7 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           colors={[theme.headerGradientStart, theme.headerGradientEnd]}
           style={styles.header}
         >
-          <Text style={[styles.welcome, { color: theme.background }]}>Willkommen im Dashboard</Text>
+          <Text style={[styles.welcome, { color: theme.background }]}>{t.welcomeDashboard}</Text>
           <View style={styles.appTitleContainer}>
             <Text style={[styles.appTitle, { color: theme.accent }]}>{t.appTitle}</Text>
           </View>

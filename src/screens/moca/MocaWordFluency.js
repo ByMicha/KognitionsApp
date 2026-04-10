@@ -184,7 +184,7 @@ export default function MocaWordFluency({ theme, onComplete }) {
           </View>
 
           <Text style={{...styles.listHeader, color: theme.text}}>Erkannte Wörter im Detail:</Text>
-          <ScrollView style={{...styles.wordListContainer, backgroundColor: theme.accent}} contentContainerStyle={styles.wordListContent}>
+          <ScrollView style={{...styles.wordListContainer, backgroundColor: theme.talkBox}} contentContainerStyle={styles.wordListContent}>
             {results?.details.map((item, index) => (
               <View key={index} style={{...styles.wordRow}}>
                 <MaterialCommunityIcons 

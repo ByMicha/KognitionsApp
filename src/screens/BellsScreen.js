@@ -163,7 +163,7 @@ export default function BellsScreen({ t, theme, onBack }) {
       />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}><Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← Zurück</Text></TouchableOpacity>
+        <TouchableOpacity onPress={onBack} style={styles.backBtn}><Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← {t.backToMenu}</Text></TouchableOpacity>
         <Text style={[styles.title, { color: theme.text, flex: 1 }]}>{t.bells.title}</Text>
         <View style={[styles.timerContainer, { backgroundColor: timeLeft < 30 ? '#ff4444' : theme.card }]}>
           <Text style={{ color: timeLeft < 30 ? 'white' : theme.text, fontWeight: 'bold' }}>{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</Text>

@@ -111,9 +111,9 @@ export default function MocaLanguage({ theme, onComplete }) {
           </Text>
 
           {phase === 'recording' && (
-            <View style={{...styles.transcriptContainer, backgroundColor: theme.accent}}>
-              <Text style={styles.transcriptLabel}>Ihre Antwort:</Text>
-              <Text style={{...styles.transcriptContent, color: theme.text}}>
+            <View style={{...styles.transcriptContainer, backgroundColor: theme.talkBox}}>
+              <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>Ihre Antwort:</Text>
+              <Text style={{...styles.transcriptContent, color: theme.darkContrast}}>
                 {transcript || "Ich höre zu..."}
               </Text>
             </View>
@@ -137,9 +137,9 @@ export default function MocaLanguage({ theme, onComplete }) {
             size={80} 
             color={isCorrect ? theme.greenish : theme.redish} 
           />
-          <View style={[styles.resultBox, {backgroundColor: theme.accent, borderColor: isCorrect ? theme.greenish : theme.redish }]}>
+          <View style={[styles.resultBox, {backgroundColor: theme.talkBox, borderColor: isCorrect ? theme.greenish : theme.redish }]}>
             <Text style={{...styles.resultLabel, color: theme.grayish}}>Vorgegeben:</Text>
-            <Text style={{...styles.resultTarget, color: theme.text}}>{TARGET_SENTENCE}</Text>
+            <Text style={{...styles.resultTarget, color: theme.darkContrast}}>{TARGET_SENTENCE}</Text>
             
             <View style={styles.divider} />
             

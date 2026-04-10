@@ -148,8 +148,8 @@ export default function MocaMemory({ theme, onComplete }) {
             })}
           </View>
 
-          <View style={{...styles.transcriptBox, backgroundColor: theme.primary}}>
-            <Text style={styles.transcriptLabel}>Erkennung läuft:</Text>
+          <View style={{...styles.transcriptBox, backgroundColor: theme.talkBox}}>
+            <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>Erkennung läuft:</Text>
             <Text style={styles.transcriptText}>{transcript || "Sprechen Sie jetzt..."}</Text>
           </View>
 

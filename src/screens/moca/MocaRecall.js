@@ -118,8 +118,8 @@ export default function MocaRecall({ theme, onComplete }) {
 
           {!isFinished ? (
             <>
-              <View style={{...styles.transcriptBox, backgroundColor: theme.accent}}>
-                <Text style={{...styles.transcriptText, color: theme.text}}>{transcript || "Ich höre zu..."}</Text>
+              <View style={{...styles.transcriptBox, backgroundColor: theme.talkBox}}>
+                <Text style={{...styles.transcriptText, color: theme.darkContrast}}>{transcript || "Ich höre zu..."}</Text>
               </View>
 
               <TouchableOpacity 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   startBtn: { paddingVertical: 15, paddingHorizontal: 50, borderRadius: 12 },
   btnText: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
   wordGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15, marginBottom: 40 },
-  wordBox: { width: 120, height: 65, borderWidth: 2, borderColor: '#eee', borderRadius: 12, justifyContent: 'center', alignItems: 'center', position: 'relative' },
+  wordBox: { width: 120, height: 65, borderWidth: 2, borderColor: '#c4c4c4', borderRadius: 12, justifyContent: 'center', alignItems: 'center', position: 'relative' },
   wordText: { fontSize: 18, fontWeight: 'bold' },
   checkIcon: { position: 'absolute', top: 5, right: 5 },
   transcriptBox: { width: '100%', padding: 20, backgroundColor: '#f9f9f9', borderRadius: 12, marginBottom: 30, borderWidth: 1, borderColor: '#eee' },

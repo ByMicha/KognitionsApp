@@ -119,7 +119,7 @@ export default function MocaCalculation({ theme, onComplete }) {
                   }
                 ]}
               >
-                <Text style={[styles.calcText, !res && { color: '#eee' }]}>
+                <Text style={[styles.calcText, !res && { color: theme.primary }]}>
                   {res ? res.value : "?"}
                 </Text>
               </View>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   startBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
   centerArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   calcGrid: { flexDirection: 'row', gap: 10, marginBottom: 50 },
-  calcBox: { width: 65, height: 85, borderWidth: 2, borderColor: '#eee', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  calcBox: { width: 65, height: 85, borderWidth: 2, borderColor: '#c4c4c4', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   calcText: { fontSize: 26, fontWeight: 'bold' },
   quizArea: { width: '100%', maxWidth: 400 },
   optionsRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15 },

@@ -127,8 +127,8 @@ export default function MocaDigits({ theme, onComplete }) {
       {target.map((num, i) => {
         const isRevealed = i < correctCount;
         return (
-          <View key={i} style={[styles.digitBox, isRevealed && styles.digitBoxActive]}>
-            <Text style={[styles.digitText, !isRevealed && { color: '#eee' }]}>
+          <View key={i} style={[styles.digitBox, {borderColor: theme.primary}, isRevealed && styles.digitBoxActive]}>
+            <Text style={[styles.digitText, !isRevealed && { color: theme.primary }]}>
               {isRevealed ? num : "?"}
             </Text>
           </View>
@@ -167,7 +167,7 @@ export default function MocaDigits({ theme, onComplete }) {
         {step === 'b_recall' && renderDigitsDisplay(BACKWARD_SEQ)}
 
         <View style={styles.feedbackContainer}>
-           <Text style={styles.transcriptText}>
+           <Text style={{...styles.transcriptText, color: theme.text}}>
              {transcript ? `Erkannt: ${transcript}` : "Ich höre zu..."}
            </Text>
         </View>
