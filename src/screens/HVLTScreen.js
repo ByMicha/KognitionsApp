@@ -203,6 +203,7 @@ export default function HVLTScreen({ t, theme, onBack }) {
         }} 
         testKey="hvlt"
         theme={theme}
+        t={t}
         isRunning={testStarted}
       />
 

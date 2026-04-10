@@ -143,6 +143,7 @@ export default function COWATScreen({ t, theme, onBack }) {
         }} 
         testKey="cowat"
         theme={theme}
+        t={t}
         isRunning={testStarted}
       />
 

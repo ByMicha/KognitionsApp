@@ -138,12 +138,13 @@ export default function ZSTestScreen({ t, theme, onBack }) {
         }} 
         testKey="zs_test"
         theme={theme}
+        t={t}
         isRunning={testStarted}
       />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18 }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: "bold" }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text, flex: 1 }]}>{t.zsTest.title}</Text>
         <View style={[styles.timer, { backgroundColor: (timeLeft < 15 && !isPracticePhase) ? '#ff4444' : theme.card }]}>
@@ -175,7 +176,7 @@ export default function ZSTestScreen({ t, theme, onBack }) {
           <View style={{...styles.divider, backgroundColor: theme.grayish}} />
 
           {/* Arbeitsbereich */}
-          <Text style={{...styles.sectionLabel, color: theme.text}}>Beispiel / Übung</Text>
+          <Text style={{...styles.sectionLabel, color: theme.text}}>{t.zsTest.exampleTry}</Text>
           <View style={styles.grid}>
             {taskNumbers.map((num, index) => {
               const isPractice = index < PRACTICE_TASKS.length;

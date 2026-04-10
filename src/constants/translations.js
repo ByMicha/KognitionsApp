@@ -19,7 +19,8 @@ const translations = {
       success: "Glückwunsch! Test beendet.",
       search: "Suche:",
       done: "Fertig!",
-      restart: "Neustart"
+      restart: "Neustart",
+      part: "Teil",
     },
     bells: {
       title: "Bells Test",
@@ -31,7 +32,8 @@ const translations = {
       instruction: "Ordnen Sie den Zahlen so schnell wie möglich die passenden Symbole aus der Legende zu.",
       start: "Test starten",
       done: "Test beenden",
-      timeUp: "Zeit abgelaufen"
+      timeUp: "Zeit abgelaufen",
+      exampleTry: "Beispiel / Übung",
     },
     hvlt: {
       title: "Hopkins Verbal Learning Test (HVLT-R)",
@@ -186,6 +188,153 @@ const translations = {
       language: "Sprache",
       recall: "Verzögerter Abruf (Recall)",
       none: "Keine",
+    },
+
+    moca: {
+      mocaProgress: "MoCA Fortschritt",
+      endTest: "Test beenden",
+      nextTest: "Nächster Test",
+    },
+
+    explanation: {
+      threeCentralSteps: "Drei zentrale Schritte",
+      backToTest: "Zurück zum Test",
+      understoodStartTest: "Verstanden & Test starten",
+      content: {
+        moca: {
+          title: "MoCA - Test der geistigen Fitness",
+          desc: "In diesem Test schauen wir uns gemeinsam verschiedene Bereiche Ihrer geistigen Leistungsfähigkeit an. Er besteht aus insgesamt 10 kurzen Übungen, für die wir etwa 15 bis 20 Minuten Zeit benötigen.",
+          steps: [
+            { 
+              title: "Vielfältige Aufgaben:", 
+              text: "Sie werden nacheinander Linien ziehen, eine Uhr einstellen, Tiere benennen und versuchen, sich Wörter einzuprägen." 
+            },
+            { 
+              title: "Konzentration & Sprache:", 
+              text: "Es folgen kleine Rechenaufgaben, das Nachsprechen von Sätzen und Übungen, bei denen Sie aufmerksam auf Töne oder Buchstaben achten." 
+            },
+            { 
+              title: "Ganz entspannt:", 
+              text: "Machen Sie sich keinen Druck. Es geht darum, einen Überblick zu bekommen. Folgen Sie einfach Schritt für Schritt den Anweisungen auf dem Bildschirm." 
+            },
+          ],
+          icon: "brain"
+        },
+        hvlt: {
+          title: "Hopkins Gedächtnistest (HVLT)",
+          desc: "Dieser Test hilft uns zu verstehen, wie gut Sie neue Informationen aufnehmen und wie sicher Sie diese im Gedächtnis behalten können.",
+          steps: [
+            { 
+              title: "Wörter einprägen:", 
+              text: "Ich lese Ihnen eine Liste mit Wörtern vor. Bitte hören Sie konzentriert zu und versuchen Sie, sich so viele wie möglich zu merken." 
+            },
+            { 
+              title: "Wörter wiedergeben:", 
+              text: "Sagen Sie mir danach alle Wörter auf, an die Sie sich noch erinnern können. Die Reihenfolge spielt dabei keine Rolle." 
+            },
+            { 
+              title: "Mehrfaches Lernen:", 
+              text: "Wir wiederholen diesen Vorgang insgesamt dreimal, damit Sie die Wörter so gut wie möglich lernen können." 
+            },
+          ],
+          icon: "format-list-bulleted"
+        },
+        cowat: {
+          title: "Wortflüssigkeit (COWAT)",
+          desc: "Hier prüfen wir, wie flüssig Sie Begriffe aus Ihrem Gedächtnis abrufen können. Das ist eine gute Übung für Ihre Wortfindung.",
+          steps: [
+            { 
+              title: "Anfangsbuchstaben nutzen:", 
+              text: "Nennen Sie mir bitte so viele deutsche Wörter wie möglich, die mit einem bestimmten Buchstaben (z. B. 'F') beginnen." 
+            },
+            { 
+              title: "Bestimmte Regeln:", 
+              text: "Bitte vermeiden Sie Namen von Personen oder Orten sowie das mehrfache Nennen fast gleicher Wörter." 
+            },
+            { 
+              title: "Zügig sprechen:", 
+              text: "Sie haben pro Buchstabe genau 60 Sekunden Zeit. Sagen Sie einfach alles laut auf, was Ihnen in den Sinn kommt." 
+            },
+          ],
+          icon: "comment-text-multiple-outline"
+        },
+        tmt: {
+          title: "Pfadfinder-Test (TMT)",
+          desc: "Dieser Test misst Ihre Aufmerksamkeit und wie gut Sie zwischen verschiedenen Informationen (wie Zahlen und Buchstaben) hin- und herspringen können.",
+          steps: [
+            { 
+              title: "Reihenfolgen bilden:", 
+              text: "Im ersten Teil verbinden Sie Zahlen von 1 bis 25. Im zweiten Teil wechseln Sie zwischen Zahlen und Buchstaben ab (1-A-2-B...)." 
+            },
+            { 
+              title: "Flüssig arbeiten:", 
+              text: "Versuchen Sie, die Kreise so schnell wie möglich zu verbinden, ohne den Finger oder Stift abzusetzen." 
+            },
+            { 
+              title: "Fehler korrigieren:", 
+              text: "Sollten Sie sich einmal vertun, ist das nicht schlimm. Korrigieren Sie den Pfad einfach und machen Sie zügig weiter." 
+            },
+          ],
+          icon: "vector-polyline"
+        },
+        zs_test: {
+          title: "Zahl-Symbol-Test",
+          desc: "In dieser Übung geht es um Ihre Arbeitsgeschwindigkeit. Sie ordnen bestimmten Zeichen die passenden Zahlen zu.",
+          steps: [
+            { 
+              title: "Oben nachschauen:", 
+              text: "Am oberen Bildschirmrand sehen Sie eine Legende. Dort steht, welches Symbol zu welcher Zahl gehört (z. B. ein Kreis für die 1)." 
+            },
+            { 
+              title: "Unten ausfüllen:", 
+              text: "Schauen Sie sich das Symbol in der Mitte an und klicken Sie unten so schnell wie möglich auf die dazugehörige Zahl." 
+            },
+            { 
+              title: "Zeit nutzen:", 
+              text: "Sie haben 90 Sekunden Zeit. Versuchen Sie, so viele Felder wie möglich in dieser Zeit korrekt auszufüllen." 
+            },
+          ],
+          icon: "numeric-9-plus-box-multiple-outline"
+        },
+        qlq: {
+          title: "Fragebogen zum Wohlbefinden",
+          desc: "Dieser Fragebogen hilft uns dabei zu verstehen, wie Sie sich in der letzten Zeit gefühlt haben und wie es Ihnen im Alltag geht.",
+          steps: [
+            { 
+              title: "Rückblick halten:", 
+              text: "Bitte beziehen Sie Ihre Antworten auf Ihr Befinden in der vergangenen Woche (die letzten 7 Tage)." 
+            },
+            { 
+              title: "Ihre Einschätzung:", 
+              text: "Wählen Sie bei jeder Frage die Antwort aus, die am besten auf Sie zutrifft. Es gibt hier kein 'Richtig' oder 'Falsch'." 
+            },
+            { 
+              title: "Vollständigkeit:", 
+              text: "Nehmen Sie sich die Zeit, alle Fragen zu beantworten. Ihre ehrliche Einschätzung ist für uns sehr wertvoll." 
+            },
+          ],
+          icon: "clipboard-text-outline"
+        },
+        bells: {
+          title: "Glocken-Suchtest",
+          desc: "In dieser Übung prüfen wir, wie gut Sie Ihre Umgebung visuell absuchen können. Das hilft uns zu sehen, ob Ihnen im Blickfeld etwas entgeht.",
+          steps: [
+            { 
+              title: "Glocken finden:", 
+              text: "Auf dem Bildschirm sind viele verschiedene Zeichnungen. Suchen Sie bitte alle Glocken und tippen Sie diese kurz an." 
+            },
+            { 
+              title: "Genau hinschauen:", 
+              text: "Es sind insgesamt 35 Glocken versteckt. Versuchen Sie, das gesamte Bild von links nach rechts gründlich abzusuchen." 
+            },
+            { 
+              title: "Andere Bilder ignorieren:", 
+              text: "Lassen Sie sich nicht von den anderen Zeichnungen (wie Häusern oder Vögeln) ablenken. Wir suchen nur die Glocken." 
+            },
+          ],
+          icon: "search-web"
+        },
+      }
     }
   },
 
@@ -206,11 +355,12 @@ const translations = {
       qlqC30: "EORTC QLQ-C30"
     },
     tmt: {
-      title: "Trail Making Test - Part A",
+      title: "Trail Making Test",
       success: "Congratulations! Test completed.",
       search: "Search:",
       done: "Done!",
-      restart: "Restart"
+      restart: "Restart",
+      part: "Part",
     },
     bells: {
       title: "Bells Test",
@@ -218,11 +368,12 @@ const translations = {
       done: "Finish Test"
     },
     zsTest: {
-      title: "Number-Symbol Test",
+      title: "Digit-Symbol Test",
       instruction: "Match the numbers with the corresponding symbols from the legend as quickly as possible.",
       start: "Start Test",
       done: "End Test",
-      timeUp: "Time's up"
+      timeUp: "Time's up",
+      exampleTry: "Example / Exercise",
     },
     hvlt: {
       title: "Hopkins Verbal Learning Test (HVLT-R)",
@@ -245,7 +396,7 @@ const translations = {
       word: "Word",
     },
     cowat: {
-      title: "Wortflüssigkeitstest (COWAT)",
+      title: "Controlled Oral Word Association Test (COWAT)",
       instruction: "You will soon see a letter. Please say as many words as possible that begin with this letter. You have 60 seconds. Please do not use proper nouns or numbers.",
       startTest: "Start Test",
       speakNow: "Say words starting with:",
@@ -376,7 +527,155 @@ const translations = {
       language: "Language",
       recall: "Delayed recall",
       none: "None",
+    },
+
+    moca: {
+      mocaProgress: "MoCA Progress",
+      endTest: "End Test",
+      nextTest: "Next Test",
+    },
+
+    explanation: {
+      threeCentralSteps: "Three central steps",
+      backToTest: "Back to test",
+      understoodStartTest: "Understood & Start test",
+      content: {
+        moca: {
+          title: "MoCA - Mental Fitness Test",
+          desc: "In this test, we will look at various areas of your mental performance together. It consists of a total of 10 short exercises, for which we will need about 15 to 20 minutes.",
+          steps: [
+            { 
+              title: "Diverse tasks:", 
+              text: "You will draw lines, set a clock, name animals, and try to memorize words one after the other." 
+            },
+            { 
+              title: "Concentration & Language:", 
+              text: "Small calculation tasks, repeating sentences, and exercises where you pay close attention to sounds or letters will follow." 
+            },
+            { 
+              title: "Quite relaxed:", 
+              text: "Don't put yourself under pressure. The goal is to get an overview. Simply follow the instructions on the screen step by step." 
+            },
+          ],
+          icon: "brain"
+        },
+        hvlt: {
+          title: "Hopkins Verbal Learning Test (HVLT)",
+          desc: "This test helps us understand how well you take in new information and how reliably you can keep it in your memory.",
+          steps: [
+            { 
+              title: "Memorize words:", 
+              text: "I will read a list of words to you. Please listen carefully and try to remember as many as possible." 
+            },
+            { 
+              title: "Recall words:", 
+              text: "Then tell me all the words you can still remember. The order does not matter." 
+            },
+            { 
+              title: "Multiple learning trials:", 
+              text: "We repeat this process a total of three times so that you can learn the words as well as possible." 
+            },
+          ],
+          icon: "format-list-bulleted"
+        },
+        cowat: {
+          title: "Word Fluency (COWAT)",
+          desc: "Here we test how fluently you can retrieve terms from your memory. This is a good exercise for your word-finding ability.",
+          steps: [
+            { 
+              title: "Use initial letters:", 
+              text: "Please tell me as many words as possible that start with a certain letter (e.g., 'F')." 
+            },
+            { 
+              title: "Specific rules:", 
+              text: "Please avoid names of people or places as well as naming almost identical words multiple times." 
+            },
+            { 
+              title: "Speak quickly:", 
+              text: "You have exactly 60 seconds per letter. Simply say everything out loud that comes to mind." 
+            },
+          ],
+          icon: "comment-text-multiple-outline"
+        },
+        tmt: {
+          title: "Trail Making Test (TMT)",
+          desc: "This test measures your attention and how well you can jump back and forth between different types of information (like numbers and letters).",
+          steps: [
+            { 
+              title: "Form sequences:", 
+              text: "In the first part, you connect numbers from 1 to 25. In the second part, you alternate between numbers and letters (1-A-2-B...)." 
+            },
+            { 
+              title: "Work fluently:", 
+              text: "Try to connect the circles as quickly as possible without lifting your finger or pen." 
+            },
+            { 
+              title: "Correct mistakes:", 
+              text: "If you make a mistake, it's not a problem. Simply correct the path and continue quickly." 
+            },
+          ],
+          icon: "vector-polyline"
+        },
+        zs_test: {
+          title: "Digit-Symbol Test",
+          desc: "This exercise is about your processing speed. You assign specific symbols to their corresponding numbers.",
+          steps: [
+            { 
+              title: "Look at the top:", 
+              text: "At the top of the screen, you will see a legend. It shows which symbol belongs to which number (e.g., a circle for the number 1)." 
+            },
+            { 
+              title: "Fill in at the bottom:", 
+              text: "Look at the symbol in the middle and click on the corresponding number at the bottom as quickly as possible." 
+            },
+            { 
+              title: "Use the time:", 
+              text: "You have 90 seconds. Try to fill in as many fields as possible correctly during this time." 
+            },
+          ],
+          icon: "numeric-9-plus-box-multiple-outline"
+        },
+        qlq: {
+          title: "Well-being Questionnaire",
+          desc: "This questionnaire helps us understand how you have been feeling lately and how you are doing in your daily life.",
+          steps: [
+            { 
+              title: "Reflect:", 
+              text: "Please relate your answers to how you have been feeling over the past week (the last 7 days)." 
+            },
+            { 
+              title: "Your assessment:", 
+              text: "Choose the answer for each question that best applies to you. There are no 'right' or 'wrong' answers here." 
+            },
+            { 
+              title: "Completeness:", 
+              text: "Take the time to answer all the questions. Your honest assessment is very valuable to us." 
+            },
+          ],
+          icon: "clipboard-text-outline"
+        },
+        bells: {
+          title: "Bells Test",
+          desc: "In this exercise, we check how well you can visually search your surroundings. This helps us see if anything in your field of vision is being missed.",
+          steps: [
+            { 
+              title: "Find bells:", 
+              text: "There are many different drawings on the screen. Please find all the bells and tap them briefly." 
+            },
+            { 
+              title: "Look closely:", 
+              text: "There are a total of 35 hidden bells. Try to search the entire image thoroughly from left to right." 
+            },
+            { 
+              title: "Ignore other images:", 
+              text: "Don't let the other drawings (like houses or birds) distract you. We are only looking for the bells." 
+            },
+          ],
+          icon: "search-web"
+        },
+      }
     }
+
   }
 };
 

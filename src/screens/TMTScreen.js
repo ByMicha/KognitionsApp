@@ -228,14 +228,15 @@ export default function TMTScreen({ t, theme, onBack }) {
         }} 
         testKey="tmt"
         theme={theme}
+        t={t}
         isRunning={testStarted && modalKey !== 'tmt_b'}
       />
       
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontWeight: 'bold', fontSize: 18 }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
-        <Text style={[styles.title, { color: theme.text }]}>TMT - Teil {phase}</Text>
+        <Text style={[styles.title, { color: theme.text }]}>TMT - {t.tmt.part} {phase}</Text>
         <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
           <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
         </TouchableOpacity>

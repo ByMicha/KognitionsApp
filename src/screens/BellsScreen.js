@@ -159,6 +159,7 @@ export default function BellsScreen({ t, theme, onBack }) {
         }} 
         testKey="bells"
         theme={theme}
+        t={t}
         isRunning={testStarted}
       />
 

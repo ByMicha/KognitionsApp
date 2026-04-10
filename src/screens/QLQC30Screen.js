@@ -164,12 +164,13 @@ export default function QLQC30Screen({ t, theme, onBack }) {
         }} 
         testKey="qlq"
         theme={theme}
+        t={t}
         isRunning={testStarted}
       />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontWeight: 'bold' }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontWeight: 'bold' }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>{t.qlq.title}</Text>
 

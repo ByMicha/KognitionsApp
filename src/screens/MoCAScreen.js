@@ -149,15 +149,16 @@ export default function MoCAScreen({ t, theme, onBack }) {
         onClose={() => setShowExplanation(false)} 
         testKey="moca" 
         theme={theme}
+        t={t}
         isRunning={currentPhase > 0 || !isNextDisabled} // Zeigt "Zurück" statt "Starten"
       />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← Zurück</Text>
+          <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
         <View style={styles.progressWrapper}>
-          <Text style={{...styles.progressText, color: theme.text}}>MoCA Fortschritt: {currentPhase + 1} / {totalPhases}</Text>
+          <Text style={{...styles.progressText, color: theme.text}}>{t.moca.mocaProgress}: {currentPhase + 1} / {totalPhases}</Text>
           <View style={styles.progressBarBg}>
             <View style={[styles.progressBarFill, {backgroundColor: theme.headerGradientStart, width: progress + '%' }]} />
           </View>
@@ -180,7 +181,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
               disabled={isNextDisabled}
             >
               <Text style={[styles.nextBtnText, { color: isNextDisabled ? theme.text : theme.darkContrast }]}>
-                {currentPhase === totalPhases - 1 ? "Test beenden" : "Nächster Test"}
+                {currentPhase === totalPhases - 1 ? t.moca.endTest : t.moca.nextTest}
               </Text>
             </TouchableOpacity>
           </View>
