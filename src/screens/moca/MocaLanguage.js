@@ -137,13 +137,13 @@ export default function MocaLanguage({ theme, t, onComplete }) {
             size={80} 
             color={isCorrect ? theme.greenish : theme.redish} 
           />
-          <View style={[styles.resultBox, {backgroundColor: theme.talkBox, borderColor: isCorrect ? theme.greenish : theme.redish }]}>
-            <Text style={{...styles.resultLabel, color: theme.grayish}}>Vorgegeben:</Text>
-            <Text style={{...styles.resultTarget, color: theme.darkContrast}}>{TARGET_SENTENCE}</Text>
+          <View style={[styles.resultBox, {backgroundColor: "transparent", borderColor: isCorrect ? theme.greenish : theme.redish }]}>
+            <Text style={{...styles.resultLabel, color: theme.text}}>{t.moca.given}:</Text>
+            <Text style={{...styles.resultTarget, color: theme.text}}>{TARGET_SENTENCE}</Text>
             
             <View style={styles.divider} />
             
-            <Text style={{...styles.resultLabel, color: theme.grayish}}>{t.moca.yourInput}:</Text>
+            <Text style={{...styles.resultLabel, color: theme.text}}>{t.moca.yourInput}:</Text>
             <Text style={[styles.resultInput, { color: isCorrect ? theme.greenish : theme.redish }]}>
               {transcript}
             </Text>

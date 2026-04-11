@@ -259,6 +259,7 @@ const translations = {
       doYouRememberFiveWords: "Erinnern Sie sich an die 5 Wörter, die ich Ihnen vorhin vorgelesen habe?",
       pleaseSayAsMany: "Bitte sagen Sie mir so viele wie möglich davon noch einmal auf.",
       iAmReady: "Ich bin bereit",
+      given: "Vorgegeben",
       tests: {
         visuospatialExecutive: "Visuospatial / Exekutiv",
         visuospatialExecutiveClock: "Visuospatial / Exekutiv (Uhr)",
@@ -675,6 +676,7 @@ const translations = {
     doYouRememberFiveWords: "Do you remember the 5 words I read to you earlier?",
     pleaseSayAsMany: "Please tell me as many of them as possible once more.",
     iAmReady: "I am ready",
+    given: "Given",
     tests: {
       visuospatialExecutive: "Visuospatial / Executive",
       visuospatialExecutiveClock: "Visuospatial / Executive (Clock)",

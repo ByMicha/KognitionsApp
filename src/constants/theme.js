@@ -10,7 +10,7 @@ export const lightTheme = {
   greenish: "#81D681",
   redish: "red",
 
-  talkBox: "#c0c0c0",
+  talkBox: "#FFFFFF",
   // Neue Header-Verlaufsfarben
   headerGradientStart: '#4e4376',
   headerGradientEnd: '#2b5876',

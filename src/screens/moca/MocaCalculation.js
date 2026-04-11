@@ -134,7 +134,7 @@ export default function MocaCalculation({ theme, t, onComplete }) {
             {options.map((opt, idx) => (
               <TouchableOpacity 
                 key={idx} 
-                style={[styles.optionBtn, {backgroundColor: theme.accent ,borderColor: theme.primary }]} 
+                style={[styles.optionBtn, {backgroundColor: "transparent" ,borderColor: theme.primary }]} 
                 onPress={() => handleSelection(opt)}
               >
                 <Text style={[styles.optionText, { color: theme.primary }]}>{opt}</Text>
