@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const TARGET_SENTENCE = "Der Dieb des grauen Autos wurde von der Polizei angehalten.";
 
-export default function MocaLanguage({ theme, onComplete }) {
+export default function MocaLanguage({ theme, t, onComplete }) {
   const [phase, setPhase] = useState('intro'); // 'intro', 'listening', 'recording', 'result'
   const [transcript, setTranscript] = useState('');
   const [isCorrect, setIsCorrect] = useState(null);
@@ -77,15 +77,15 @@ export default function MocaLanguage({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>8. Sprache (Nachsprechen)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>8. {t.moca.tests.languageRepetition}</Text>
       </View>
 
       {phase === 'intro' && (
         <View style={styles.centerArea}>
           <MaterialCommunityIcons name="account-voice" size={80} color={theme.primary} />
           <Text style={{...styles.desc, color: theme.text}}>
-            Ich werde Ihnen nun einen Satz vorlesen. {"\n\n"}
-            Hören Sie aufmerksam zu und wiederholen Sie den Satz danach <Text style={{fontWeight: 'bold'}}>exakt</Text> so, wie ich ihn gesagt habe.
+            {t.moca.iWillReadYouASentence} {"\n\n"}
+            {t.moca.listenCarefullyAndRepeat} <Text style={{fontWeight: 'bold'}}>{t.moca.exactly}</Text> {t.moca.asIToldYou}
           </Text>
           <TouchableOpacity 
             style={[styles.actionBtn, { backgroundColor: theme.primary }]} 
@@ -94,7 +94,7 @@ export default function MocaLanguage({ theme, onComplete }) {
                 playSentence();
             }}
           >
-            <Text style={{...styles.btnText, color: theme.darkContrast}}>Satz jetzt hören</Text>
+            <Text style={{...styles.btnText, color: theme.darkContrast}}>{t.moca.listenToSentenceNow}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -107,14 +107,14 @@ export default function MocaLanguage({ theme, onComplete }) {
             color={phase === 'listening' ? theme.primary : theme.redish} 
           />
           <Text style={{...styles.statusText, color: theme.text}}>
-            {phase === 'listening' ? "Bitte zuhören..." : "Sagen Sie den Satz jetzt nach:"}
+            {phase === 'listening' ? t.moca.listenCarefully : t.moca.sayTheSentence + ":"}
           </Text>
 
           {phase === 'recording' && (
             <View style={{...styles.transcriptContainer, backgroundColor: theme.talkBox}}>
-              <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>Ihre Antwort:</Text>
+              <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>{t.moca.yourAnswer}:</Text>
               <Text style={{...styles.transcriptContent, color: theme.darkContrast}}>
-                {transcript || "Ich höre zu..."}
+                {transcript || t.moca.listening}
               </Text>
             </View>
           )}
@@ -124,7 +124,7 @@ export default function MocaLanguage({ theme, onComplete }) {
               style={[styles.validateBtn, { backgroundColor: theme.primary }]} 
               onPress={handleValidation}
             >
-              <Text style={{...styles.btnText, color: theme.darkContrast}}>Lösung abgeben</Text>
+              <Text style={{...styles.btnText, color: theme.darkContrast}}>{t.moca.submitSolution}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -143,12 +143,12 @@ export default function MocaLanguage({ theme, onComplete }) {
             
             <View style={styles.divider} />
             
-            <Text style={{...styles.resultLabel, color: theme.grayish}}>Ihre Eingabe:</Text>
+            <Text style={{...styles.resultLabel, color: theme.grayish}}>{t.moca.yourInput}:</Text>
             <Text style={[styles.resultInput, { color: isCorrect ? theme.greenish : theme.redish }]}>
               {transcript}
             </Text>
           </View>
-          <Text style={{...styles.finalHint, color: theme.grayish}}>Das Ergebnis wurde gespeichert.</Text>
+          <Text style={{...styles.finalHint, color: theme.grayish}}>{t.moca.resultHasBeenSaved}</Text>
         </View>
       )}
 

@@ -66,28 +66,32 @@ export default function MoCAScreen({ t, theme, onBack }) {
       case 0:
         return (
           <MocaTrails 
-            theme={theme} 
+            theme={theme}
+            t={t}
             onComplete={(data) => updateScenarioData('01_trails', data)} 
           />
         );
       case 1:
         return (
           <MocaClock 
-            theme={theme} 
+            theme={theme}
+            t={t}
             onComplete={(data) => updateScenarioData('02_clock', data)} 
           />
         );
       case 2:
         return (
           <MocaNaming 
-            theme={theme} 
+            theme={theme}
+            t={t} 
             onComplete={(data) => updateScenarioData('03_naming', data)} 
           />
         );
       case 3:
         return (
           <MocaMemory 
-            theme={theme} 
+            theme={theme}
+            t={t}
             onComplete={(data) => updateScenarioData('04_memory_immediate', data)} 
           />
         );
@@ -95,6 +99,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaDigits 
             theme={theme} 
+            t={t}
             onComplete={(data) => updateScenarioData('05_digits', data)} 
           />
         );
@@ -102,6 +107,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaVigilance 
             theme={theme} 
+            t={t}
             onComplete={(data) => updateScenarioData('06_vigilance', data)} 
           />
         );
@@ -109,6 +115,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaCalculation 
             theme={theme} 
+            t={t}
             onComplete={(data) => updateScenarioData('07_calculation', data)} 
           />
         );
@@ -116,6 +123,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaLanguage 
             theme={theme} 
+            t={t}
             onComplete={(data) => updateScenarioData('08_language', data)} 
           />
         );
@@ -123,6 +131,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaWordFluency 
             theme={theme} 
+            t={t}
             onComplete={(data) => updateScenarioData('09_word_fluency', data)} 
           />
         );
@@ -130,6 +139,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
         return (
           <MocaRecall 
             theme={theme} 
+            t={t}
             // Hier übergeben wir zusätzlich die Referenzdaten aus Aufgabe 4 für den Vergleich im JSON
             onComplete={(data) => updateScenarioData('10_delayed_recall', {
               ...data,

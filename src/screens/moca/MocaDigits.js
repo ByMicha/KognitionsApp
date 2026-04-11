@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const FORWARD_SEQ = ["2", "1", "8", "5", "4"];
 const BACKWARD_SEQ = ["7", "4", "2"]; // Erwartete Antwort für die Rückwärts-Aufgabe
 
-export default function MocaDigits({ theme, onComplete }) {
+export default function MocaDigits({ theme, t, onComplete }) {
   // Phasen: 'f_listen', 'f_recall', 'b_listen', 'b_recall'
   const [step, setStep] = useState('f_listen');
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -140,12 +140,12 @@ export default function MocaDigits({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>5. Aufmerksamkeit (Zahlenreihen)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>5. {t.moca.tests.attentionNumbers}</Text>
         <Text style={{...styles.desc, color: theme.text}}>
-          {step === 'f_listen' && "Hören Sie die Zahlenreihe."}
-          {step === 'f_recall' && "Wiederholen Sie die Zahlen in der GLEICHEN Reihenfolge."}
-          {step === 'b_listen' && "Hören Sie die Zahlenreihe."}
-          {step === 'b_recall' && "Wiederholen Sie die Zahlen nun RÜCKWÄRTS."}
+          {step === 'f_listen' && t.moca.listenNumberSequences}
+          {step === 'f_recall' && t.moca.recallNumberSequenceForward}
+          {step === 'b_listen' && t.moca.listenNumberSequences}
+          {step === 'b_recall' && t.moca.recallNumberSequenceBackwards}
         </Text>
       </View>
 
@@ -153,12 +153,12 @@ export default function MocaDigits({ theme, onComplete }) {
         {(step === 'f_listen' || step === 'b_listen') && (
           <TouchableOpacity 
             style={[styles.actionBtn, { backgroundColor: isSpeaking ? '#f5f5f5' : theme.primary }]}
-            onPress={() => playDigits(step === 'f_listen' ? FORWARD_SEQ : ["2", "4", "7"], step === 'f_listen' ? "Zahlen vorwärts" : "Zahlen für rückwärts")}
+            onPress={() => playDigits(step === 'f_listen' ? FORWARD_SEQ : ["2", "4", "7"], step === 'f_listen' ? t.moca.numbersForward : t.moca.numbersBackwards)}
             disabled={isSpeaking}
           >
             <MaterialCommunityIcons name="volume-high" size={50} color={isSpeaking ? theme.primary : theme.darkContrast} />
             <Text style={[styles.btnText, { color: isSpeaking ? theme.primary : theme.darkContrast }]}>
-              {isSpeaking ? "Zahlen werden vorgelesen..." : "Zahlen jetzt anhören"}
+              {isSpeaking ? t.moca.numbersAreRead : t.moca.numersListen}
             </Text>
           </TouchableOpacity>
         )}
@@ -168,7 +168,7 @@ export default function MocaDigits({ theme, onComplete }) {
 
         <View style={styles.feedbackContainer}>
            <Text style={{...styles.transcriptText, color: theme.text}}>
-             {transcript ? `Erkannt: ${transcript}` : "Ich höre zu..."}
+             {transcript ? `Erkannt: ${transcript}` : t.moca.listening}
            </Text>
         </View>
 
@@ -178,7 +178,7 @@ export default function MocaDigits({ theme, onComplete }) {
           disabled={isSpeaking}
         >
           <Text style={{...styles.nextBtnText, color: theme.darkContrast}}>
-            {step === 'b_recall' ? "Aufgabe beenden" : "Nächster Schritt"}
+            {step === 'b_recall' ? t.moca.endTask : t.moca.nextStep}
           </Text>
         </TouchableOpacity>
       </View>

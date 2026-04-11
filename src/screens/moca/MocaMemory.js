@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const MEMORY_WORDS = ["Gesicht", "Samt", "Kirche", "Tulpe", "Rot"];
 
-export default function MocaMemory({ theme, onComplete }) {
+export default function MocaMemory({ theme, t, onComplete }) {
   const [subPhase, setSubPhase] = useState('listen'); // 'listen' oder 'recall'
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [foundWords, setFoundWords] = useState([]);
@@ -97,11 +97,11 @@ export default function MocaMemory({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>4. Gedächtnis (Sofortiger Abruf)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>4. {t.moca.tests.memoryImmediate}</Text>
         <Text style={{...styles.desc, color: theme.text}}>
           {subPhase === 'listen' 
-            ? "Klicken Sie auf den Button, um die Wörter zu hören und prägen Sie sich diese ein." 
-            : "Sagen Sie nun alle Wörter laut auf, an die Sie sich noch erinnern können."}
+            ? t.moca.memoryInstructionListen
+            : t.moca.memoryInstructionName}
         </Text>
       </View>
 
@@ -118,7 +118,7 @@ export default function MocaMemory({ theme, onComplete }) {
               color={isSpeaking ? theme.pageGradientStart : theme.darkContrast} 
             />
             <Text style={[styles.audioBtnText, { color: isSpeaking ? theme.pageGradientStart : theme.darkContrast }]}>
-              {isSpeaking ? "Wörter werden vorgelesen..." : "Wörter jetzt anhören"}
+              {isSpeaking ? t.moca.wordsAreRead : t.moca.listenToWordsNow}
             </Text>
           </TouchableOpacity>
 
@@ -127,7 +127,7 @@ export default function MocaMemory({ theme, onComplete }) {
             onPress={() => setSubPhase('recall')}
             disabled={isSpeaking}
           >
-            <Text style={[styles.nextSubBtnText, { color: theme.primary }]}>Weiter zum Aufsagen →</Text>
+            <Text style={[styles.nextSubBtnText, { color: theme.primary }]}>{t.moca.goForNaming} →</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -149,15 +149,15 @@ export default function MocaMemory({ theme, onComplete }) {
           </View>
 
           <View style={{...styles.transcriptBox, backgroundColor: theme.talkBox}}>
-            <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>Erkennung läuft:</Text>
-            <Text style={styles.transcriptText}>{transcript || "Sprechen Sie jetzt..."}</Text>
+            <Text style={{...styles.transcriptLabel, color: "#4a4a4a"}}>{t.moca.recognitionRuns}:</Text>
+            <Text style={styles.transcriptText}>{transcript || t.moca.speakNow + "..."}</Text>
           </View>
 
           <TouchableOpacity 
             style={[styles.finishBtn, { backgroundColor: theme.primary }]} 
             onPress={handleFinishRecall}
           >
-            <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>Aufsagen beenden</Text>
+            <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>{t.moca.stopReciting}</Text>
           </TouchableOpacity>
         </View>
       )}

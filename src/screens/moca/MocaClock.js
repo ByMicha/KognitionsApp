@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native
 import Svg, { Circle, Line, Text as SvgText, G } from 'react-native-svg';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function MocaClock({ theme, onComplete }) {
+export default function MocaClock({ theme, t, onComplete }) {
   const [hourAngle, setHourAngle] = useState(270); 
   const [minuteAngle, setMinuteAngle] = useState(270);
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -61,9 +61,9 @@ export default function MocaClock({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>2. Visuospatial / Exekutiv (Uhr)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>2. {t.moca.tests.visuospatialExecutiveClock}</Text>
         <Text style={{...styles.desc, color: theme.text}}>
-          Stellen Sie die Uhrzeit auf: <Text style={{fontWeight: 'bold'}}>11:10 Uhr</Text>
+          {t.moca.setTheClock}: <Text style={{fontWeight: 'bold'}}>11:10 {t.moca.clock}</Text>
         </Text>
       </View>
 
@@ -91,7 +91,7 @@ export default function MocaClock({ theme, onComplete }) {
       {!isConfirmed && (
         <View style={styles.controlsContainer}>
           <View style={styles.controlRow}>
-            <Text style={{...styles.controlLabel, color: theme.text}}>Stunden</Text>
+            <Text style={{...styles.controlLabel, color: theme.text}}>{t.moca.hours}</Text>
             <View style={styles.buttonGroup}>
               <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveHour('prev')}>
                 <MaterialCommunityIcons name="minus" size={24} color={theme.darkContrast} />
@@ -103,7 +103,7 @@ export default function MocaClock({ theme, onComplete }) {
           </View>
 
           <View style={styles.controlRow}>
-            <Text style={{...styles.controlLabel, color: theme.text}}>Minuten</Text>
+            <Text style={{...styles.controlLabel, color: theme.text}}>{t.moca.minutes}</Text>
             <View style={styles.buttonGroup}>
               <TouchableOpacity style={{...styles.arrowBtn, backgroundColor: theme.primary}} onPress={() => moveMinute('prev')}>
                 <MaterialCommunityIcons name="minus" size={24} color={theme.darkContrast} />
@@ -115,7 +115,7 @@ export default function MocaClock({ theme, onComplete }) {
           </View>
 
           <TouchableOpacity style={[styles.confirmBtn, { backgroundColor: theme.primary }]} onPress={handleConfirm}>
-            <Text style={{...styles.confirmBtnText, color: theme.darkContrast}}>Uhrzeit einloggen</Text>
+            <Text style={{...styles.confirmBtnText, color: theme.darkContrast}}>{t.moca.submitTime}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -123,7 +123,7 @@ export default function MocaClock({ theme, onComplete }) {
       {isConfirmed && (
         <View style={styles.successBox}>
           <MaterialCommunityIcons name="check-circle" size={24} color="#2ecc71" />
-          <Text style={styles.successText}>Uhrzeit wurde bestätigt.</Text>
+          <Text style={styles.successText}>{t.moca.timeConfirmed}.</Text>
         </View>
       )}
     </View>

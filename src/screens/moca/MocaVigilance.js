@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const TEST_SEQUENCE = ["F", "A", "B", "A", "K"];
 
-export default function MocaVigilance({ theme, onComplete }) {
+export default function MocaVigilance({ theme, t, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [activeLetter, setActiveLetter] = useState(null);
@@ -70,19 +70,19 @@ export default function MocaVigilance({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>6. Aufmerksamkeit (Vigilanz)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>6. {t.moca.tests.attentionVigilance}</Text>
       </View>
 
       {!isStarted ? (
         <View style={styles.explanationArea}>
           <Text style={{...styles.desc, color: theme.text}}>
-            Tippen Sie auf den Button, wenn Sie den Buchstaben <Text style={{fontWeight: 'bold'}}>A</Text> hören.
+            {t.moca.pressThebuttonWhenLetter}: <Text style={{fontWeight: 'bold'}}>A</Text>
           </Text>
           <TouchableOpacity 
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={startTask}
           >
-            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>Aufgabe starten</Text>
+            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>{t.moca.startTask}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -90,7 +90,7 @@ export default function MocaVigilance({ theme, onComplete }) {
           {!isFinished ? (
             <View style={styles.interactiveZone}>
               <MaterialCommunityIcons name="volume-high" size={40} color={theme.primary} style={styles.speakerIcon} />
-              <Text style={styles.statusInfo}>Hören Sie gut zu...</Text>
+              <Text style={styles.statusInfo}>{t.moca.listenCarefully}</Text>
               
               <TouchableOpacity 
                 style={[styles.tapButton, { backgroundColor: theme.primary }]} 
@@ -98,13 +98,13 @@ export default function MocaVigilance({ theme, onComplete }) {
                 activeOpacity={0.7}
               >
                 <MaterialCommunityIcons name="gesture-tap" size={80} color={theme.darkContrast} />
-                <Text style={{...styles.tapButtonText, color: theme.darkContrast}}>BEI "A" TIPPEN</Text>
+                <Text style={{...styles.tapButtonText, color: theme.darkContrast}}>{t.moca.pressCommand01} "A" {t.moca.pressCommand02}</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.finishArea}>
               <MaterialCommunityIcons name="check-circle" size={80} color={theme.greenish} />
-              <Text style={{...styles.finishText, color: theme.greenish}}>Abgeschlossen ✓</Text>
+              <Text style={{...styles.finishText, color: theme.greenish}}>{t.moca.done} ✓</Text>
             </View>
           )}
         </View>

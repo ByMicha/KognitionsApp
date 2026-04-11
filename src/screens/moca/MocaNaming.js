@@ -7,7 +7,7 @@ const NAMING_ANIMALS = [
   { id: 'camel', label: 'kamel', emoji: '🐪' }
 ];
 
-export default function MocaNaming({ theme, onComplete }) {
+export default function MocaNaming({ theme, t, onComplete }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [transcript, setTranscript] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
@@ -87,8 +87,8 @@ export default function MocaNaming({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>3. Benennen</Text>
-        <Text style={{...styles.desc, color: theme.text}}>Bitte benennen Sie das abgebildete Tier laut.</Text>
+        <Text style={{...styles.title, color: theme.primary}}>3. {t.moca.tests.naming}</Text>
+        <Text style={{...styles.desc, color: theme.text}}>{t.moca.pleaseNameAnimal}.</Text>
       </View>
 
       <View style={styles.namingArea}>
@@ -98,7 +98,7 @@ export default function MocaNaming({ theme, onComplete }) {
 
         <View style={styles.transcriptBox}>
           <Text style={[styles.transcriptText, isCorrect && { color: '#2ecc71', fontWeight: 'bold' }]}>
-            {isCorrect ? 'Erkannt!' : (transcript || 'Ich höre zu...')}
+            {isCorrect ? 'Erkannt!' : (transcript || t.moca.listening)}
           </Text>
         </View>
 
@@ -107,7 +107,7 @@ export default function MocaNaming({ theme, onComplete }) {
           onPress={handleNextAnimal}
         >
           <Text style={{...styles.nextAnimalBtnText, color: theme.darkContrast}}>
-            {currentIndex < 2 ? 'Nächstes Tier' : 'Benennen abschließen'}
+            {currentIndex < 2 ? t.moca.nextAnimal : t.moca.endNaming}
           </Text>
         </TouchableOpacity>
       </View>

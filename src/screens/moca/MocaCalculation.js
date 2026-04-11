@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const TARGET_SEQUENCE = [63, 56, 49, 42, 35];
 
-export default function MocaCalculation({ theme, onComplete }) {
+export default function MocaCalculation({ theme, t, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [results, setResults] = useState([]); // Speichert { value, isCorrect, reaction_time_ms, expected }
@@ -74,20 +74,20 @@ export default function MocaCalculation({ theme, onComplete }) {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={{...styles.title, color: theme.primary}}>7. Aufmerksamkeit (Rechnen)</Text>
+          <Text style={{...styles.title, color: theme.primary}}>7. {t.moca.tests.attentionCalculation}</Text>
         </View>
         <View style={styles.explanationArea}>
           <MaterialCommunityIcons name="calculator-variant" size={80} color={theme.primary} />
           <Text style={{...styles.desc, color: theme.text}}>
-            Dies ist eine Rechenaufgabe.{"\n\n"}
-            Beginnen Sie im Kopf bei der Zahl <Text style={{fontWeight: 'bold'}}>70</Text> und ziehen Sie fortlaufend jeweils <Text style={{fontWeight: 'bold'}}>7</Text> ab.{"\n\n"}
-            Wählen Sie für jeden Schritt das richtige Ergebnis aus den vier Möglichkeiten aus.
+            {t.moca.thisIsACalculationExercise}{"\n\n"}
+            {t.moca.startWithNumber} <Text style={{fontWeight: 'bold'}}>70</Text> {t.moca.andSubtractContinuely} <Text style={{fontWeight: 'bold'}}>7</Text> {t.moca.calcExtendCommand}.{"\n\n"}
+            {t.moca.chooseCorrectForEachStep}
           </Text>
           <TouchableOpacity 
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={() => setIsStarted(true)}
           >
-            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>Verstanden & Starten</Text>
+            <Text style={{...styles.startBtnText, color: theme.darkContrast}}>{t.moca.understoodStart}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,7 +97,7 @@ export default function MocaCalculation({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>7. Aufmerksamkeit (Rechnen)</Text>
+        <Text style={{...styles.title, color: theme.primary}}>7. {t.moca.tests.attentionCalculation}</Text>
         <Text style={{...styles.desc, color: theme.text}}>Rechnen Sie: {currentIndex === 0 ? "70" : TARGET_SEQUENCE[currentIndex - 1]} minus 7</Text>
       </View>
 
@@ -147,7 +147,7 @@ export default function MocaCalculation({ theme, onComplete }) {
         {results.length === 5 && (
           <View style={styles.successArea}>
             <MaterialCommunityIcons name="check-circle" size={30} color="#2ecc71" />
-            <Text style={styles.successText}>Aufgabe abgeschlossen. Bitte unten klicken.</Text>
+            <Text style={styles.successText}>{t.moca.taskDoneClickBelow}</Text>
           </View>
         )}
       </View>

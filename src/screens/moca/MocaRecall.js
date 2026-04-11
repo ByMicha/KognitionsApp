@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RECALL_WORDS = ["Gesicht", "Samt", "Kirche", "Tulpe", "Rot"];
 
-export default function MocaRecall({ theme, onComplete }) {
+export default function MocaRecall({ theme, t, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [foundWords, setFoundWords] = useState([]);
   const [transcript, setTranscript] = useState('');
@@ -74,21 +74,21 @@ export default function MocaRecall({ theme, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>10. Verzögerter Abruf</Text>
+        <Text style={{...styles.title, color: theme.primary}}>10. {t.moca.tests.recall}</Text>
       </View>
 
       {!isStarted ? (
         <View style={styles.centerArea}>
           <MaterialCommunityIcons name="brain" size={80} color={theme.primary} />
           <Text style={{...styles.instruction, color: theme.text}}>
-            Erinnern Sie sich an die 5 Wörter, die ich Ihnen vorhin vorgelesen habe? {"\n\n"}
-            Bitte sagen Sie mir so viele wie möglich davon noch einmal auf.
+            {t.moca.doYouRememberFiveWords} {"\n\n"}
+            {t.moca.pleaseSayAsMany}
           </Text>
           <TouchableOpacity 
             style={[styles.startBtn, { backgroundColor: theme.primary }]} 
             onPress={handleStart}
           >
-            <Text style={{...styles.btnText, color: theme.darkContrast}}>Ich bin bereit</Text>
+            <Text style={{...styles.btnText, color: theme.darkContrast}}>{t.moca.iAmReady}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -119,20 +119,20 @@ export default function MocaRecall({ theme, onComplete }) {
           {!isFinished ? (
             <>
               <View style={{...styles.transcriptBox, backgroundColor: theme.talkBox}}>
-                <Text style={{...styles.transcriptText, color: theme.darkContrast}}>{transcript || "Ich höre zu..."}</Text>
+                <Text style={{...styles.transcriptText, color: theme.darkContrast}}>{transcript || t.moca.listening}</Text>
               </View>
 
               <TouchableOpacity 
                 style={[styles.finishBtn, { backgroundColor: theme.primary }]} 
                 onPress={handleFinish}
               >
-                <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>Aufsagen beenden</Text>
+                <Text style={{...styles.finishBtnText, color: theme.darkContrast}}>{t.moca.stopReciting}</Text>
               </TouchableOpacity>
             </>
           ) : (
             <View style={styles.successArea}>
               <MaterialCommunityIcons name="check-circle" size={60} color={theme.greenish} />
-              <Text style={{...styles.successText, color: theme.greenish}}>Ergebnisse wurden gespeichert ✓</Text>
+              <Text style={{...styles.successText, color: theme.greenish}}>{t.moca.resultHasBeenSaved} ✓</Text>
             </View>
           )}
         </View>

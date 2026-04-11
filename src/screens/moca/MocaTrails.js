@@ -4,7 +4,7 @@ import Svg, { Line } from 'react-native-svg';
 
 // 1:1 Datenstruktur aus TMTScreen, aber mit MoCA-Positionen
 const mocaCirclesData = [
-  { id: 1, label: '1', x: 60, y: 70, topLabel: 'Anfang' },
+  { id: 1, label: '1', x: 60, y: 70, topLabel: 'S' },
   { id: 2, label: 'A', x: 40, y: 60 },
   { id: 3, label: '2', x: 20, y: 52 },
   { id: 4, label: 'B', x: 43, y: 40 },
@@ -13,10 +13,10 @@ const mocaCirclesData = [
   { id: 7, label: '4', x: 80, y: 56 },
   { id: 8, label: 'D', x: 81, y: 77 },
   { id: 9, label: '5', x: 40, y: 85 },
-  { id: 10, label: 'E', x: 22, y: 68, topLabel: 'Ende' },
+  { id: 10, label: 'E', x: 22, y: 68, topLabel: 'E' },
 ];
 
-export default function MocaTrails({ theme, onComplete }) {
+export default function MocaTrails({ theme, t, onComplete }) {
   const [boardLayout, setBoardLayout] = useState({ width: 0, height: 0 });
   const [nextNumber, setNextNumber] = useState(2);
   const [completedLines, setCompletedLines] = useState([]);
@@ -138,8 +138,8 @@ export default function MocaTrails({ theme, onComplete }) {
   return (
     <View style={styles.full}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>1. Visuospatial / Exekutiv</Text>
-        <Text style={{...styles.desc, color: theme.text}}>Verbinden Sie die Kreise: 1 - A - 2 - B - 3 - C - 4 - D - 5 - E</Text>
+        <Text style={{...styles.title, color: theme.primary}}>1. {t.moca.tests.visuospatialExecutive}</Text>
+        <Text style={{...styles.desc, color: theme.text}}>{t.moca.connectCircles}: 1 - A - 2 - B - 3 - C - 4 - D - 5 - E</Text>
       </View>
 
       <View 
@@ -183,7 +183,7 @@ export default function MocaTrails({ theme, onComplete }) {
             ]}
           >
             {circle.topLabel && (
-              <Text style={[styles.labelAbove, { color: theme.text }]}>{circle.topLabel}</Text>
+              <Text style={[styles.labelAbove, { color: theme.text }]}>{circle.topLabel == "S" ? t.moca.start : t.moca.end}</Text>
             )}
             <Text style={[styles.circleText, circle.id < nextNumber ? { color: "#253443" } : { color: theme.text } ]}>{circle.label}</Text>
           </View>
