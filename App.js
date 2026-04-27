@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import translations from './src/constants/translations';
 import { lightTheme, darkTheme } from './src/constants/theme';
@@ -13,6 +13,9 @@ import HVLTScreen from './src/screens/HVLTScreen.js';
 import COWATScreen from './src/screens/COWATScreen.js';
 import MoCAScreen from './src/screens/MoCAScreen.js';
 
+import * as Font from 'expo-font'; // Oben bei den Imports
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 let LinearGradient;
 try {
   LinearGradient = require('expo-linear-gradient').LinearGradient;
@@ -21,12 +24,27 @@ try {
 }
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   const { width } = useWindowDimensions();
   const [language, setLanguage] = useState('de');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [currentScreen, setCurrentScreen] = useState('menu');
 
-  if (!translations) return null;
+  useEffect(() => {
+    async function load() {
+      try {
+        await Font.loadAsync(MaterialCommunityIcons.font);
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setFontsLoaded(true);
+      }
+    }
+    load();
+  }, []);
+
+  if (!fontsLoaded || !translations) return null;
+
   const t = translations[language];
   const theme = isDarkMode ? darkTheme : lightTheme;
 

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "KognitionsApp",
-    "slug": "KognitionsApp",
+    "name": "kognitionsapp",
+    "slug": "kognitionsapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +23,13 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "baseUrl": ""
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
