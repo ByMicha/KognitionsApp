@@ -1,0 +1,35 @@
+{
+  "name": "kognitionsapp",
+  "homepage": "https://ByMicha.github.io/KognitionsApp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "predeploy": "npx expo export --platform web",
+    "deploy": "npx expo export --platform web --clear && powershell -Command \"$d='dist'; $s='static-assets'; New-Item -Path $d/$s -ItemType Directory -Force; Get-ChildItem -Path $d/assets -Recurse -Include *.ttf,*.png | ForEach-Object { Copy-Item $_.FullName -Destination $d/$s -Force -ErrorAction SilentlyContinue }; Get-ChildItem $d -Recurse -Include *.js,*.html | ForEach-Object { $c = Get-Content $_.FullName -Raw; $c = $c -replace 'assets/src/assets/', './static-assets/'; $c = $c -replace '\"/_expo/', '\"./_expo/'; $c = $c -replace '\"/assets/', '\"./assets/'; $c = $c -replace '\"/favicon.ico', '\"./favicon.ico'; $c = $c -replace 'assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/', './static-assets/'; $c = $c -replace '/KognitionsApp/', './'; $c = $c -replace '//', '/'; $c | Set-Content $_.FullName -NoNewline }\" && powershell New-Item -Path dist/.nojekyll -ItemType File -Force"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-navigation/native": "^7.2.2",
+    "@react-navigation/stack": "^7.8.9",
+    "expo": "~54.0.33",
+    "expo-font": "~14.0.11",
+    "expo-linear-gradient": "~15.0.8",
+    "expo-speech": "~14.0.8",
+    "expo-status-bar": "~3.0.9",
+    "gh-pages": "^6.3.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "^5.7.0",
+    "react-native-screens": "^4.24.0",
+    "react-native-svg": "15.12.1",
+    "react-native-web": "^0.21.0"
+  },
+  "private": true
+}
