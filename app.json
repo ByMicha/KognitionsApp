@@ -3,6 +3,11 @@
     "name": "kognitionsapp",
     "slug": "kognitionsapp",
     "version": "1.1.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,9 +29,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro",
-      "output": "single",
-      "baseUrl": ""
+      "bundler": "metro"
     },
     "plugins": [
       "expo-font"

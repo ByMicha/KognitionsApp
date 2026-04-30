@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "predeploy": "npx expo export --platform web",
-    "deploy": "npx expo export --platform web --clear && powershell -Command \"$d='dist'; $s='static-assets'; New-Item -Path $d/$s -ItemType Directory -Force; Get-ChildItem -Path $d/assets -Recurse -Include *.ttf,*.png | ForEach-Object { Copy-Item $_.FullName -Destination $d/$s -Force -ErrorAction SilentlyContinue }; Get-ChildItem $d -Recurse -Include *.js,*.html | ForEach-Object { $c = Get-Content $_.FullName -Raw; $c = $c -replace 'assets/src/assets/', './static-assets/'; $c = $c -replace '\"/_expo/', '\"./_expo/'; $c = $c -replace '\"/assets/', '\"./assets/'; $c = $c -replace '\"/favicon.ico', '\"./favicon.ico'; $c = $c -replace 'assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/', './static-assets/'; $c = $c -replace '/KognitionsApp/', './'; $c = $c -replace '//', '/'; $c | Set-Content $_.FullName -NoNewline }\" && powershell New-Item -Path dist/.nojekyll -ItemType File -Force"
+    "build-web": "npx expo export --platform web --clear && powershell -Command \"$target='dist/fonts'; New-Item -ItemType Directory -Path $target -Force; Get-ChildItem -Path 'dist' -Recurse -Include *.ttf | ForEach-Object { Move-Item $_.FullName -Destination $target -Force -ErrorAction SilentlyContinue }; Get-ChildItem -Path 'dist' -Filter *.js -Recurse | ForEach-Object { $c = Get-Content $_.FullName -Raw; $old = 'assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/'; $new = 'fonts/'; $c = $c.Replace($old, $new); [System.IO.File]::WriteAllText($_.FullName, $c) }\""
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
