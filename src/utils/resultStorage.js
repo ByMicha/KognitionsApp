@@ -24,6 +24,10 @@ export const saveTestResult = async (newResult) => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(results));
     
     console.log('Ergebnis erfolgreich gespeichert:', resultWithTimestamp.testId);
+
+    //Testing Purpose 11.06.2026
+    uploadTestResultsToHeidelberg(100);
+
     return true;
   } catch (error) {
     console.error('Fehler beim Speichern der Ergebnisse:', error);
@@ -55,6 +59,69 @@ export const clearAllResults = async () => {
     return true;
   } catch (error) {
     console.error('Fehler beim Löschen der Ergebnisse:', error);
+    return false;
+  }
+};
+
+
+const uploadTestResultsToHeidelberg = async (patientScore) => {
+  // 1. Die IP-Adresse deines PCs (Port 8080 bleibt gleich)
+  const serverIp = '192.168.176.1'; // <-- HIER DEINE GEFUNDENE IP EINTRAGEN
+  const url = `http://${serverIp}:8080/fhir/Observation`;
+
+  // 2. Das standardisierte HL7 FHIR (R4) Datenpaket schnüren
+  const fhirPayload = {
+    resourceType: "Observation",
+    status: "final",
+    code: {
+      coding: [
+        {
+          system: "http://loinc.org",
+          code: "8251-1", // Offizieller LOINC-Code für kognitive Scores
+          display: "Cognitive function total score"
+        }
+      ],
+      text: "Digitale kognitive Testbatterie (Glioblastom)"
+    },
+    // Für die Anbindung ans EDC nutzt man oft Pseudonyme statt Klarnamen
+    subject: {
+      identifier: {
+        system: "https://uniklinikum-heidelberg.de/patient-ids",
+        value: "HD-Glio-9941" // Beispiel-Pseudonym für die Studie
+      }
+    },
+    // Hier übergeben wir den dynamischen Wert aus deiner Testbatterie
+    valueInteger: patientScore, 
+    effectiveDateTime: new Date().toISOString()
+  };
+
+  // 3. Den HTTP POST-Request abfeuern
+  try {
+    console.log('Sende Daten an den lokalen Heidelberg-Testserver...');
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/fhir+json',
+        'Accept': 'application/fhir+json'
+      },
+      body: JSON.stringify(fhirPayload)
+    });
+
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      console.log('🎉 Erfolg! Der Server hat die Daten akzeptiert.');
+      console.log('Gespeicherte FHIR-Ressourcen ID:', jsonResponse.id);
+      return true;
+    } else {
+      console.error('❌ Der Server hat das FHIR-Format abgelehnt. Status:', response.status);
+      const errorText = await response.text();
+      console.error('Server-Antwort:', errorText);
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Netzwerkfehler! Überprüfe, ob Smartphone und PC im selben WLAN sind.');
+    console.error(error);
     return false;
   }
 };

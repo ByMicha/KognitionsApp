@@ -22,7 +22,7 @@ const TEST_TASKS = [
 const taskNumbers = [...PRACTICE_TASKS, ...TEST_TASKS];
 const TOTAL_FIELDS = taskNumbers.length;
 
-const TEST_DURATION = 300; // Standardmäßig 5 Minuten
+const TEST_DURATION = 60; // Standardmäßig 1 Minute
 
 // Festlegung der Symbole für die Zahlen 1-9
 const legendData = [
