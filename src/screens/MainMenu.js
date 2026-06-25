@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useResults } from '../context/ResultContext';
 
+let version = 1.1;
+
 let LinearGradient;
 try {
   LinearGradient = require('expo-linear-gradient').LinearGradient;
@@ -150,6 +152,10 @@ export default function MainMenu({ t, theme, language, setLanguage, isDarkMode, 
           <Text style={{ color: theme.primary, fontSize: 16 }}>{t.settings}</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <Text style={{ color: theme.primary, position: 'absolute', bottom: 5, alignSelf: "center"}}>
+        {"v. " + version}
+      </Text>
 
     </View>
   );
