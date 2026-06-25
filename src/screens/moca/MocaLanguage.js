@@ -17,7 +17,8 @@ export default function MocaLanguage({ theme, t, onComplete }) {
     setIsSpeaking(true);
     Speech.speak(TARGET_SENTENCE, {
       language: 'de-DE',
-      rate: 0.9,
+      pitch: 0.8,
+      rate: 0.5,
       onDone: () => {
         setIsSpeaking(false);
         setPhase('recording');
@@ -77,7 +78,7 @@ export default function MocaLanguage({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>8. {t.moca.tests.languageRepetition}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>7. {t.moca.tests.languageRepetition}</Text>
       </View>
 
       {phase === 'intro' && (

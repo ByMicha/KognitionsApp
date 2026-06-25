@@ -38,8 +38,8 @@ export default function HVLTScreen({ t, theme, onBack }) {
       setCurrentWordIndex(index);
       Speech.speak(WORD_LIST[index], {
         language: 'de-DE',
-        pitch: 1.0,
-        rate: 0.9,
+        pitch: 0.8,
+        rate: 0.6,
         onDone: () => {
           setTimeout(() => speakWords(index + 1), 1200); // Ergibt ca. 2s Intervall
         },

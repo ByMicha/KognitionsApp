@@ -127,7 +127,7 @@ export default function MocaWordFluency({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <Text style={{...styles.title, color: theme.primary}}>9. {t.moca.tests.wordFluency}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>8. {t.moca.tests.wordFluency}</Text>
         {phase === 'active' && (
           <View style={[styles.timerBadge, { backgroundColor: timer < 10 ? theme.redish : '#eee' }]}>
             <Text style={[styles.timerText, { color: timer < 10 ? '#fff' : '#333' }]}>{timer}s</Text>

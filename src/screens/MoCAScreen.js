@@ -28,7 +28,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
     scenarios: {}
   });
 
-  const totalPhases = 10;
+  const totalPhases = 9;
   const progress = ((currentPhase + 1) / totalPhases) * 100;
 
   // Diese Funktion nimmt die Daten der Szenarien entgegen und speichert sie zentral
@@ -71,6 +71,8 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('01_trails', data)} 
           />
         );
+
+      /** 
       case 1:
         return (
           <MocaClock 
@@ -79,7 +81,9 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('02_clock', data)} 
           />
         );
-      case 2:
+      */
+
+      case 1:
         return (
           <MocaNaming 
             theme={theme}
@@ -87,7 +91,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('03_naming', data)} 
           />
         );
-      case 3:
+      case 2:
         return (
           <MocaMemory 
             theme={theme}
@@ -95,7 +99,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('04_memory_immediate', data)} 
           />
         );
-      case 4:
+      case 3:
         return (
           <MocaDigits 
             theme={theme} 
@@ -103,7 +107,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('05_digits', data)} 
           />
         );
-      case 5:
+      case 4:
         return (
           <MocaVigilance 
             theme={theme} 
@@ -111,7 +115,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('06_vigilance', data)} 
           />
         );
-      case 6:
+      case 5:
         return (
           <MocaCalculation 
             theme={theme} 
@@ -119,7 +123,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('07_calculation', data)} 
           />
         );
-      case 7:
+      case 6:
         return (
           <MocaLanguage 
             theme={theme} 
@@ -127,7 +131,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('08_language', data)} 
           />
         );
-      case 8:
+      case 7:
         return (
           <MocaWordFluency 
             theme={theme} 
@@ -135,7 +139,7 @@ export default function MoCAScreen({ t, theme, onBack }) {
             onComplete={(data) => updateScenarioData('09_word_fluency', data)} 
           />
         );
-      case 9:
+      case 8:
         return (
           <MocaRecall 
             theme={theme} 

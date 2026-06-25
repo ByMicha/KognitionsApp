@@ -87,7 +87,7 @@ export default function MocaNaming({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>3. {t.moca.tests.naming}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>2. {t.moca.tests.naming}</Text>
         <Text style={{...styles.desc, color: theme.text}}>{t.moca.pleaseNameAnimal}.</Text>
       </View>
 
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, width: '100%' },
   textContainer: { marginBottom: 30 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  desc: { fontSize: 14, color: '#666', marginTop: 5 },
+  desc: { fontSize: 18, color: '#666', marginTop: 5 },
   namingArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   emojiCircle: { width: 220, height: 220, borderRadius: 110, borderWidth: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fcfcfc', marginBottom: 20 },
   emoji: { fontSize: 120 },

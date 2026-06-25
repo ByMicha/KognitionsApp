@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
 import ExplanationModal from '../components/ExplanationModal';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 // --- KONSTANTEN ---
 const TOTAL_BELLS = 35;
@@ -14,10 +15,10 @@ const generateBellsData = () => {
   const symbols = [];
   const distractors = ['home', 'tree', 'bird', 'apple', 'car'];
   
-  // Wir erstellen ein Raster von 20 Zeilen und 18 Spalten (~360 Plätze)
-  // Das verhindert das Überlappen, sieht aber trotzdem unordentlich aus.
-  const rows = 20;
-  const cols = 18;
+  // RASTER FÜR QUERFORMAT ANGEPASST
+  // 14 Zeilen und 26 Spalten (~364 Plätze) -> breiter als hoch
+  const rows = 14;
+  const cols = 26;
   const grid = [];
 
   for (let r = 0; r < rows; r++) {
@@ -30,7 +31,6 @@ const generateBellsData = () => {
   grid.sort(() => Math.random() - 0.5);
 
   // 1. Die 35 Glocken in den richtigen Spalten-Bereichen platzieren
-  // Wir unterteilen die 18 Spalten in 7 Zonen (ca. 2.5 Spalten pro Zone)
   let bellCount = 0;
   const bellSlots = [];
 
@@ -59,7 +59,6 @@ const generateBellsData = () => {
     }
 
     // Koordinaten berechnen mit "Jitter" (zufälliger Versatz)
-    // Damit es nicht nach einem perfekten Gitter aussieht
     const xBase = (slot.c * (100 / cols));
     const yBase = (slot.r * (100 / rows));
     
@@ -93,6 +92,31 @@ export default function BellsScreen({ t, theme, onBack }) {
   
   const [timeLeft, setTimeLeft] = useState(TEST_DURATION);
   const timerRef = useRef(null);
+
+  // --- BERICHTIGUNG DER BILDSCHIRMAUSRICHTUNG ---
+  useEffect(() => {
+    async function lockLandscape() {
+      try {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      } catch (e) {
+        console.warn("Konnte Querformat nicht erzwingen", e);
+      }
+    }
+    
+    lockLandscape();
+
+    // Cleanup-Funktion beim Verlassen des Screens (Zurück zum Hochformat)
+    return () => {
+      async function lockPortrait() {
+        try {
+          await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        } catch (e) {
+          console.warn("Konnte Hochformat nicht erzwingen", e);
+        }
+      }
+      lockPortrait();
+    };
+  }, []);
 
   useEffect(() => {
     if (testStarted && !testFinished && timeLeft > 0) {
@@ -170,7 +194,7 @@ export default function BellsScreen({ t, theme, onBack }) {
           <Text style={{ color: timeLeft < 30 ? 'white' : theme.text, fontWeight: 'bold' }}>{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</Text>
         </View>
 
-        <TouchableOpacity style={{position: 'absolute', right: 0}} onPress={() => setShowExplanation(true)}>
+        <TouchableOpacity style={{position: 'absolute', right: 20}} onPress={() => setShowExplanation(true)}>
           <MaterialCommunityIcons name="help-circle-outline" size={28} color={theme.primary} />
         </TouchableOpacity>
 
@@ -218,16 +242,24 @@ export default function BellsScreen({ t, theme, onBack }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   centered: { justifyContent: 'center', alignItems: 'center' },
-  header: { padding: 20, paddingTop: 50, flexDirection: 'row', alignItems: 'center' },
+  header: { padding: 20, paddingTop: 30, flexDirection: 'row', alignItems: 'center' },
   backBtn: { marginRight: 20 },
   title: { fontSize: 24, fontWeight: 'bold' },
-  timerContainer: { padding: 10, borderRadius: 8, marginRight: 20 },
+  timerContainer: { padding: 10, borderRadius: 8, marginRight: 40 },
   boardContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 },
   board: {
-    width: '100%', maxWidth: 800, aspectRatio: 0.75,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#ccc',
-    position: 'relative', elevation: 10,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.15, shadowRadius: 12,
+    width: '90%', 
+    maxWidth: 1300, 
+    aspectRatio: 1.414, // GEÄNDERT: Seitenverhältnis für Querformat (Breiter als hoch)
+    backgroundColor: '#fff', 
+    borderWidth: 1, 
+    borderColor: '#ccc',
+    position: 'relative', 
+    elevation: 10,
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 6 }, 
+    shadowOpacity: 0.15, 
+    shadowRadius: 12,
   },
   symbolWrapper: {
     position: 'absolute', width: 30, height: 30,
@@ -238,7 +270,7 @@ const styles = StyleSheet.create({
     position: 'absolute', width: 30, height: 30,
     borderRadius: 15, backgroundColor: 'transparent',
   },
-  footer: { padding: 20, alignItems: 'center' },
+  footer: { padding: 15, alignItems: 'center' },
   doneButton: { paddingVertical: 14, paddingHorizontal: 60, borderRadius: 15 },
   doneButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 18 }
 });

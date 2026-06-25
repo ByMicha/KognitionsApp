@@ -25,7 +25,8 @@ export default function MocaDigits({ theme, t, onComplete }) {
     
     Speech.speak(text, {
       language: 'de-DE',
-      rate: 0.75, 
+      pitch: 0.8,
+      rate: 0.4,
       onDone: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false)
     });
@@ -140,7 +141,7 @@ export default function MocaDigits({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>5. {t.moca.tests.attentionNumbers}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>4. {t.moca.tests.attentionNumbers}</Text>
         <Text style={{...styles.desc, color: theme.text}}>
           {step === 'f_listen' && t.moca.listenNumberSequences}
           {step === 'f_recall' && t.moca.recallNumberSequenceForward}
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, width: '100%' },
   textContainer: { marginBottom: 20 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  desc: { fontSize: 14, color: '#666', marginTop: 5 },
+  desc: { fontSize: 18, color: '#666', marginTop: 5 },
   centerArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   actionBtn: { padding: 30, borderRadius: 20, alignItems: 'center', width: '80%' },
   btnText: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },

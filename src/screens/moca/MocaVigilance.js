@@ -70,7 +70,7 @@ export default function MocaVigilance({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>6. {t.moca.tests.attentionVigilance}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>5. {t.moca.tests.attentionVigilance}</Text>
       </View>
 
       {!isStarted ? (

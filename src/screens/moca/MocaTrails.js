@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   full: { flex: 1, width: '100%' },
   textContainer: { marginBottom: 15 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  desc: { fontSize: 13, color: '#888' },
+  desc: { fontSize: 18, color: '#888' },
   board: { 
     width: '100%', 
     flex: 1, 

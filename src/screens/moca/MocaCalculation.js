@@ -8,31 +8,38 @@ export default function MocaCalculation({ theme, t, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [results, setResults] = useState([]); // Speichert { value, isCorrect, reaction_time_ms, expected }
-  const [options, setOptions] = useState([]);
+  const [currentInput, setCurrentInput] = useState(""); // Speichert die aktuell getippte Zahl
 
-  // NEU: Ref für die Zeitmessung pro Rechenschritt
+  // Ref für die Zeitmessung pro Rechenschritt
   const lastStepTimeRef = useRef(null);
-
-  // Generiert 4 Antwortmöglichkeiten (1 korrekte, 3 falsche)
-  const generateOptions = (correctValue) => {
-    let choices = [correctValue];
-    while (choices.length < 4) {
-      const offset = [1, -1, 10, -10, 2, -2][Math.floor(Math.random() * 6)];
-      const distractor = correctValue + offset;
-      if (!choices.includes(distractor) && distractor > 0) {
-        choices.push(distractor);
-      }
-    }
-    return choices.sort(() => Math.random() - 0.5);
-  };
 
   useEffect(() => {
     if (isStarted && currentIndex < TARGET_SEQUENCE.length) {
-      setOptions(generateOptions(TARGET_SEQUENCE[currentIndex]));
       // Zeitmessung für den aktuellen Schritt starten
       lastStepTimeRef.current = Date.now();
     }
   }, [isStarted, currentIndex]);
+
+  const handleKeyPress = (num) => {
+    // Verhindert zu lange Eingaben (max 3 Ziffern, da höchste Zahl 63 ist)
+    if (currentInput.length < 2) {
+      setCurrentInput((prev) => prev + num.toString());
+    }
+  };
+
+  const handleRemoveInput = () => {
+    if (currentInput.length > 0) {
+      setCurrentInput(currentInput.slice(0, -1));
+    }
+  };
+
+  const handleSubmit = () => {
+    if (currentInput === "") return; // Keine leere Eingabe zulassen
+
+    const selected = parseInt(currentInput, 10);
+    handleSelection(selected);
+    setCurrentInput(""); // Eingabefeld für den nächsten Schritt leeren
+  };
 
   const handleSelection = (selected) => {
     const now = Date.now();
@@ -74,7 +81,7 @@ export default function MocaCalculation({ theme, t, onComplete }) {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={{...styles.title, color: theme.primary}}>7. {t.moca.tests.attentionCalculation}</Text>
+          <Text style={{...styles.title, color: theme.primary}}>6. {t.moca.tests.attentionCalculation}</Text>
         </View>
         <View style={styles.explanationArea}>
           <MaterialCommunityIcons name="calculator-variant" size={80} color={theme.primary} />
@@ -127,21 +134,61 @@ export default function MocaCalculation({ theme, t, onComplete }) {
           })}
         </View>
 
-        {/* Das Quiz-Feld */}
+        {/* Das Ziffernblock-Feld */}
         {results.length < 5 && (
-        <View style={styles.quizArea}>
-          <View style={styles.optionsRow}>
-            {options.map((opt, idx) => (
+          <View style={styles.numpadArea}>
+            {/* Anzeige der aktuellen Eingabe */}
+            <View style={[styles.inputDisplay, { borderColor: theme.primary }]}>
+              <Text style={[styles.inputText, { color: currentInput ? theme.primary : '#ccc' }]}>
+                {currentInput || "Eingabe"}
+              </Text>
+            </View>
+
+            {/* Ziffernblock Reihen */}
+            <View style={styles.numpadRow}>
+              {[9, 8, 7].map(num => (
+                <TouchableOpacity key={num} style={[styles.numpadBtn, { borderColor: theme.primary }]} onPress={() => handleKeyPress(num)}>
+                  <Text style={[styles.numpadText, { color: theme.primary }]}>{num}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.numpadRow}>
+              {[6, 5, 4].map(num => (
+                <TouchableOpacity key={num} style={[styles.numpadBtn, { borderColor: theme.primary }]} onPress={() => handleKeyPress(num)}>
+                  <Text style={[styles.numpadText, { color: theme.primary }]}>{num}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.numpadRow}>
+              {[3, 2, 1].map(num => (
+                <TouchableOpacity key={num} style={[styles.numpadBtn, { borderColor: theme.primary }]} onPress={() => handleKeyPress(num)}>
+                  <Text style={[styles.numpadText, { color: theme.primary }]}>{num}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.numpadRow}>
               <TouchableOpacity 
-                key={idx} 
-                style={[styles.optionBtn, {backgroundColor: "transparent" ,borderColor: theme.primary }]} 
-                onPress={() => handleSelection(opt)}
+                style={[styles.numpadBtn, { backgroundColor: theme.primary, borderColor: theme.primary }]} 
+                onPress={handleRemoveInput}
+                disabled={currentInput === ""}
               >
-                <Text style={[styles.optionText, { color: theme.primary }]}>{opt}</Text>
+                <MaterialCommunityIcons name="backspace" size={36} color="#fff" />
               </TouchableOpacity>
-            ))}
+
+              <TouchableOpacity style={[styles.numpadBtn, { borderColor: theme.primary }]} onPress={() => handleKeyPress(0)}>
+                <Text style={[styles.numpadText, { color: theme.primary }]}>0</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.numpadBtn, { backgroundColor: theme.primary, borderColor: theme.primary }]} 
+                onPress={handleSubmit}
+                disabled={currentInput === ""}
+              >
+                <MaterialCommunityIcons name="check" size={36} color="#fff" />
+              </TouchableOpacity>
+
+            </View>
           </View>
-        </View>
         )}         
 
         {results.length === 5 && (
@@ -159,18 +206,41 @@ const styles = StyleSheet.create({
   container: { flex: 1, width: '100%' },
   textContainer: { marginBottom: 20 },
   title: { fontSize: 18, fontWeight: 'bold' },
-  desc: { fontSize: 16, color: '#444', marginTop: 10, textAlign: 'center', lineHeight: 24 },
+  desc: { fontSize: 20, color: '#444', marginTop: 10, textAlign: 'center', lineHeight: 24 },
   explanationArea: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
   startBtn: { paddingVertical: 15, paddingHorizontal: 50, borderRadius: 12, marginTop: 20 },
   startBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
   centerArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  calcGrid: { flexDirection: 'row', gap: 10, marginBottom: 50 },
+  calcGrid: { flexDirection: 'row', gap: 10, marginBottom: 30 },
   calcBox: { width: 65, height: 85, borderWidth: 2, borderColor: '#c4c4c4', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   calcText: { fontSize: 26, fontWeight: 'bold' },
-  quizArea: { width: '100%', maxWidth: 400 },
-  optionsRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15 },
-  optionBtn: { width: 150, paddingVertical: 20, borderWidth: 2, borderRadius: 15, alignItems: 'center', backgroundColor: '#fff' },
-  optionText: { fontSize: 24, fontWeight: 'bold' },
+  
+  // Neue Styles für den Ziffernblock und die Eingabe
+  numpadArea: { width: '100%', maxWidth: 350, alignItems: 'center' },
+  inputDisplay: { 
+    width: '80%', 
+    height: 60, 
+    borderWidth: 2, 
+    borderRadius: 12, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginBottom: 20,
+    backgroundColor: '#f9f9f9'
+  },
+  inputText: { fontSize: 28, fontWeight: 'bold', letterSpacing: 2 },
+  numpadRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginBottom: 15 },
+  numpadBtn: { 
+    width: 70, 
+    height: 70, 
+    borderWidth: 2, 
+    borderRadius: 35, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#fff' 
+  },
+  numpadText: { fontSize: 28, fontWeight: 'bold' },
+  numpadBtnEmpty: { width: 70, height: 70 }, // Unsichtbarer Platzhalter für "leer"
+
   successArea: { marginTop: 40, flexDirection: 'row', alignItems: 'center', gap: 10 },
   successText: { color: '#2ecc71', fontWeight: 'bold', fontSize: 16 }
 });

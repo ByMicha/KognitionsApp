@@ -74,7 +74,7 @@ export default function MocaRecall({ theme, t, onComplete }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={{...styles.title, color: theme.primary}}>10. {t.moca.tests.recall}</Text>
+        <Text style={{...styles.title, color: theme.primary}}>9. {t.moca.tests.recall}</Text>
       </View>
 
       {!isStarted ? (
