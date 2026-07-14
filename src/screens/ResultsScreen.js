@@ -1,11 +1,18 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
 import { clearAllResults, deleteResult } from '../utils/resultStorage';
 
+// HINZUGEFÜGT: Unseren Konverter importieren
+import { generateAndEncryptODM } from '../utils/odmExport'; 
+
 export default function ResultsScreen({ t, theme, onBack }) {
-  const { results, loadResults } = useResults();
+  // HINZUGEFÜGT: sessionData aus dem Context abrufen
+  const { results, loadResults, sessionData } = useResults(); 
+  
+  // HINZUGEFÜGT: Ladezustand für den Sende-Button
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     loadResults();
@@ -41,13 +48,74 @@ export default function ResultsScreen({ t, theme, onBack }) {
     }
   };
 
+  // --- HINZUGEFÜGT: DIE API-SENDELOGIK NACH HEIDELBERG ---
+  const handleSendToClinic = async () => {
+    if (!sessionData) {
+      const msg = "Keine Session-Daten vorhanden. Bitte öffne die App über den Patienten-Link aus der Klinik.";
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert("Fehler", msg);
+      return;
+    }
+
+    setIsSending(true);
+
+    try {
+      // 1. XML zusammenbauen und AES-verschlüsseln
+      const encryptedXML = generateAndEncryptODM(results, sessionData);
+      if (!encryptedXML) throw new Error("Fehler bei der XML-Generierung oder Verschlüsselung.");
+
+      // 2. Login bei der Heidelberger API (Authentifizierungs-Key holen)
+      const loginAuthString = btoa(`${sessionData.username}:${sessionData.password}`);
+      const loginResponse = await fetch('https://myedc.med.uni-heidelberg.de/main/api/users/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Basic ${loginAuthString}`
+        }
+      });
+
+      if (!loginResponse.ok) throw new Error("Login bei der Heidelberger Schnittstelle fehlgeschlagen.");
+      const loginData = await loginResponse.json();
+      const authKey = loginData.authenticationKey;
+
+      // 3. Dateinamen exakt nach Robins Spezifikation aufbauen
+      const ts = Date.now(); // Aktueller Zeitstempel in Millisekunden
+      const fileStatus = 3; // 3 = Finished
+      const filename = `${sessionData.subjectKey}____${ts}__${ts}__${fileStatus}`;
+
+      // 4. Den eigentlichen PUT-Request (Upload) senden
+      const putAuthString = btoa(`${sessionData.username}:${authKey}`);
+      const putUrl = `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${filename}?deleteOld=${filename}`;
+
+      const putResponse = await fetch(putUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Basic ${putAuthString}`,
+          'Content-Type': 'text/plain'
+        },
+        body: encryptedXML
+      });
+
+      if (!putResponse.ok) throw new Error("Fehler beim Hochladen der Daten an das EDC-System.");
+
+      // 5. Erfolgsmeldung
+      const successMsg = "Erfolgreich! Die Daten wurden sicher und verschlüsselt an die Klinik übermittelt.";
+      Platform.OS === 'web' ? window.alert(successMsg) : Alert.alert("Erfolg", successMsg);
+
+    } catch (error) {
+      console.error(error);
+      const errorMsg = `Senden fehlgeschlagen: ${error.message}`;
+      Platform.OS === 'web' ? window.alert(errorMsg) : Alert.alert("Fehler", errorMsg);
+    } finally {
+      setIsSending(false);
+    }
+  };
+  // --------------------------------------------------------
+
   const formatTMTScore = (score) => {
     const numScore = parseFloat(score);
     if (numScore > 1000000) return "Fehler: Zeitstempel statt Dauer";
     return numScore.toFixed(2) + " Sekunden";
   };
 
-  // --- HILFSFUNKTIONEN FÜR MOCA DETAILS ---
   const renderMocaSection = (title, icon, content) => (
     <View style={{...styles.mocaSection, backgroundColor: theme.darkContrast, borderLeftColor: theme.pageGradientEnd}}>
       <View style={styles.mocaSectionHeader}>
@@ -66,8 +134,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
       case 'moca_test':
         return (
           <View style={styles.mocaContainer}>
-
-            {/* 1. Visuokonstruktiv */}
             {renderMocaSection(t.results.visualConstructiveExecutive, "pencil-ruler", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.trails}: {s['01_trails']?.duration_active_sec}s {t.results.processingTime}</Text>
@@ -78,8 +144,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 <Text style={styles.mocaItemSub}>{t.results.angle}: {t.results.hour} {s['02_clock']?.final_angles?.hour}°, {t.results.minute} {s['02_clock']?.final_angles?.minute}°</Text>
               </View>
             ))}
-
-            {/* 2. Benennen */}
             {renderMocaSection(t.results.naming, "elephant", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.result}: {s['03_naming']?.score}</Text>
@@ -97,8 +161,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 </View>
               </View>
             ))}
-
-            {/* 3. Gedächtnis (Sofort) */}
             {renderMocaSection(t.results.remember, "brain", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.success}: {s['04_memory_immediate']?.correct_count} / 5 {t.results.words}</Text>
@@ -106,8 +168,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 <Text style={styles.mocaTranscript}>{t.results.transcript}: "{s['04_memory_immediate']?.full_transcript}"</Text>
               </View>
             ))}
-
-            {/* 4. Aufmerksamkeit */}
             {renderMocaSection(t.results.attention, "alert-circle-outline", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.countForward}: {s['05_digits']?.forward?.hits} / {s['05_digits']?.forward?.seq_length} {t.results.correct}</Text>
@@ -119,8 +179,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.hits}: {s['06_vigilance']?.hits} | {t.results.miss}: {s['06_vigilance']?.omissions} | {t.results.falseAlarm}: {s['06_vigilance']?.false_alarms}</Text>
               </View>
             ))}
-
-            {/* 5. Rechnen */}
             {renderMocaSection(t.results.calculation, "calculator", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.sequence}: {s['07_calculation']?.final_sequence?.join(' - ')}</Text>
@@ -137,8 +195,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 </View>
               </View>
             ))}
-
-            {/* 6. Sprache */}
             {renderMocaSection(t.results.language, "microphone", (
               <View>
                 <Text style={[styles.detailText, { color: theme.text }]}>{t.results.repetition}: {s['08_language']?.is_correct ? t.results.correct : t.results.wrong}</Text>
@@ -149,8 +205,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
                 <Text style={styles.mocaTranscript}>{s['09_word_fluency']?.raw_word_list?.join(', ')}</Text>
               </View>
             ))}
-
-            {/* 7. Gedächtnis (Delayed Recall) */}
             {renderMocaSection(t.results.recall, "history", (
               <View>
                 <Text style={[styles.detailText, { fontWeight: 'bold' }]}>{t.results.success}: {s['10_delayed_recall']?.correct_count} / 5 {t.results.words}</Text>
@@ -160,8 +214,8 @@ export default function ResultsScreen({ t, theme, onBack }) {
             ))}
           </View>
         );
-
       case 'tmt_a':
+      case 'tmt_b':
         return (
           <View style={styles.detailBox}>
             <Text style={[styles.detailText, { color: theme.text }]}>
@@ -268,8 +322,33 @@ export default function ResultsScreen({ t, theme, onBack }) {
           <Text style={{ color: theme.primary, fontSize: 18, fontWeight: 'bold' }}>← {t.backToMenu}</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.text }]}>{t.resultsAndDatabase}</Text>
-        <TouchableOpacity onPress={handleClearAll}><Text style={{ color: '#ff4444', fontWeight: 'bold' }}>{t.results.deleteAllData}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={handleClearAll}>
+          <Text style={{ color: '#ff4444', fontWeight: 'bold' }}>{t.results.deleteAllData}</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* HINZUGEFÜGT: Der Sende-Button direkt unter dem Header */}
+      {results.length > 0 && (
+        <View style={styles.sendArea}>
+          <TouchableOpacity 
+            style={[
+              styles.sendButton, 
+              { backgroundColor: isSending ? theme.grayish : theme.primary }
+            ]} 
+            onPress={handleSendToClinic}
+            disabled={isSending}
+          >
+            {isSending ? (
+              <ActivityIndicator size="small" color={theme.darkContrast} style={{ marginRight: 10 }} />
+            ) : (
+              <MaterialCommunityIcons name="cloud-upload" size={24} color={theme.darkContrast} style={{ marginRight: 10 }} />
+            )}
+            <Text style={{ color: theme.darkContrast, fontWeight: 'bold', fontSize: 16 }}>
+              {isSending ? "Daten werden verschlüsselt & gesendet..." : "Ergebnisse an Klinik übermitteln"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {results.length === 0 ? (
@@ -301,6 +380,11 @@ const styles = StyleSheet.create({
   header: { padding: 20, paddingTop: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#eee' },
   backBtn: { marginRight: 20 },
   title: { fontSize: 22, fontWeight: 'bold' },
+  
+  // HINZUGEFÜGT: Neue Styles für den Sende-Button
+  sendArea: { width: '100%', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  sendButton: { flexDirection: 'row', paddingVertical: 14, paddingHorizontal: 30, borderRadius: 12, alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 },
+  
   scrollContent: { padding: 20, alignItems: 'center' },
   emptyState: { marginTop: 100 },
   resultCard: { width: '100%', maxWidth: 800, padding: 20, borderRadius: 15, borderWidth: 1, marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
@@ -324,7 +408,6 @@ const styles = StyleSheet.create({
   qlqItem: { width: '20%', marginBottom: 8, paddingRight: 5 },
   qlqItemText: { fontSize: 12, fontWeight: '600' },
 
-  // MOCA SPECIFIC STYLES
   mocaContainer: { paddingVertical: 5 },
   mocaScoreMain: { fontSize: 17, fontWeight: 'bold', marginBottom: 5, textAlign: 'center' },
   metaInfo: { marginBottom: 15, alignItems: 'center' },

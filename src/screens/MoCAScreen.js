@@ -23,7 +23,6 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const [mocaData, setMocaData] = useState({
     metadata: {
       startTime: new Date().toISOString(),
-      userId: "ID_PLACEHOLDER" 
     },
     scenarios: {}
   });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 import translations from './src/constants/translations';
 import { lightTheme, darkTheme } from './src/constants/theme';
 import MainMenu from './src/screens/MainMenu';
@@ -29,6 +29,7 @@ export default function App() {
   const [language, setLanguage] = useState('de');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [currentScreen, setCurrentScreen] = useState('menu');
+
 
   useEffect(() => {
     async function load() {
