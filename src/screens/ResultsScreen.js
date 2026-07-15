@@ -3,15 +3,85 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
 import { clearAllResults, deleteResult } from '../utils/resultStorage';
-
-// HINZUGEFÜGT: Unseren Konverter importieren
 import { generateAndEncryptODM } from '../utils/odmExport'; 
 
+// HINZUGEFÜGT: Die Bibliotheken für den PDF-Export
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+
+// HINZUGEFÜGT: Der HTML-Generator für die PDF
+const generatePDFHtml = (results, t) => {
+  let html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Helvetica, Arial, sans-serif; padding: 20px; color: #333; }
+          h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+          .result-card { border: 1px solid #ccc; border-radius: 8px; padding: 15px; margin-bottom: 20px; page-break-inside: avoid; background-color: #fff; }
+          .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+          .title { font-size: 18px; font-weight: bold; color: #2980b9; text-transform: uppercase; }
+          .date { font-size: 14px; color: #7f8c8d; }
+          .score { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+          .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+          .data-table th, .data-table td { border: 1px solid #ddd; padding: 6px; text-align: left; vertical-align: top; }
+          .data-table th { background-color: #f8f9fa; width: 40%; }
+        </style>
+      </head>
+      <body>
+        <h1>${t?.resultsAndDatabase || 'KognitionsApp - Testergebnisse'}</h1>
+  `;
+
+  // Hilfsfunktion: Wandelt das verschachtelte JSON in eine HTML-Tabelle um
+  const renderData = (obj, indent = "") => {
+    let rows = "";
+    for (const key in obj) {
+      if (obj[key] === null || obj[key] === undefined) continue;
+
+      if (Array.isArray(obj[key])) {
+        const arrayString = obj[key].map(item => typeof item === 'object' ? JSON.stringify(item) : item).join(', ');
+        rows += `<tr><th>${indent}${key}</th><td>${arrayString}</td></tr>`;
+      } else if (typeof obj[key] === 'object') {
+        rows += `<tr><td colspan="2" style="background-color: #f1f1f1; font-weight:bold;">${indent}${key}</td></tr>`;
+        rows += renderData(obj[key], indent + "&nbsp;&nbsp;&nbsp;");
+      } else {
+        rows += `<tr><th>${indent}${key}</th><td>${obj[key]}</td></tr>`;
+      }
+    }
+    return rows;
+  };
+
+  results.slice().reverse().forEach(res => {
+    html += `
+      <div class="result-card">
+        <div class="header">
+          <span class="title">${res.testId.replace('_', ' ')}</span>
+          <span class="date">${new Date(res.timestamp).toLocaleString('de-DE')}</span>
+        </div>
+        <div class="score">Score / Gesamtergebnis: ${res.score}</div>
+    `;
+
+    if (res.data) {
+       html += `
+         <table class="data-table">
+           <tbody>
+             ${renderData(res.data)}
+           </tbody>
+         </table>
+       `;
+    }
+
+    html += `</div>`;
+  });
+
+  html += `</body></html>`;
+  return html;
+};
+
+
 export default function ResultsScreen({ t, theme, onBack }) {
-  // HINZUGEFÜGT: sessionData aus dem Context abrufen
   const { results, loadResults, sessionData } = useResults(); 
-  
-  // HINZUGEFÜGT: Ladezustand für den Sende-Button
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
@@ -48,7 +118,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
     }
   };
 
-  // --- HINZUGEFÜGT: DIE API-SENDELOGIK NACH HEIDELBERG ---
   const handleSendToClinic = async () => {
     if (!sessionData) {
       const msg = "Keine Session-Daten vorhanden. Bitte öffne die App über den Patienten-Link aus der Klinik.";
@@ -59,11 +128,9 @@ export default function ResultsScreen({ t, theme, onBack }) {
     setIsSending(true);
 
     try {
-      // 1. XML zusammenbauen und AES-verschlüsseln
       const encryptedXML = generateAndEncryptODM(results, sessionData);
       if (!encryptedXML) throw new Error("Fehler bei der XML-Generierung oder Verschlüsselung.");
 
-      // 2. Login bei der Heidelberger API (Authentifizierungs-Key holen)
       const loginAuthString = btoa(`${sessionData.username}:${sessionData.password}`);
       const loginResponse = await fetch('https://myedc.med.uni-heidelberg.de/main/api/users/me', {
         method: 'GET',
@@ -76,12 +143,10 @@ export default function ResultsScreen({ t, theme, onBack }) {
       const loginData = await loginResponse.json();
       const authKey = loginData.authenticationKey;
 
-      // 3. Dateinamen exakt nach Robins Spezifikation aufbauen
-      const ts = Date.now(); // Aktueller Zeitstempel in Millisekunden
-      const fileStatus = 3; // 3 = Finished
+      const ts = Date.now(); 
+      const fileStatus = 3; 
       const filename = `${sessionData.subjectKey}____${ts}__${ts}__${fileStatus}`;
 
-      // 4. Den eigentlichen PUT-Request (Upload) senden
       const putAuthString = btoa(`${sessionData.username}:${authKey}`);
       const putUrl = `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${filename}?deleteOld=${filename}`;
 
@@ -96,7 +161,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
 
       if (!putResponse.ok) throw new Error("Fehler beim Hochladen der Daten an das EDC-System.");
 
-      // 5. Erfolgsmeldung
       const successMsg = "Erfolgreich! Die Daten wurden sicher und verschlüsselt an die Klinik übermittelt.";
       Platform.OS === 'web' ? window.alert(successMsg) : Alert.alert("Erfolg", successMsg);
 
@@ -108,7 +172,42 @@ export default function ResultsScreen({ t, theme, onBack }) {
       setIsSending(false);
     }
   };
-  // --------------------------------------------------------
+
+  // HINZUGEFÜGT: Angepasste Logik für den sauberen PDF-Export im Web
+  const handleDownloadPDF = async () => {
+    try {
+      const html = generatePDFHtml(results, t);
+
+      if (Platform.OS === 'web') {
+        // Workaround für das Web: Unsichtbares iFrame erstellen
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        
+        // Das generierte HTML in das iFrame schreiben
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(html);
+        iframe.contentDocument.close();
+        
+        // Den Fokus auf das iFrame setzen und nur dieses drucken
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        
+        // Das iFrame nach 1 Sekunde wieder sauber aus dem Hintergrund entfernen
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
+      } else {
+        // Standard-Verhalten für iOS und Android
+        const { uri } = await Print.printToFileAsync({ html });
+        await Sharing.shareAsync(uri);
+      }
+    } catch (error) {
+      console.error("PDF Fehler:", error);
+      const errorMsg = "Fehler beim Erstellen der PDF.";
+      Platform.OS === 'web' ? window.alert(errorMsg) : Alert.alert("Fehler", errorMsg);
+    }
+  };
 
   const formatTMTScore = (score) => {
     const numScore = parseFloat(score);
@@ -327,12 +426,12 @@ export default function ResultsScreen({ t, theme, onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* HINZUGEFÜGT: Der Sende-Button direkt unter dem Header */}
+      {/* HINZUGEFÜGT: Der neue Bereich mit BEIDEN Buttons (Upload & PDF) */}
       {results.length > 0 && (
-        <View style={styles.sendArea}>
+        <View style={styles.actionButtonsContainer}>
           <TouchableOpacity 
             style={[
-              styles.sendButton, 
+              styles.actionButton, 
               { backgroundColor: isSending ? theme.grayish : theme.primary }
             ]} 
             onPress={handleSendToClinic}
@@ -343,8 +442,18 @@ export default function ResultsScreen({ t, theme, onBack }) {
             ) : (
               <MaterialCommunityIcons name="cloud-upload" size={24} color={theme.darkContrast} style={{ marginRight: 10 }} />
             )}
-            <Text style={{ color: theme.darkContrast, fontWeight: 'bold', fontSize: 16 }}>
-              {isSending ? "Daten werden verschlüsselt & gesendet..." : "Ergebnisse an Klinik übermitteln"}
+            <Text style={{ color: theme.darkContrast, fontWeight: 'bold', fontSize: 15 }}>
+              {isSending ? "Daten werden gesendet..." : "An Klinik senden"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, { backgroundColor: '#e74c3c' }]} 
+            onPress={handleDownloadPDF}
+          >
+            <MaterialCommunityIcons name="file-pdf-box" size={24} color="#fff" style={{ marginRight: 10 }} />
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15 }}>
+              PDF exportieren
             </Text>
           </TouchableOpacity>
         </View>
@@ -381,9 +490,9 @@ const styles = StyleSheet.create({
   backBtn: { marginRight: 20 },
   title: { fontSize: 22, fontWeight: 'bold' },
   
-  // HINZUGEFÜGT: Neue Styles für den Sende-Button
-  sendArea: { width: '100%', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  sendButton: { flexDirection: 'row', paddingVertical: 14, paddingHorizontal: 30, borderRadius: 12, alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 },
+  // HINZUGEFÜGT: Angepasstes Styling für die Buttons nebeneinander
+  actionButtonsContainer: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  actionButton: { flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 },
   
   scrollContent: { padding: 20, alignItems: 'center' },
   emptyState: { marginTop: 100 },
