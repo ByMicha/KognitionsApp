@@ -5,7 +5,7 @@ import { useResults } from '../context/ResultContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ExplanationModal from '../components/ExplanationModal';
 
-// Alle 25 Punkte für Teil A (1 bis 25) - Exakt aus Ihrer Datei übernommen
+// Alle 25 Punkte für Teil A (1 bis 25)
 const circlesDataA = [
   { id: 1, label: '1', x: 45, y: 60, topLabel: 'Anfang' },
   { id: 2, label: '2', x: 55, y: 30 },
@@ -34,7 +34,7 @@ const circlesDataA = [
   { id: 25, label: '25', x: 80, y: 85, topLabel: 'Ende' },
 ];
 
-// Teil B: Wechsel zwischen 13 Zahlen und 12 Buchstaben (1-A-2-B...-13)
+// Teil B: Wechsel zwischen 13 Zahlen und 12 Buchstaben
 const circlesDataB = [
   { id: 1, label: '1', x: 50, y: 50, topLabel: 'Anfang' },
   { id: 2, label: 'A', x: 70, y: 20 },
@@ -114,6 +114,25 @@ export default function TMTScreen({ t, theme, onBack }) {
     lastHitTimeRef.current = 0;
   };
 
+  const handleAbort = () => {
+    setCurrentLine(null);
+    dragStartRef.current = null;
+
+    if (phaseRef.current === 'A') {
+      setShowLoading(true);
+      setTimeout(() => {
+        startPhaseB();
+        setShowLoading(false);
+      }, 1500);
+    } else {
+      setShowLoading(true);
+      setTimeout(() => {
+        onBack();
+        setShowLoading(false);
+      }, 1500);
+    }
+  };
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -152,7 +171,6 @@ export default function TMTScreen({ t, theme, onBack }) {
             Math.pow(newEndX - targetCircle.px, 2) + Math.pow(newEndY - targetCircle.py, 2)
           );
 
-          // Wenn der Zielkreis berührt wird (Abstand < 30 Pixel)
           if (distance < 30) {
             const now = Date.now();
             if (now - lastHitTimeRef.current < 250) return; 
@@ -161,20 +179,16 @@ export default function TMTScreen({ t, theme, onBack }) {
             setCompletedLines(prev => [...prev, newLine]);
             lastHitTimeRef.current = now;
 
-            // PRÜFUNG: Ist das der letzte Kreis (25)?
             if (nextNumberRef.current === 25) {
                 const totalSeconds = ((Date.now() - startTimeRef.current) / 1000).toFixed(2);
                 
-                // Blockiert weitere Linien
                 nextNumberRef.current = 26; 
                 setNextNumber(26);
                 
-                // Löst die Beendigung aus
                 handleFinishPhase(totalSeconds);
                 return;
             }
 
-            // Normaler nächster Punkt
             nextNumberRef.current += 1;
             setNextNumber(prev => prev + 1);
             dragStartRef.current = { x: targetCircle.px, y: targetCircle.py };
@@ -293,6 +307,12 @@ export default function TMTScreen({ t, theme, onBack }) {
           <Text style={[styles.infoText, { color: theme.text }]}>
             {nextNumber <= 25 ? `${t.tmt.search} ${activeData[nextNumber-1].label}` : t.tmt.done}
           </Text>
+          <TouchableOpacity 
+            style={{...styles.abortButton, backgroundColor: theme.text}} 
+            onPress={handleAbort}
+          >
+            <Text style={styles.abortButtonText}>Vorzeitig beenden</Text>
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -309,6 +329,8 @@ const styles = StyleSheet.create({
   circle: { position: 'absolute', width: 40, height: 40, borderRadius: 20, borderWidth: 2, justifyContent: 'center', alignItems: 'center', transform: [{ translateX: -20 }, { translateY: -20 }], zIndex: 2, pointerEvents: 'none' },
   text: { fontSize: 16, fontWeight: 'bold' },
   labelAbove: { position: 'absolute', top: -25, fontSize: 12, width: 80, textAlign: 'center' },
-  infoBar: { padding: 25, borderTopWidth: 1, alignItems: 'center', borderTopRightRadius: 20, borderTopLeftRadius: 20 },
-  infoText: { fontSize: 22, fontWeight: 'bold' }
+  infoBar: { padding: 20, paddingHorizontal: 40, borderTopWidth: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopRightRadius: 20, borderTopLeftRadius: 20 },
+  infoText: { fontSize: 22, fontWeight: 'bold' },
+  abortButton: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10 },
+  abortButtonText: { color: '#ffffff', fontWeight: 'bold', fontSize: 16 }
 });

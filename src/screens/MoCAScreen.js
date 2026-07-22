@@ -30,6 +30,11 @@ export default function MoCAScreen({ t, theme, onBack }) {
   const totalPhases = 9;
   const progress = ((currentPhase + 1) / totalPhases) * 100;
 
+  // HINZUGEFÜGT: Prüfen, ob eine Zeichen-Aufgabe aktiv ist
+  // Wenn MocaClock später wieder aktiviert wird, einfach ändern in: 
+  // const isDrawingPhase = currentPhase === 0 || currentPhase === 1;
+  const isDrawingPhase = currentPhase === 0;
+
   // Diese Funktion nimmt die Daten der Szenarien entgegen und speichert sie zentral
   const updateScenarioData = (key, data) => {
     setMocaData(prev => ({
@@ -154,6 +159,26 @@ export default function MoCAScreen({ t, theme, onBack }) {
     }
   };
 
+  // HINZUGEFÜGT: Den Inhalt des Sheets in eine Variable auslagern, 
+  // damit wir ihn flexibel in ScrollView ODER View packen können.
+  const sheetContent = (
+    <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
+      <View style={styles.contentArea}>{renderPhase()}</View>
+      
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[styles.nextBtn, { backgroundColor: isNextDisabled ? theme.grayish : theme.primary }]} 
+          onPress={handleNext}
+          disabled={isNextDisabled}
+        >
+          <Text style={[styles.nextBtnText, { color: isNextDisabled ? theme.text : theme.darkContrast }]}>
+            {currentPhase === totalPhases - 1 ? t.moca.endTest : t.moca.nextTest}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: "transparent" }]}>
 
@@ -183,23 +208,17 @@ export default function MoCAScreen({ t, theme, onBack }) {
 
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={[styles.sheet, { backgroundColor: theme.darkContrast, borderColor: theme.border }]}>
-          <View style={styles.contentArea}>{renderPhase()}</View>
-          
-          <View style={styles.footer}>
-            <TouchableOpacity 
-              style={[styles.nextBtn, { backgroundColor: isNextDisabled ? theme.grayish : theme.primary }]} 
-              onPress={handleNext}
-              disabled={isNextDisabled}
-            >
-              <Text style={[styles.nextBtnText, { color: isNextDisabled ? theme.text : theme.darkContrast }]}>
-                {currentPhase === totalPhases - 1 ? t.moca.endTest : t.moca.nextTest}
-              </Text>
-            </TouchableOpacity>
-          </View>
+      {/* HINZUGEFÜGT: Konditionales Rendering für den Zeichen-Schutz */}
+      {isDrawingPhase ? (
+        <View style={[styles.scrollContent, { flex: 1 }]}>
+          {sheetContent}
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {sheetContent}
+        </ScrollView>
+      )}
+
     </View>
   );
 }

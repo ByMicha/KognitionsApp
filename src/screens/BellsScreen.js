@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Alert, Platform, useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResults } from '../context/ResultContext';
 import ExplanationModal from '../components/ExplanationModal';
@@ -16,7 +16,6 @@ const generateBellsData = () => {
   const distractors = ['home', 'tree', 'bird', 'apple', 'car'];
   
   // RASTER FÜR QUERFORMAT ANGEPASST
-  // 14 Zeilen und 26 Spalten (~364 Plätze) -> breiter als hoch
   const rows = 14;
   const cols = 26;
   const grid = [];
@@ -58,11 +57,9 @@ const generateBellsData = () => {
       slot.occupied = true;
     }
 
-    // Koordinaten berechnen mit "Jitter" (zufälliger Versatz)
     const xBase = (slot.c * (100 / cols));
     const yBase = (slot.r * (100 / rows));
     
-    // Zufälliger Versatz innerhalb der Zelle (max 70% der Zellgröße)
     const xJitter = (Math.random() - 0.5) * (100 / cols) * 0.9;
     const yJitter = (Math.random() - 0.5) * (100 / rows) * 0.9;
 
@@ -73,7 +70,7 @@ const generateBellsData = () => {
       x: Math.max(3, Math.min(97, xBase + (100 / cols / 2) + xJitter)),
       y: Math.max(3, Math.min(97, yBase + (100 / rows / 2) + yJitter)),
       selected: false,
-      column: slot.zone // Nur für Glocken definiert
+      column: slot.zone 
     });
   });
 
@@ -82,6 +79,10 @@ const generateBellsData = () => {
 
 export default function BellsScreen({ t, theme, onBack }) {
   const { addResult } = useResults();
+  
+  // HINZUGEFÜGT: Fenstergröße auslesen, um das Hochformat zu erkennen
+  const { width, height } = useWindowDimensions();
+  const isPortrait = height > width;
 
   const [showExplanation, setShowExplanation] = useState(true);
   
@@ -93,7 +94,7 @@ export default function BellsScreen({ t, theme, onBack }) {
   const [timeLeft, setTimeLeft] = useState(TEST_DURATION);
   const timerRef = useRef(null);
 
-  // --- BERICHTIGUNG DER BILDSCHIRMAUSRICHTUNG ---
+  // --- BERICHTIGUNG DER BILDSCHIRMAUSRICHTUNG (Hardware Lock) ---
   useEffect(() => {
     async function lockLandscape() {
       try {
@@ -105,7 +106,6 @@ export default function BellsScreen({ t, theme, onBack }) {
     
     lockLandscape();
 
-    // Cleanup-Funktion beim Verlassen des Screens (Zurück zum Hochformat)
     return () => {
       async function lockPortrait() {
         try {
@@ -118,14 +118,16 @@ export default function BellsScreen({ t, theme, onBack }) {
     };
   }, []);
 
+  // --- TIMER LOGIK MIT PAUSIERUNG IM HOCHFORMAT ---
   useEffect(() => {
-    if (testStarted && !testFinished && timeLeft > 0) {
+    // Timer läuft nur, wenn der Test aktiv ist UND das Gerät im Querformat gehalten wird (!isPortrait)
+    if (testStarted && !testFinished && timeLeft > 0 && !isPortrait) {
       timerRef.current = setInterval(() => setTimeLeft(p => p - 1), 1000);
     } else if (timeLeft === 0 && !testFinished) {
       handleFinish();
     }
     return () => clearInterval(timerRef.current);
-  }, [testStarted, testFinished, timeLeft]);
+  }, [testStarted, testFinished, timeLeft, isPortrait]); // isPortrait als Dependency hinzugefügt
 
   const toggleSymbol = (id) => {
     if (testFinished) return;
@@ -171,6 +173,27 @@ export default function BellsScreen({ t, theme, onBack }) {
       Alert.alert("Ergebnis", `Score: ${correctBells}/35\nZeit: ${timeTaken}s`);
     }
   };
+
+  // HINZUGEFÜGT: Der Sperrbildschirm, falls das Gerät im Hochformat ist
+  if (isPortrait) {
+    return (
+      <View style={[styles.container, styles.centered, { backgroundColor: theme.background }]}>
+        <MaterialCommunityIcons name="phone-rotate-landscape" size={100} color={theme.primary} />
+        <Text style={[styles.portraitTitle, { color: theme.text }]}>Bitte Gerät drehen</Text>
+        <Text style={[styles.portraitText, { color: theme.text }]}>
+          Der Bells-Test erfordert einen breiten Bildschirm, damit die Symbole nicht gequetscht werden und die Ergebnisse nicht verfälscht sind.
+        </Text>
+        <Text style={[styles.portraitSubText, { color: theme.primary }]}>
+          {testStarted ? "(Der Test wurde pausiert)" : ""}
+        </Text>
+        
+        {/* Zurück-Button, falls man abbrechen möchte */}
+        <TouchableOpacity onPress={onBack} style={[styles.doneButton, { backgroundColor: theme.card, marginTop: 40 }]}>
+          <Text style={{ color: theme.text, fontWeight: 'bold' }}>Test abbrechen</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: "transparent" }]}>
@@ -241,16 +264,22 @@ export default function BellsScreen({ t, theme, onBack }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  centered: { justifyContent: 'center', alignItems: 'center' },
+  centered: { justifyContent: 'center', alignItems: 'center', padding: 30 },
+  
+  // HINZUGEFÜGT: Styles für das Hochformat-Overlay
+  portraitTitle: { fontSize: 26, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' },
+  portraitText: { fontSize: 16, textAlign: 'center', maxWidth: 400, opacity: 0.8 },
+  portraitSubText: { fontSize: 16, fontWeight: 'bold', marginTop: 15 },
+
   header: { padding: 20, paddingTop: 30, flexDirection: 'row', alignItems: 'center' },
   backBtn: { marginRight: 20 },
   title: { fontSize: 24, fontWeight: 'bold' },
   timerContainer: { padding: 10, borderRadius: 8, marginRight: 40 },
   boardContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 10 },
   board: {
-    width: '90%', 
+    width: '75%', 
     maxWidth: 1300, 
-    aspectRatio: 1.414, // GEÄNDERT: Seitenverhältnis für Querformat (Breiter als hoch)
+    aspectRatio: 1.414, 
     backgroundColor: '#fff', 
     borderWidth: 1, 
     borderColor: '#ccc',

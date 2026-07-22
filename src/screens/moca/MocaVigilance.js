@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Speech from 'expo-speech';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const TEST_SEQUENCE = ["F", "A", "B", "A", "K"];
+const TEST_SEQUENCE = ["f", "b", "a", "c", "m", "n", "a", "a", "j", "k", "l", "b", "a", "f", "a", "k", "d", "e", "a", "a", "a", "j", "a", "m", "o", "f", "a", "a", "b"];
 
 export default function MocaVigilance({ theme, t, onComplete }) {
   const [isStarted, setIsStarted] = useState(false);
@@ -26,7 +26,8 @@ export default function MocaVigilance({ theme, t, onComplete }) {
       await new Promise((resolve) => {
         Speech.speak(letter, {
           language: 'de-DE',
-          rate: 0.8,
+          pitch: 0.8,
+          rate: 0.4,
           onStart: () => {
             // Das Treffer-Fenster öffnet sich erst hier (beim Ton-Start)
             currentIdxRef.current = index;
@@ -45,7 +46,7 @@ export default function MocaVigilance({ theme, t, onComplete }) {
       });
     }
 
-    const totalTargets = TEST_SEQUENCE.filter(l => l === "A").length;
+    const totalTargets = TEST_SEQUENCE.filter(l => l === "a").length;
     const finalHits = hitIndicesRef.current.size;
 
     setIsFinished(true);
