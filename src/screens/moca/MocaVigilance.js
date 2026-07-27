@@ -61,7 +61,7 @@ export default function MocaVigilance({ theme, t, onComplete }) {
 
   const handleTap = () => {
     // Taps werden nun präzise gegen den aktuell hörbaren Buchstaben geprüft
-    if (activeLetterRef.current === "A") {
+    if (activeLetterRef.current === "a") {
       hitIndicesRef.current.add(currentIdxRef.current);
     } else if (activeLetterRef.current !== null) {
       falseAlarmsRef.current += 1;

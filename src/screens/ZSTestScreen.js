@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' },
   taskBox: { width: 45, height: 65, borderWidth: 1, margin: 2, alignItems: 'center' },
   practiceBox: { backgroundColor: '#f0f0f0' },
-  activeTaskBox: { backgroundColor: '#e3f2fd', borderColor: '#2196f3', borderWidth: 2 },
+  activeTaskBox: { backgroundColor: '#e3f2fd', borderColor: '#2196f3', borderWidth: 4 },
   taskNum: { fontSize: 16, borderBottomWidth: 1, width: '100%', textAlign: 'center', paddingVertical: 2 },
   answerBox: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   keypad: { padding: 20, alignItems: "center", borderTopRightRadius: 20, borderTopLeftRadius: 20 },
