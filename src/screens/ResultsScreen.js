@@ -132,7 +132,13 @@ export default function ResultsScreen({ t, theme, onBack }) {
       if (!encryptedXML) throw new Error("Fehler bei der XML-Generierung oder Verschlüsselung.");
 
       const loginAuthString = btoa(`${sessionData.username}:${sessionData.password}`);
-      const loginResponse = await fetch('https://myedc.med.uni-heidelberg.de/main/api/users/me', {
+
+      const isLocal = Platform.OS === 'web' && window.location.hostname === 'localhost';
+      const loginUrl = isLocal
+        ? 'https://myedc.med.uni-heidelberg.de/main/api/users/me'
+        : '/api/users/me';
+
+      const loginResponse = await fetch(loginUrl, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${loginAuthString}`
@@ -143,12 +149,14 @@ export default function ResultsScreen({ t, theme, onBack }) {
       const loginData = await loginResponse.json();
       const authKey = loginData.authenticationKey;
 
-      const ts = Date.now(); 
-      const fileStatus = 3; 
+      const ts = Date.now();
+      const fileStatus = 3;
       const filename = `${sessionData.subjectKey}____${ts}__${ts}__${fileStatus}`;
-
       const putAuthString = btoa(`${sessionData.username}:${authKey}`);
-      const putUrl = `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${filename}?deleteOld=${filename}`;
+
+      const putUrl = isLocal
+        ? `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${filename}?deleteOld=${filename}`
+        : `/api/clinicaldata/${filename}?deleteOld=${filename}`;
 
       const putResponse = await fetch(putUrl, {
         method: 'PUT',
