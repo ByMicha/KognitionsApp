@@ -22,16 +22,14 @@ const val = (v) => {
   return escapeXML(String(v));
 };
 
-// Hilfsfunktion: Zieht aus einem Array von Objekten einen bestimmten Schlüssel (z.B. für HVLT Trials oder MoCA Rechenschritte)
+// Hilfsfunktion: Zieht aus einem Array von Objekten einen bestimmten Schlüssel
 const mapArray = (arr, key) => {
   if (!Array.isArray(arr)) return '';
   return val(arr.map(item => item[key]));
 };
 
-// 1. Funktion, um das XML für alle Tests zu bauen
-const buildODMString = (results, sessionData) => {
-  const timestamp = new Date().toISOString();
-  
+// 1. Funktion, um das XML für alle Tests zu bauen (jetzt mit übergebenem Timestamp)
+const buildODMString = (results, sessionData, timestamp) => {
   let xml = `<SubjectData SubjectKey="${val(sessionData.subjectKey)}">
     <AuditRecord>
         <UserRef UserOID="${val(sessionData.username)}"/>
@@ -281,16 +279,32 @@ const buildODMString = (results, sessionData) => {
   return xml;
 };
 
-// 2. Hauptfunktion: Baut das XML und verschlüsselt es direkt
+// 2. Hauptfunktion: Baut das XML, loggt es in die Konsole und verschlüsselt es dann
 export const generateAndEncryptODM = (results, sessionData) => {
   try {
     if (!sessionData || !sessionData.surveySecretKey) {
       throw new Error("Fehlende Session-Daten oder Secret Key für die Verschlüsselung.");
     }
 
-    const xmlString = buildODMString(results, sessionData);
-    
-    // XML mit dem surveySecretKey AES-verschlüsseln
+    // 1. Zeitstempel exakt einmal generieren, damit er im Log und im XML identisch ist
+    const auditTimestamp = new Date().toISOString();
+
+    // 2. XML String bauen
+    const xmlString = buildODMString(results, sessionData, auditTimestamp);
+
+    // 3. MASSIVES LOGGING FÜR ROBIN
+    console.log("=================================================");
+    console.log("🚀 DATEN-ÜBERMITTLUNG AN KLINIK GESTARTET 🚀");
+    console.log("=================================================");
+    console.log("1. Audit Trail TimeStamp:", auditTimestamp);
+    console.log("2. Subject Key:", sessionData.subjectKey);
+    console.log("3. StudyEventRepeatKey:", sessionData.studyEventRepeatKey);
+    console.log("4. Anzahl der übermittelten Tests:", results.length);
+    console.log("5. RAW XML (UNVERSCHLÜSSELT):");
+    console.log(xmlString);
+    console.log("=================================================");
+
+    // 4. Verschlüsseln
     const encryptedXML = CryptoJS.AES.encrypt(xmlString, sessionData.surveySecretKey).toString();
     
     return encryptedXML;
