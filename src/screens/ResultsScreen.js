@@ -79,7 +79,6 @@ const generatePDFHtml = (results, t) => {
   return html;
 };
 
-
 export default function ResultsScreen({ t, theme, onBack }) {
   const { results, loadResults, sessionData } = useResults(); 
   const [isSending, setIsSending] = useState(false);
@@ -149,14 +148,55 @@ export default function ResultsScreen({ t, theme, onBack }) {
       const loginData = await loginResponse.json();
       const authKey = loginData.authenticationKey;
 
-      const ts = Date.now();
+      // ---- UPLOAD VORBEREITUNG ----
+      const currentTimestamp = Date.now();
+      let createdTimestamp = currentTimestamp;
+      let oldFilename = "";
       const fileStatus = 3;
-      const filename = `${sessionData.subjectKey}____${ts}__${ts}__${fileStatus}`;
       const putAuthString = btoa(`${sessionData.username}:${authKey}`);
 
+      // ---- 1. ALTEN DATEINAMEN ABRUFEN (GET) ----
+      try {
+        const getUrl = isLocal
+          ? 'https://myedc.med.uni-heidelberg.de/main/api/clinicaldata'
+          : '/api/clinicaldata';
+
+        const getResponse = await fetch(getUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Basic ${putAuthString}`
+          }
+        });
+
+        if (getResponse.ok) {
+          const fileNames = await getResponse.json();
+
+          const existingFile = fileNames.find(name => name.startsWith(sessionData.subjectKey + "____"));
+
+          if (existingFile) {
+            oldFilename = existingFile;
+
+            const parts = existingFile.split('____');
+            if (parts.length > 1) {
+              const timeParts = parts[1].split('__');
+              if (timeParts.length > 0) {
+                createdTimestamp = timeParts[0];
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.log("Fehler beim Abrufen der alten Datei:", error);
+      }
+
+      // ---- 2. NEUEN DATEINAMEN ZUSAMMENBAUEN ----
+      const newFilename = `${sessionData.subjectKey}____${createdTimestamp}__${currentTimestamp}__${fileStatus}`;
+      const deleteOldParam = oldFilename ? `?deleteOld=${oldFilename}` : `?deleteOld=${newFilename}`;
+
+      // ---- 3. UPLOAD (PUT) REQUEST ----
       const putUrl = isLocal
-        ? `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${filename}?deleteOld=${filename}`
-        : `/api/clinicaldata/${filename}?deleteOld=${filename}`;
+        ? `https://myedc.med.uni-heidelberg.de/main/api/clinicaldata/${newFilename}${deleteOldParam}`
+        : `/api/clinicaldata/${newFilename}${deleteOldParam}`;
 
       const putResponse = await fetch(putUrl, {
         method: 'PUT',
@@ -181,32 +221,26 @@ export default function ResultsScreen({ t, theme, onBack }) {
     }
   };
 
-  // HINZUGEFÜGT: Angepasste Logik für den sauberen PDF-Export im Web
   const handleDownloadPDF = async () => {
     try {
       const html = generatePDFHtml(results, t);
 
       if (Platform.OS === 'web') {
-        // Workaround für das Web: Unsichtbares iFrame erstellen
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
         
-        // Das generierte HTML in das iFrame schreiben
         iframe.contentDocument.open();
         iframe.contentDocument.write(html);
         iframe.contentDocument.close();
         
-        // Den Fokus auf das iFrame setzen und nur dieses drucken
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
         
-        // Das iFrame nach 1 Sekunde wieder sauber aus dem Hintergrund entfernen
         setTimeout(() => {
           document.body.removeChild(iframe);
         }, 1000);
       } else {
-        // Standard-Verhalten für iOS und Android
         const { uri } = await Print.printToFileAsync({ html });
         await Sharing.shareAsync(uri);
       }
@@ -434,7 +468,6 @@ export default function ResultsScreen({ t, theme, onBack }) {
         </TouchableOpacity>
       </View>
 
-      {/* HINZUGEFÜGT: Der neue Bereich mit BEIDEN Buttons (Upload & PDF) */}
       {results.length > 0 && (
         <View style={styles.actionButtonsContainer}>
           <TouchableOpacity 
@@ -498,7 +531,6 @@ const styles = StyleSheet.create({
   backBtn: { marginRight: 20 },
   title: { fontSize: 22, fontWeight: 'bold' },
   
-  // HINZUGEFÜGT: Angepasstes Styling für die Buttons nebeneinander
   actionButtonsContainer: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
   actionButton: { flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 },
   

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useResults } from '../context/ResultContext';
 
-let version = 1.7;
+let version = 1.8;
 
 let LinearGradient;
 try {
